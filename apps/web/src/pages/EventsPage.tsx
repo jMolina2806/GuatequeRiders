@@ -1,3 +1,8 @@
 export default function EventsPage() {
-  return <h1>Eventos</h1>
+  return (
+    <section>
+      <h1>Eventos</h1>
+      <p>Aquí se mostrarán los eventos y quedadas.</p>
+    </section>
+  )
 }

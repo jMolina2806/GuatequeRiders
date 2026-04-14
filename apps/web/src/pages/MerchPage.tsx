@@ -1,3 +1,8 @@
 export default function MerchPage() {
-  return <h1>Merchandising</h1>
+  return (
+    <section>
+      <h1>Merchandising</h1>
+      <p>Aquí se mostrará la tienda del club.</p>
+    </section>
+  )
 }

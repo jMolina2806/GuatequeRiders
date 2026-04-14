@@ -1,3 +1,8 @@
 export default function HomePage() {
-  return <h1>Inicio</h1>
+  return (
+    <section>
+      <h1>Inicio</h1>
+      <p>Bienvenido a Guateque Riders.</p>
+    </section>
+  )
 }
