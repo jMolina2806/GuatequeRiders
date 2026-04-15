@@ -1,0 +1,74 @@
+.route-card {
+  border: 1px solid #2a2f3a;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #171b22;
+  color: white;
+}
+
+.route-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.route-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.route-card__status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.route-card__status--open {
+  background: #166534;
+  color: white;
+}
+
+.route-card__status--closed {
+  background: #991b1b;
+  color: white;
+}
+
+.route-card__info {
+  color: #cbd5e1;
+  margin: 6px 0;
+}
+
+.route-card__button {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+}
+
+.route-card__button--edit {
+  background: #2563eb;
+}
+
+.route-card__button--delete {
+  background: #dc2626;
+}
+
+.route-card__button--close {
+  background: #d97706;
+}
+
+.route-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
