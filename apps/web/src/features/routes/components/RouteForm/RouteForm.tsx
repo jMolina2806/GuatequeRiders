@@ -1,28 +1,32 @@
 import { useEffect, useState } from 'react'
 import './RouteForm.css'
 import type {
-  CreateRouteFormData,
-  RouteDifficulty,
-  RouteStatus,
+  CreateRouteRequest,
+  Difficulty,
 } from '@/features/routes/types/route.types'
 
 type RouteFormProps = {
-  onSubmit: (data: CreateRouteFormData) => void
+  onSubmit: (data: CreateRouteRequest) => void
   onCancel?: () => void
-  initialValues?: CreateRouteFormData | null
+  initialValues?: CreateRouteRequest | null
   submitLabel?: string
 }
 
-const initialFormData: CreateRouteFormData = {
+const DIFFICULTY_OPTIONS: { value: Difficulty; label: string }[] = [
+  { value: 'EASY', label: 'Fácil' },
+  { value: 'MODERATE', label: 'Media' },
+  { value: 'HARD', label: 'Difícil' },
+  { value: 'EXTREME', label: 'Extrema' },
+]
+
+const initialFormData: CreateRouteRequest = {
   title: '',
   description: '',
   date: '',
-  time: '',
   origin: '',
   destination: '',
   distanceKm: 0,
-  difficulty: 'Fácil',
-  status: 'Abierta',
+  difficulty: 'EASY',
   maxParticipants: 10,
 }
 
@@ -32,7 +36,7 @@ export default function RouteForm({
   initialValues = null,
   submitLabel = 'Crear ruta',
 }: RouteFormProps) {
-  const [formData, setFormData] = useState<CreateRouteFormData>(initialFormData)
+  const [formData, setFormData] = useState<CreateRouteRequest>(initialFormData)
 
   useEffect(() => {
     if (initialValues) {
@@ -80,11 +84,6 @@ export default function RouteForm({
         </div>
 
         <div className="route-form__field">
-          <label htmlFor="time">Hora</label>
-          <input id="time" name="time" type="time" value={formData.time} onChange={handleChange} required />
-        </div>
-
-        <div className="route-form__field">
           <label htmlFor="origin">Origen</label>
           <input id="origin" name="origin" value={formData.origin} onChange={handleChange} required />
         </div>
@@ -115,25 +114,9 @@ export default function RouteForm({
             value={formData.difficulty}
             onChange={handleChange}
           >
-            {(['Fácil', 'Media', 'Difícil'] as RouteDifficulty[]).map((difficulty) => (
-              <option key={difficulty} value={difficulty}>
-                {difficulty}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="route-form__field">
-          <label htmlFor="status">Estado</label>
-          <select
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-          >
-            {(['Abierta', 'Cerrada'] as RouteStatus[]).map((status) => (
-              <option key={status} value={status}>
-                {status}
+            {DIFFICULTY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
               </option>
             ))}
           </select>

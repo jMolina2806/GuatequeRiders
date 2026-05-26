@@ -1,26 +1,57 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Run Frontend",
-            "type": "shell",
-            "command": "npm run dev",
-            "options": {
-                "cwd": "${workspaceFolder}/apps/web"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Backend",
-            "type": "shell",
-            "command": "./mvnw spring-boot:run",
-            "options": {
-                "cwd": "${workspaceFolder}/apps/api"
-            }
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Frontend",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/web"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Frontend",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/web"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Backend",
+      "type": "shell",
+      "command": "./mvnw spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/api"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Backend",
+      "type": "shell",
+      "command": "./mvnw test",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/api"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Test API Health",
+      "type": "shell",
+      "command": "curl http://localhost:8080/api/health",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test API Routes",
+      "type": "shell",
+      "command": "curl http://localhost:8080/api/routes",
+      "problemMatcher": []
+    }
+  ]
 }

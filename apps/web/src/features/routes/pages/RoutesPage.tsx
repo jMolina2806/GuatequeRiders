@@ -11,6 +11,8 @@ export default function RoutesPage() {
     routes,
     editingInitialValues,
     submitLabel,
+    isLoading,
+    error,
     submitRoute,
     editRoute,
     deleteRoute,
@@ -54,13 +56,37 @@ export default function RoutesPage() {
         )}
       </div>
 
-      <RouteList
-        routes={routes}
-        isAdmin={isAdmin}
-        onEdit={handleEditRoute}
-        onDelete={deleteRoute}
-        onClose={closeRoute}
-      />
+      {error && (
+        <div className="routes-page__error">
+          <span>{error}</span>
+          <button
+            className="routes-page__retry-btn"
+            onClick={() => window.location.reload()}
+            type="button"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="routes-page__loading">
+          <div className="routes-page__spinner" />
+          <p>Cargando rutas...</p>
+        </div>
+      ) : routes.length === 0 && !error ? (
+        <div className="routes-page__empty">
+          <p>No hay rutas disponibles.</p>
+        </div>
+      ) : (
+        <RouteList
+          routes={routes}
+          isAdmin={isAdmin}
+          onEdit={handleEditRoute}
+          onDelete={deleteRoute}
+          onClose={closeRoute}
+        />
+      )}
 
       <Modal
         isOpen={isModalOpen}

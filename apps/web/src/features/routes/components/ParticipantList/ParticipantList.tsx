@@ -1,7 +1,5 @@
-import type { Participant } from '@/features/routes/types/route.types'
-
 type ParticipantListProps = {
-  participants: Participant[]
+  participants: { id: number; name: string }[]
 }
 
 export default function ParticipantList({

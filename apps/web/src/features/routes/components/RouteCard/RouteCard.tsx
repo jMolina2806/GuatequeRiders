@@ -9,17 +9,34 @@ type RouteCardProps = {
   onClose?: (routeId: number) => void
 }
 
-function difficultyLabel(level: string): string {
-  switch (level) {
-    case 'Fácil':
-      return 'route-card__difficulty--fácil'
-    case 'Media':
-      return 'route-card__difficulty--media'
-    case 'Difícil':
-      return 'route-card__difficulty--difícil'
-    default:
-      return ''
-  }
+const DIFFICULTY_LABELS: Record<string, string> = {
+  EASY: 'Fácil',
+  MODERATE: 'Media',
+  HARD: 'Difícil',
+  EXTREME: 'Extrema',
+}
+
+const DIFFICULTY_CLASS: Record<string, string> = {
+  EASY: 'route-card__difficulty--easy',
+  MODERATE: 'route-card__difficulty--moderate',
+  HARD: 'route-card__difficulty--hard',
+  EXTREME: 'route-card__difficulty--extreme',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Borrador',
+  PUBLISHED: 'Abierta',
+  IN_PROGRESS: 'En curso',
+  COMPLETED: 'Completada',
+  CANCELLED: 'Cancelada',
+}
+
+const STATUS_CLASS: Record<string, string> = {
+  DRAFT: 'route-card__status--draft',
+  PUBLISHED: 'route-card__status--open',
+  IN_PROGRESS: 'route-card__status--in-progress',
+  COMPLETED: 'route-card__status--completed',
+  CANCELLED: 'route-card__status--cancelled',
 }
 
 export default function RouteCard({
@@ -29,52 +46,33 @@ export default function RouteCard({
   onDelete,
   onClose,
 }: RouteCardProps) {
-  const isClosed = route.status === 'Cerrada'
+  const canClose = route.status === 'PUBLISHED' || route.status === 'IN_PROGRESS'
 
   return (
     <article className="route-card">
-      <div className="route-card__image">
-        {route.imageUrl && (
-          <img src={route.imageUrl} alt={route.title} loading="lazy" />
-        )}
-      </div>
-
       <div className="route-card__body">
         <div className="route-card__top">
           <h3 className="route-card__title">{route.title}</h3>
           <span
-            className={`route-card__status ${
-              isClosed ? 'route-card__status--closed' : 'route-card__status--open'
-            }`}
+            className={`route-card__status ${STATUS_CLASS[route.status] ?? ''}`}
           >
-            {route.status}
+            {STATUS_LABELS[route.status] ?? route.status}
           </span>
         </div>
 
         <div className="route-card__meta">
           <span>📅 {route.date}</span>
-          <span>⏰ {route.time}</span>
           <span>📍 {route.origin} → {route.destination}</span>
           <span>📏 {route.distanceKm} km</span>
           <span
-            className={`route-card__difficulty ${difficultyLabel(route.difficulty)}`}
+            className={`route-card__difficulty ${DIFFICULTY_CLASS[route.difficulty] ?? ''}`}
           >
-            {route.difficulty}
+            {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
           </span>
-          <span>👥 {route.participants.length}/{route.maxParticipants}</span>
+          <span>👥 {route.currentParticipants}/{route.maxParticipants}</span>
         </div>
 
         <p className="route-card__desc">{route.description}</p>
-
-        {route.participants.length > 0 && (
-          <div className="route-card__participants">
-            {route.participants.map((p) => (
-              <span key={p.id} className="route-card__participant-tag">
-                {p.name}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       <div className="route-card__sidebar">
@@ -94,7 +92,7 @@ export default function RouteCard({
             >
               Eliminar
             </button>
-            {!isClosed && (
+            {canClose && (
               <button
                 className="route-card__btn route-card__btn--close"
                 onClick={() => onClose?.(route.id)}
@@ -104,7 +102,7 @@ export default function RouteCard({
               </button>
             )}
           </>
-        ) : !isClosed ? (
+        ) : route.status === 'PUBLISHED' ? (
           <button
             className="route-card__btn route-card__btn--enroll"
             type="button"

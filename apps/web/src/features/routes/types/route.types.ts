@@ -1,36 +1,32 @@
-export type Participant = {
-  id: number
-  name: string
-}
-
-export type RouteDifficulty = 'Fácil' | 'Media' | 'Difícil'
-export type RouteStatus = 'Abierta' | 'Cerrada'
+export type Difficulty = 'EASY' | 'MODERATE' | 'HARD' | 'EXTREME'
+export type RouteStatus = 'DRAFT' | 'PUBLISHED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
 
 export type Route = {
   id: number
   title: string
   description: string
-  date: string
-  time: string
   origin: string
   destination: string
+  date: string
   distanceKm: number
-  difficulty: RouteDifficulty
-  status: RouteStatus
+  difficulty: Difficulty
   maxParticipants: number
-  participants: Participant[]
-  imageUrl: string
+  currentParticipants: number
+  status: RouteStatus
 }
 
-export type CreateRouteFormData = {
+export type CreateRouteRequest = {
   title: string
   description: string
-  date: string
-  time: string
   origin: string
   destination: string
+  date: string
   distanceKm: number
-  difficulty: RouteDifficulty
-  status: RouteStatus
+  difficulty: Difficulty
   maxParticipants: number
+}
+
+export type UpdateRouteRequest = CreateRouteRequest & {
+  currentParticipants: number
+  status: RouteStatus
 }

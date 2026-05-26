@@ -1,7 +1,51 @@
 import { Link } from 'react-router-dom'
-import { mockRoutes } from '@/features/routes/data/mockRoutes'
+import type { Route } from '@/features/routes/types/route.types'
 import logoSrc from '@/assets/branding/logo-neon.jpeg'
 import './HomePage.css'
+
+const previewRoutes: Route[] = [
+  {
+    id: 1,
+    title: 'Ruta del Valle',
+    description: 'Recorrido escénico por los valles del sur con paradas en miradores naturales.',
+    date: '2026-06-03',
+    origin: 'Antigua Guatemala',
+    destination: 'San Miguel Dueñas',
+    distanceKm: 45,
+    difficulty: 'EASY',
+    maxParticipants: 20,
+    currentParticipants: 5,
+    status: 'PUBLISHED',
+  },
+  {
+    id: 2,
+    title: 'Ascenso a la Montaña',
+    description: 'Desafío de montaña con curvas cerradas y paisajes impresionantes.',
+    date: '2026-06-10',
+    origin: 'Guatemala City',
+    destination: 'El Cerrito',
+    distanceKm: 120,
+    difficulty: 'HARD',
+    maxParticipants: 15,
+    currentParticipants: 12,
+    status: 'PUBLISHED',
+  },
+]
+
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Borrador',
+  PUBLISHED: 'Abierta',
+  IN_PROGRESS: 'En curso',
+  COMPLETED: 'Completada',
+  CANCELLED: 'Cancelada',
+}
+
+const DIFFICULTY_LABELS: Record<string, string> = {
+  EASY: 'Fácil',
+  MODERATE: 'Media',
+  HARD: 'Difícil',
+  EXTREME: 'Extrema',
+}
 
 const stats = [
   { value: '150+', label: 'Riders', icon: '🏍️' },
@@ -50,7 +94,7 @@ const merchItems = [
 ]
 
 export default function HomePage() {
-  const upcomingRoutes = mockRoutes.slice(0, 2)
+  const upcomingRoutes = previewRoutes
 
   return (
     <>
@@ -96,25 +140,19 @@ export default function HomePage() {
               <article key={route.id} className="preview-card">
                 <div className="preview-card__top">
                   <h3 className="preview-card__title">{route.title}</h3>
-                  <span
-                    className={`preview-card__status ${
-                      route.status === 'Cerrada'
-                        ? 'preview-card__status--closed'
-                        : 'preview-card__status--open'
-                    }`}
-                  >
-                    {route.status}
+                  <span className="preview-card__status preview-card__status--open">
+                    {STATUS_LABELS[route.status] ?? route.status}
                   </span>
                 </div>
                 <p className="preview-card__meta">
-                  📅 {route.date} &middot; ⏰ {route.time}
+                  📅 {route.date}
                 </p>
                 <p className="preview-card__meta">
                   📍 {route.origin} → {route.destination}
                 </p>
                 <p className="preview-card__desc">{route.description}</p>
                 <div className="preview-card__footer">
-                  <span className="preview-card__difficulty">{route.difficulty}</span>
+                  <span className="preview-card__difficulty">{DIFFICULTY_LABELS[route.difficulty]}</span>
                   <span className="preview-card__dist">{route.distanceKm} km</span>
                 </div>
               </article>
