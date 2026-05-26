@@ -19,6 +19,7 @@ export type Route = {
   status: RouteStatus
   maxParticipants: number
   participants: Participant[]
+  imageUrl: string
 }
 
 export type CreateRouteFormData = {

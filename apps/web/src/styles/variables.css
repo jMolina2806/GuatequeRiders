@@ -1,0 +1,60 @@
+:root {
+  /* Colores de fondo */
+  --color-background: #0a0a0f;
+  --color-surface: #12121a;
+  --color-surface-elevated: #1a1a2e;
+
+  /* Paleta neón */
+  --color-primary: #00f0ff;
+  --color-secondary: #ff00e5;
+  --color-accent: #7c3aed;
+
+  /* Estados */
+  --color-success: #00ff88;
+  --color-danger: #ff3355;
+  --color-info: #3b82f6;
+
+  /* Texto */
+  --color-text: #f0f0f0;
+  --color-text-secondary: #a0a0b0;
+  --color-muted: #6b6b80;
+
+  /* Bordes */
+  --color-border: #2a2a3e;
+  --color-border-light: #3a3a4e;
+
+  /* Sombras neón */
+  --shadow-neon-cyan: 0 0 15px rgba(0, 240, 255, 0.25);
+  --shadow-neon-magenta: 0 0 15px rgba(255, 0, 229, 0.25);
+  --shadow-neon-accent: 0 0 15px rgba(124, 58, 237, 0.25);
+  --shadow-neon-success: 0 0 12px rgba(0, 255, 136, 0.2);
+
+  /* Gradientes */
+  --gradient-neon: linear-gradient(135deg, #00f0ff, #ff00e5);
+  --gradient-neon-subtle: linear-gradient(135deg, rgba(0, 240, 255, 0.08), rgba(255, 0, 229, 0.08));
+  --gradient-accent: linear-gradient(135deg, #7c3aed, #00f0ff);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Glass */
+  --color-glass: rgba(18, 18, 26, 0.85);
+
+  /* Shadow card */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* Layout */
+  --max-width: 1500px;
+
+  /* Typography */
+  --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}

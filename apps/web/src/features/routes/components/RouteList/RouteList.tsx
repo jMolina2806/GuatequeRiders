@@ -1,9 +1,9 @@
 import RouteCard from '../RouteCard'
-import type { Route } from '../../types/route.types'
+import type { Route } from '@/features/routes/types/route.types'
 
 type RouteListProps = {
   routes: Route[]
-  isAdminView?: boolean
+  isAdmin?: boolean
   onEdit?: (route: Route) => void
   onDelete?: (routeId: number) => void
   onClose?: (routeId: number) => void
@@ -11,7 +11,7 @@ type RouteListProps = {
 
 export default function RouteList({
   routes,
-  isAdminView = false,
+  isAdmin = false,
   onEdit,
   onDelete,
   onClose,
@@ -22,7 +22,7 @@ export default function RouteList({
         <RouteCard
           key={route.id}
           route={route}
-          isAdminView={isAdminView}
+          isAdmin={isAdmin}
           onEdit={onEdit}
           onDelete={onDelete}
           onClose={onClose}

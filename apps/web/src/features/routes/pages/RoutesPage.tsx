@@ -1,39 +1,79 @@
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import RouteList from '../components/RouteList/RouteList'
-import { mockRoutes } from '../data/mockRoutes'
+import RouteForm from '../components/RouteForm'
+import Modal from '@/components/Modal'
+import { useRoutes } from '../hooks/useRoutes'
+import { currentUser } from '../data/mockUser'
+import './RoutesPage.css'
 
 export default function RoutesPage() {
-  const navigate = useNavigate()
+  const {
+    routes,
+    editingInitialValues,
+    submitLabel,
+    submitRoute,
+    editRoute,
+    deleteRoute,
+    closeRoute,
+    cancelEdit,
+  } = useRoutes()
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const isAdmin = currentUser.role === 'admin'
 
   const handleCreateRoute = () => {
-    navigate('/admin/routes')
+    setIsModalOpen(true)
+  }
+
+  const handleEditRoute = (route: Parameters<typeof editRoute>[0]) => {
+    editRoute(route)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    cancelEdit()
+    setIsModalOpen(false)
   }
 
   return (
     <section>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>
+      <div className="routes-page__header">
+        <div className="routes-page__header-text">
           <h1>Rutas</h1>
           <p>Descubre las próximas rutas del club y apúntate.</p>
         </div>
 
-        <button
-          onClick={handleCreateRoute}
-          style={{
-            height: '40px',
-            padding: '0 16px',
-            background: 'orange',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-          }}
-        >
-          Crear ruta
-        </button>
+        {isAdmin && (
+          <button
+            className="routes-page__create-btn"
+            onClick={handleCreateRoute}
+            type="button"
+          >
+            Crear ruta
+          </button>
+        )}
       </div>
 
-      <RouteList routes={mockRoutes} />
+      <RouteList
+        routes={routes}
+        isAdmin={isAdmin}
+        onEdit={handleEditRoute}
+        onDelete={deleteRoute}
+        onClose={closeRoute}
+      />
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={submitLabel}
+      >
+        <RouteForm
+          onSubmit={submitRoute}
+          onCancel={handleCloseModal}
+          initialValues={editingInitialValues}
+          submitLabel={submitLabel}
+        />
+      </Modal>
     </section>
   )
 }

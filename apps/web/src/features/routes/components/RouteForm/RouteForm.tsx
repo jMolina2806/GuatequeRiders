@@ -4,10 +4,11 @@ import type {
   CreateRouteFormData,
   RouteDifficulty,
   RouteStatus,
-} from '../../types/route.types'
+} from '@/features/routes/types/route.types'
 
 type RouteFormProps = {
   onSubmit: (data: CreateRouteFormData) => void
+  onCancel?: () => void
   initialValues?: CreateRouteFormData | null
   submitLabel?: string
 }
@@ -27,6 +28,7 @@ const initialFormData: CreateRouteFormData = {
 
 export default function RouteForm({
   onSubmit,
+  onCancel,
   initialValues = null,
   submitLabel = 'Crear ruta',
 }: RouteFormProps) {
@@ -163,9 +165,17 @@ export default function RouteForm({
         />
       </div>
 
-      <button className="route-form__submit" type="submit">
-        {submitLabel}
-      </button>
+      <div className="route-form__actions">
+        <button className="route-form__submit" type="submit">
+          {submitLabel}
+        </button>
+
+        {onCancel && (
+          <button className="route-form__cancel" onClick={onCancel} type="button">
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   )
 }

@@ -1,0 +1,43 @@
+.routes-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.routes-page__header-text h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 4px;
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.routes-page__header-text p {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.routes-page__create-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--gradient-neon);
+  color: #fff;
+  box-shadow: var(--shadow-neon-cyan);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.routes-page__create-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+}

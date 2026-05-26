@@ -1,4 +1,4 @@
-import type { Participant } from '../../types/route.types'
+import type { Participant } from '@/features/routes/types/route.types'
 
 type ParticipantListProps = {
   participants: Participant[]

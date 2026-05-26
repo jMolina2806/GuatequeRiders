@@ -1,13 +1,50 @@
 .route-card {
-  border: 1px solid #2a2f3a;
-  border-radius: 12px;
-  padding: 16px;
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   margin-bottom: 16px;
-  background: #171b22;
-  color: white;
+  min-height: 160px;
 }
 
-.route-card__header {
+.route-card:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.04), var(--shadow-card);
+}
+
+/* Image */
+.route-card__image {
+  width: 200px;
+  overflow: hidden;
+  position: relative;
+  background: var(--gradient-neon-subtle);
+}
+
+.route-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.route-card:hover .route-card__image img {
+  transform: scale(1.05);
+}
+
+/* Body */
+.route-card__body {
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.route-card__top {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,60 +52,168 @@
 }
 
 .route-card__title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin: 0;
 }
 
+/* Status badge */
 .route-card__status {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .route-card__status--open {
-  background: #166534;
-  color: white;
+  background: rgba(0, 255, 136, 0.12);
+  color: var(--color-success);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  box-shadow: var(--shadow-neon-success);
 }
 
 .route-card__status--closed {
-  background: #991b1b;
-  color: white;
+  background: rgba(255, 51, 85, 0.12);
+  color: var(--color-danger);
+  border: 1px solid rgba(255, 51, 85, 0.3);
 }
 
-.route-card__info {
-  color: #cbd5e1;
-  margin: 6px 0;
+/* Meta info row */
+.route-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
 }
 
-.route-card__button {
-  margin-top: 12px;
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: white;
+/* Difficulty badge */
+.route-card__difficulty {
+  padding: 1px 8px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 600;
 }
 
-.route-card__button--edit {
-  background: #2563eb;
+.route-card__difficulty--fácil {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(0, 255, 136, 0.2);
 }
 
-.route-card__button--delete {
-  background: #dc2626;
+.route-card__difficulty--media {
+  background: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
-.route-card__button--close {
-  background: #d97706;
+.route-card__difficulty--difícil {
+  background: rgba(255, 51, 85, 0.1);
+  color: var(--color-danger);
+  border: 1px solid rgba(255, 51, 85, 0.2);
 }
 
-.route-card__actions {
+/* Description */
+.route-card__desc {
+  color: var(--color-muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Participants */
+.route-card__participants {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.route-card__participant-tag {
+  background: var(--color-surface-elevated);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+/* Sidebar actions */
+.route-card__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-left: 1px solid var(--color-border);
+  justify-content: center;
+  align-items: stretch;
+}
+
+.route-card__btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.route-card__btn--enroll {
+  background: var(--gradient-neon);
+  color: #fff;
+  box-shadow: var(--shadow-neon-cyan);
+}
+
+.route-card__btn--enroll:hover {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.route-card__btn--edit {
+  background: var(--color-info);
+  color: #fff;
+}
+
+.route-card__btn--edit:hover {
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+  transform: translateY(-1px);
+}
+
+.route-card__btn--delete {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.route-card__btn--delete:hover {
+  box-shadow: 0 0 12px rgba(255, 51, 85, 0.45);
+  transform: translateY(-1px);
+}
+
+.route-card__btn--close {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.route-card__btn--close:hover {
+  border-color: rgba(255, 0, 229, 0.4);
+  color: var(--color-secondary);
+  box-shadow: 0 0 10px rgba(255, 0, 229, 0.15);
+  transform: translateY(-1px);
 }

@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react'
-import RouteForm from '../components/RouteForm'
-import RouteList from '../components/RouteList/RouteList'
-import { mockRoutes } from '../data/mockRoutes'
-import type { CreateRouteFormData, Route } from '../types/route.types'
+import { getRoutes } from '../services/routes.service'
+import type { CreateRouteFormData, Route } from '@/features/routes/types/route.types'
 
 function mapRouteToFormData(route: Route): CreateRouteFormData {
   return {
@@ -19,16 +17,25 @@ function mapRouteToFormData(route: Route): CreateRouteFormData {
   }
 }
 
-export default function AdminRoutesPage() {
-  const [routes, setRoutes] = useState<Route[]>(mockRoutes)
+export function useRoutes() {
+  const [routes, setRoutes] = useState<Route[]>(getRoutes())
   const [editingRouteId, setEditingRouteId] = useState<number | null>(null)
+  const [isLoading] = useState(false)
+  const [error] = useState<string | null>(null)
 
   const editingRoute = useMemo(
     () => routes.find((route) => route.id === editingRouteId) ?? null,
     [routes, editingRouteId],
   )
 
-  const handleSubmitRoute = (data: CreateRouteFormData) => {
+  const editingInitialValues = useMemo(
+    () => (editingRoute ? mapRouteToFormData(editingRoute) : null),
+    [editingRoute],
+  )
+
+  const submitLabel = editingRoute ? 'Guardar cambios' : 'Crear ruta'
+
+  const submitRoute = (data: CreateRouteFormData) => {
     if (editingRouteId !== null) {
       setRoutes((prev) =>
         prev.map((route) =>
@@ -49,16 +56,17 @@ export default function AdminRoutesPage() {
       id: Date.now(),
       ...data,
       participants: [],
+      imageUrl: '',
     }
 
     setRoutes((prev) => [newRoute, ...prev])
   }
 
-  const handleEditRoute = (route: Route) => {
+  const editRoute = (route: Route) => {
     setEditingRouteId(route.id)
   }
 
-  const handleDeleteRoute = (routeId: number) => {
+  const deleteRoute = (routeId: number) => {
     setRoutes((prev) => prev.filter((route) => route.id !== routeId))
 
     if (editingRouteId === routeId) {
@@ -66,7 +74,11 @@ export default function AdminRoutesPage() {
     }
   }
 
-  const handleCloseRoute = (routeId: number) => {
+  const cancelEdit = () => {
+    setEditingRouteId(null)
+  }
+
+  const closeRoute = (routeId: number) => {
     setRoutes((prev) =>
       prev.map((route) =>
         route.id === routeId
@@ -79,28 +91,16 @@ export default function AdminRoutesPage() {
     )
   }
 
-  return (
-    <section>
-      <h1>Administración de rutas</h1>
-      <p>Desde aquí el administrador puede crear, editar, cerrar y eliminar rutas.</p>
-
-      <div style={{ margin: '24px 0' }}>
-        <RouteForm
-          onSubmit={handleSubmitRoute}
-          initialValues={editingRoute ? mapRouteToFormData(editingRoute) : null}
-          submitLabel={editingRoute ? 'Guardar cambios' : 'Crear ruta'}
-        />
-      </div>
-
-      <h2>Rutas creadas</h2>
-
-      <RouteList
-        routes={routes}
-        isAdminView={true}
-        onEdit={handleEditRoute}
-        onDelete={handleDeleteRoute}
-        onClose={handleCloseRoute}
-      />
-    </section>
-  )
+  return {
+    routes,
+    editingInitialValues,
+    submitLabel,
+    isLoading,
+    error,
+    submitRoute,
+    editRoute,
+    deleteRoute,
+    closeRoute,
+    cancelEdit,
+  }
 }

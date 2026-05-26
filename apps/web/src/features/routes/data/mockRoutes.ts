@@ -18,6 +18,7 @@ export const mockRoutes: Route[] = [
       { id: 2, name: 'Emilio' },
       { id: 3, name: 'Rocío' },
     ],
+    imageUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&h=280&fit=crop&auto=format',
   },
   {
     id: 2,
@@ -35,5 +36,6 @@ export const mockRoutes: Route[] = [
       { id: 4, name: 'Javi' },
       { id: 5, name: 'Luis' },
     ],
+    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=280&fit=crop&auto=format',
   },
 ]
