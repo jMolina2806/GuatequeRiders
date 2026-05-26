@@ -137,3 +137,38 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Maven / Java
+target/
+*.class
+*.jar
+*.war
+*.zip
+*.tar.gz
+*.rar
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/*.jar
+!**/src/test/**/*.jar
+
+# STS (Eclipse)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+nbproject/
+nb-configuration.xml
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
