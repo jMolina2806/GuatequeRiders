@@ -13,6 +13,8 @@ export type Route = {
   origin: string
   destination: string
   date: string
+  meetingTime: string | null
+  departureTime: string | null
   distanceKm: number
   difficulty: Difficulty
   maxParticipants: number
@@ -27,6 +29,8 @@ export type CreateRouteRequest = {
   origin: string
   destination: string
   date: string
+  meetingTime: string
+  departureTime: string
   distanceKm: number
   difficulty: Difficulty
   maxParticipants: number

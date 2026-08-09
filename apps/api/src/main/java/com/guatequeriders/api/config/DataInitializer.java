@@ -98,6 +98,8 @@ public class DataInitializer implements CommandLineRunner {
                 20,
                 RouteStatus.PUBLISHED
         ));
+        rutaDelValle.setMeetingTime(LocalTime.of(8, 0));
+        rutaDelValle.setDepartureTime(LocalTime.of(8, 30));
 
         Route ascensoMontana = routeRepository.save(new Route(
                 "Ascenso a la Montaña",
@@ -110,6 +112,8 @@ public class DataInitializer implements CommandLineRunner {
                 15,
                 RouteStatus.PUBLISHED
         ));
+        ascensoMontana.setMeetingTime(LocalTime.of(6, 0));
+        ascensoMontana.setDepartureTime(LocalTime.of(6, 30));
 
         Route costaAtardecer = routeRepository.save(new Route(
                 "Costa al Atardecer",
@@ -122,6 +126,8 @@ public class DataInitializer implements CommandLineRunner {
                 25,
                 RouteStatus.DRAFT
         ));
+        costaAtardecer.setMeetingTime(LocalTime.of(15, 0));
+        costaAtardecer.setDepartureTime(LocalTime.of(15, 30));
 
         userRepository.findByUsername("admin").ifPresent(admin -> {
             seedOrganizer(rutaDelValle, admin);

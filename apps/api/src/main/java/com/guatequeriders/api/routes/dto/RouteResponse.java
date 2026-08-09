@@ -5,6 +5,7 @@ import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.routes.model.RouteStatus;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class RouteResponse {
@@ -15,6 +16,8 @@ public class RouteResponse {
     private String origin;
     private String destination;
     private LocalDate date;
+    private LocalTime meetingTime;
+    private LocalTime departureTime;
     private Double distanceKm;
     private Difficulty difficulty;
     private Integer maxParticipants;
@@ -31,6 +34,8 @@ public class RouteResponse {
         r.origin = route.getOrigin();
         r.destination = route.getDestination();
         r.date = route.getDate();
+        r.meetingTime = route.getMeetingTime();
+        r.departureTime = route.getDepartureTime();
         r.distanceKm = route.getDistanceKm();
         r.difficulty = route.getDifficulty();
         r.maxParticipants = route.getMaxParticipants();
@@ -46,6 +51,8 @@ public class RouteResponse {
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
     public LocalDate getDate() { return date; }
+    public LocalTime getMeetingTime() { return meetingTime; }
+    public LocalTime getDepartureTime() { return departureTime; }
     public Double getDistanceKm() { return distanceKm; }
     public Difficulty getDifficulty() { return difficulty; }
     public Integer getMaxParticipants() { return maxParticipants; }

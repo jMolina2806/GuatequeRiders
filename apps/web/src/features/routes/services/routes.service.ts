@@ -41,12 +41,12 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export async function getRoutes(): Promise<Route[]> {
-  const response = await fetch(API_BASE)
+  const response = await fetch(API_BASE, { headers: authHeaders() })
   return handleResponse<Route[]>(response)
 }
 
 export async function getRouteById(id: number): Promise<Route> {
-  const response = await fetch(`${API_BASE}/${id}`)
+  const response = await fetch(`${API_BASE}/${id}`, { headers: authHeaders() })
   return handleResponse<Route>(response)
 }
 
@@ -64,6 +64,14 @@ export async function updateRoute(id: number, data: UpdateRouteRequest): Promise
     method: 'PUT',
     headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(data),
+  })
+  return handleResponse<Route>(response)
+}
+
+export async function publishRoute(id: number): Promise<Route> {
+  const response = await fetch(`${API_BASE}/${id}/publish`, {
+    method: 'PATCH',
+    headers: authHeaders(),
   })
   return handleResponse<Route>(response)
 }

@@ -15,6 +15,7 @@ type RouteDetailsModalProps = {
   onEdit?: (route: Route) => void
   onDelete?: (routeId: number) => void
   onCloseRoute?: (routeId: number) => void
+  onPublish?: (routeId: number) => void
 }
 
 const DIFFICULTY_LABELS: Record<string, string> = {
@@ -59,6 +60,7 @@ export default function RouteDetailsModal({
   onEdit,
   onDelete,
   onCloseRoute,
+  onPublish,
 }: RouteDetailsModalProps) {
   if (!route) return null
 
@@ -70,6 +72,15 @@ export default function RouteDetailsModal({
     if (isAdmin) {
       return (
         <>
+          {route.status === 'DRAFT' && (
+            <button
+              className="route-details__btn route-details__btn--publish"
+              onClick={() => onPublish?.(route.id)}
+              type="button"
+            >
+              Publicar
+            </button>
+          )}
           <button
             className="route-details__btn route-details__btn--edit"
             onClick={() => onEdit?.(route)}
@@ -138,6 +149,14 @@ export default function RouteDetailsModal({
           <div className="route-details__item">
             <span className="route-details__label">Fecha</span>
             <span className="route-details__value">{route.date}</span>
+          </div>
+          <div className="route-details__item">
+            <span className="route-details__label">Hora de quedada</span>
+            <span className="route-details__value">{route.meetingTime ?? '—'}</span>
+          </div>
+          <div className="route-details__item">
+            <span className="route-details__label">Hora de salida</span>
+            <span className="route-details__value">{route.departureTime ?? '—'}</span>
           </div>
           <div className="route-details__item">
             <span className="route-details__label">Origen</span>

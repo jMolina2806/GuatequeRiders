@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class UpdateRouteRequest {
@@ -45,6 +46,12 @@ public class UpdateRouteRequest {
     @NotEmpty(message = "At least one organizer is required")
     private List<Long> organizerIds;
 
+    @NotNull(message = "Meeting time is required")
+    private LocalTime meetingTime;
+
+    @NotNull(message = "Departure time is required")
+    private LocalTime departureTime;
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -74,4 +81,10 @@ public class UpdateRouteRequest {
 
     public List<Long> getOrganizerIds() { return organizerIds; }
     public void setOrganizerIds(List<Long> organizerIds) { this.organizerIds = organizerIds; }
+
+    public LocalTime getMeetingTime() { return meetingTime; }
+    public void setMeetingTime(LocalTime meetingTime) { this.meetingTime = meetingTime; }
+
+    public LocalTime getDepartureTime() { return departureTime; }
+    public void setDepartureTime(LocalTime departureTime) { this.departureTime = departureTime; }
 }

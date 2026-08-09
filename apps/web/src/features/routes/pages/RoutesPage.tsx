@@ -25,6 +25,7 @@ export default function RoutesPage() {
     editRoute,
     deleteRoute,
     closeRoute,
+    publishRoute,
     registerToRoute,
     unregisterFromRoute,
     clearFeedback,
@@ -147,6 +148,7 @@ export default function RoutesPage() {
           onEdit={handleEditRoute}
           onDelete={deleteRoute}
           onClose={closeRoute}
+          onPublish={publishRoute}
           onEnroll={handleEnroll}
           onUnregister={handleUnregister}
           onDetails={setDetailsRoute}
@@ -165,6 +167,7 @@ export default function RoutesPage() {
         onEdit={handleEditRoute}
         onDelete={deleteRoute}
         onCloseRoute={closeRoute}
+        onPublish={publishRoute}
       />
 
       <Modal

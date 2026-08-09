@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "routes")
@@ -33,6 +34,12 @@ public class Route {
 
     @Column(name = "route_date", nullable = false)
     private LocalDate date;
+
+    @Column(name = "meeting_time")
+    private LocalTime meetingTime;
+
+    @Column(name = "departure_time")
+    private LocalTime departureTime;
 
     private Double distanceKm;
 
@@ -80,6 +87,12 @@ public class Route {
 
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
+
+    public LocalTime getMeetingTime() { return meetingTime; }
+    public void setMeetingTime(LocalTime meetingTime) { this.meetingTime = meetingTime; }
+
+    public LocalTime getDepartureTime() { return departureTime; }
+    public void setDepartureTime(LocalTime departureTime) { this.departureTime = departureTime; }
 
     public Double getDistanceKm() { return distanceKm; }
     public void setDistanceKm(Double distanceKm) { this.distanceKm = distanceKm; }

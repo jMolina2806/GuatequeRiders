@@ -68,6 +68,8 @@ export function useRoutes() {
       title: editingRoute.title,
       description: editingRoute.description,
       date: editingRoute.date,
+      meetingTime: editingRoute.meetingTime ?? '',
+      departureTime: editingRoute.departureTime ?? '',
       origin: editingRoute.origin,
       destination: editingRoute.destination,
       distanceKm: editingRoute.distanceKm,
@@ -131,6 +133,8 @@ export function useRoutes() {
         title: route.title,
         description: route.description,
         date: route.date,
+        meetingTime: route.meetingTime ?? '',
+        departureTime: route.departureTime ?? '',
         origin: route.origin,
         destination: route.destination,
         distanceKm: route.distanceKm,
@@ -142,6 +146,22 @@ export function useRoutes() {
       await fetchRoutes()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cerrar ruta')
+    }
+  }
+
+  const publishRoute = async (routeId: number) => {
+    setFeedback(null)
+    try {
+      const published = await routesService.publishRoute(routeId)
+      setRoutes((prev) =>
+        prev.map((route) => (route.id === routeId ? { ...route, status: published.status } : route)),
+      )
+      setFeedback({ message: 'Ruta publicada correctamente', type: 'success' })
+    } catch (err) {
+      setFeedback({
+        message: err instanceof Error ? err.message : 'Error al publicar ruta',
+        type: 'error',
+      })
     }
   }
 
@@ -202,6 +222,7 @@ export function useRoutes() {
     editRoute,
     deleteRoute,
     closeRoute,
+    publishRoute,
     registerToRoute,
     unregisterFromRoute,
     clearFeedback,

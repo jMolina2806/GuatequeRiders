@@ -25,6 +25,8 @@ const initialFormData: CreateRouteRequest = {
   title: '',
   description: '',
   date: '',
+  meetingTime: '',
+  departureTime: '',
   origin: '',
   destination: '',
   distanceKm: 0,
@@ -74,6 +76,10 @@ export default function RouteForm({
     }))
   }
 
+  const timesInvalid =
+    Boolean(formData.meetingTime && formData.departureTime) &&
+    formData.departureTime <= formData.meetingTime
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     onSubmit(formData)
@@ -91,9 +97,39 @@ export default function RouteForm({
           <input id="title" name="title" value={formData.title} onChange={handleChange} required />
         </div>
 
-        <div className="route-form__field">
-          <label htmlFor="date">Fecha</label>
-          <input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
+        <div className="route-form__date-group">
+          <div className="route-form__field">
+            <label htmlFor="date">Fecha</label>
+            <input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
+          </div>
+
+          <div className="route-form__field">
+            <label htmlFor="meetingTime">Hora de quedada</label>
+            <input
+              id="meetingTime"
+              name="meetingTime"
+              type="time"
+              value={formData.meetingTime}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="route-form__field">
+            <label htmlFor="departureTime">Hora de salida</label>
+            <input
+              id="departureTime"
+              name="departureTime"
+              type="time"
+              value={formData.departureTime}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {timesInvalid && (
+            <p className="route-form__field-error">La hora de salida debe ser posterior a la de quedada.</p>
+          )}
         </div>
 
         <div className="route-form__field">
@@ -200,7 +236,7 @@ export default function RouteForm({
         <button
           className="route-form__submit"
           type="submit"
-          disabled={formData.organizerIds.length === 0}
+          disabled={formData.organizerIds.length === 0 || timesInvalid}
         >
           {submitLabel}
         </button>

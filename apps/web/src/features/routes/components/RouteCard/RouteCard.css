@@ -225,6 +225,17 @@
   color: #fff;
 }
 
+.route-card__btn--publish {
+  background: var(--gradient-neon);
+  color: #fff;
+  box-shadow: var(--shadow-neon-cyan);
+}
+
+.route-card__btn--publish:hover {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.45);
+  transform: translateY(-1px);
+}
+
 .route-card__btn--edit:hover {
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
   transform: translateY(-1px);

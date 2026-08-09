@@ -11,6 +11,7 @@ type RouteCardProps = {
   onEdit?: (route: Route) => void
   onDelete?: (routeId: number) => void
   onClose?: (routeId: number) => void
+  onPublish?: (routeId: number) => void
   onEnroll?: (route: Route) => void
   onUnregister?: (route: Route) => void
 }
@@ -55,6 +56,7 @@ export default function RouteCard({
   onEdit,
   onDelete,
   onClose,
+  onPublish,
   onEnroll,
   onUnregister,
 }: RouteCardProps) {
@@ -120,6 +122,8 @@ export default function RouteCard({
 
         <div className="route-card__meta">
           <span>📅 {route.date}</span>
+          {route.meetingTime && <span>🕒 Quedada: {route.meetingTime}</span>}
+          {route.departureTime && <span>🏍️ Salida: {route.departureTime}</span>}
           <span>📍 {route.origin} → {route.destination}</span>
           <span>📏 {route.distanceKm} km</span>
           <span
@@ -148,6 +152,18 @@ export default function RouteCard({
       <div className="route-card__sidebar">
         {isAdmin ? (
           <>
+            {route.status === 'DRAFT' && (
+              <button
+                className="route-card__btn route-card__btn--publish"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  onPublish?.(route.id)
+                }}
+                type="button"
+              >
+                Publicar
+              </button>
+            )}
             <button
               className="route-card__btn route-card__btn--edit"
               onClick={(event) => {

@@ -2,6 +2,7 @@ package com.guatequeriders.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.guatequeriders.api.routes.service.RoutesService;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
@@ -50,6 +51,9 @@ class RouteOrganizerIntegrationTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoutesService routesService;
 
     @Test
     void createRouteWithUserOrganizerIsRejectedWith409() throws Exception {
@@ -135,6 +139,101 @@ class RouteOrganizerIntegrationTest {
         }
     }
 
+    @Test
+    void publishDraftRouteSucceeds() throws Exception {
+        Long adminId = userRepository.findByUsername("admin").orElseThrow().getId();
+        String token = loginAsAdmin();
+        long routeId = createRoute(token, "Ruta a publicar", List.of(adminId));
+
+        mockMvc.perform(patch("/api/routes/{id}/publish", routeId)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("PUBLISHED"));
+    }
+
+    @Test
+    void publishNonDraftRouteIsRejectedWith409() throws Exception {
+        Long adminId = userRepository.findByUsername("admin").orElseThrow().getId();
+        String token = loginAsAdmin();
+        long routeId = createRoute(token, "Ruta ya publicada", List.of(adminId));
+
+        mockMvc.perform(patch("/api/routes/{id}/publish", routeId)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(patch("/api/routes/{id}/publish", routeId)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Only DRAFT routes can be published"));
+    }
+
+    @Test
+    void draftRouteIsHiddenFromPublicAndReturns404ForNonAdmin() throws Exception {
+        Long adminId = userRepository.findByUsername("admin").orElseThrow().getId();
+        String token = loginAsAdmin();
+        long routeId = createRoute(token, "Ruta oculta", List.of(adminId));
+
+        mockMvc.perform(get("/api/routes/{id}", routeId))
+                .andExpect(status().isNotFound());
+
+        String list = mockMvc.perform(get("/api/routes"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        JsonNode routes = objectMapper.readTree(list);
+        for (JsonNode route : routes) {
+            assertThat(route.get("id").asLong()).isNotEqualTo(routeId);
+        }
+
+        mockMvc.perform(get("/api/routes/{id}", routeId)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(routeId));
+    }
+
+    @Test
+    void autoCompleteMarksPastRoutesAndSkipsDraftAndFuture() throws Exception {
+        Long adminId = userRepository.findByUsername("admin").orElseThrow().getId();
+        String token = loginAsAdmin();
+
+        long pastPublished = createRoute(token, "Ruta pasada", List.of(adminId),
+                LocalDate.now().minusDays(2).toString());
+        updateStatus(token, pastPublished, "PUBLISHED", LocalDate.now().minusDays(2).toString());
+        long pastDraft = createRoute(token, "Borrador pasado", List.of(adminId),
+                LocalDate.now().minusDays(2).toString());
+        long futurePublished = createRoute(token, "Ruta futura", List.of(adminId),
+                LocalDate.now().plusDays(3).toString());
+        updateStatus(token, futurePublished, "PUBLISHED", LocalDate.now().plusDays(3).toString());
+
+        int completed = routesService.completePastRoutes();
+        assertThat(completed).isGreaterThanOrEqualTo(1);
+
+        String pastResponse = mockMvc.perform(get("/api/routes/{id}", pastPublished)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertThat(objectMapper.readTree(pastResponse).get("status").asText()).isEqualTo("COMPLETED");
+
+        String draftResponse = mockMvc.perform(get("/api/routes/{id}", pastDraft)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertThat(objectMapper.readTree(draftResponse).get("status").asText()).isEqualTo("DRAFT");
+
+        String futureResponse = mockMvc.perform(get("/api/routes/{id}", futurePublished)
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertThat(objectMapper.readTree(futureResponse).get("status").asText()).isEqualTo("PUBLISHED");
+    }
+
     private String loginAsAdmin() throws Exception {
         String body = objectMapper.writeValueAsString(Map.of(
                 "username", "admin",
@@ -150,15 +249,28 @@ class RouteOrganizerIntegrationTest {
     }
 
     private long createRoute(String token, String title, List<Long> organizerIds) throws Exception {
+        return createRoute(token, title, organizerIds, LocalDate.now().plusDays(5).toString());
+    }
+
+    private long createRoute(String token, String title, List<Long> organizerIds, String date) throws Exception {
         String response = mockMvc.perform(post("/api/routes")
                         .header("Authorization", bearer(token))
                         .contentType(APPLICATION_JSON)
-                        .content(routeJson(title, organizerIds)))
+                        .content(routeJson(title, organizerIds, date)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
         return objectMapper.readTree(response).get("id").asLong();
+    }
+
+    private void updateStatus(String token, long routeId, String status, String date) throws Exception {
+        mockMvc.perform(put("/api/routes/{id}", routeId)
+                        .header("Authorization", bearer(token))
+                        .contentType(APPLICATION_JSON)
+                        .content(routeUpdateJson("Ruta", List.of(
+                                userRepository.findByUsername("admin").orElseThrow().getId()), status, date)))
+                .andExpect(status().isOk());
     }
 
     private User createUser(String username, Role role) {
@@ -172,31 +284,43 @@ class RouteOrganizerIntegrationTest {
     }
 
     private String routeJson(String title, List<Long> organizerIds) throws Exception {
+        return routeJson(title, organizerIds, LocalDate.now().plusDays(5).toString());
+    }
+
+    private String routeJson(String title, List<Long> organizerIds, String date) throws Exception {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("title", title);
         body.put("description", "Ruta de prueba");
         body.put("origin", "Madrid");
         body.put("destination", "Puerto de Navacerrada");
-        body.put("date", LocalDate.now().plusDays(5).toString());
+        body.put("date", date);
         body.put("distanceKm", 45);
         body.put("difficulty", "EASY");
         body.put("maxParticipants", 10);
         body.put("organizerIds", organizerIds);
+        body.put("meetingTime", "08:00");
+        body.put("departureTime", "08:30");
         return objectMapper.writeValueAsString(body);
     }
 
     private String routeUpdateJson(String title, List<Long> organizerIds, String status) throws Exception {
+        return routeUpdateJson(title, organizerIds, status, LocalDate.now().plusDays(5).toString());
+    }
+
+    private String routeUpdateJson(String title, List<Long> organizerIds, String status, String date) throws Exception {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("title", title);
         body.put("description", "Ruta de prueba");
         body.put("origin", "Madrid");
         body.put("destination", "Puerto de Navacerrada");
-        body.put("date", LocalDate.now().plusDays(5).toString());
+        body.put("date", date);
         body.put("distanceKm", 45);
         body.put("difficulty", "EASY");
         body.put("maxParticipants", 10);
         body.put("status", status);
         body.put("organizerIds", organizerIds);
+        body.put("meetingTime", "08:00");
+        body.put("departureTime", "08:30");
         return objectMapper.writeValueAsString(body);
     }
 

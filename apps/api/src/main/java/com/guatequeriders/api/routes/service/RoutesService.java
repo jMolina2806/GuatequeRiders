@@ -13,6 +13,8 @@ import com.guatequeriders.api.users.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +62,7 @@ public class RoutesService {
 
     @Transactional
     public Route create(Route route, List<Long> organizerIds) {
+        validateTimes(route.getMeetingTime(), route.getDepartureTime());
         List<User> organizers = resolveOrganizers(organizerIds);
         if (route.getStatus() == null) {
             route.setStatus(RouteStatus.DRAFT);
@@ -73,6 +76,7 @@ public class RoutesService {
 
     @Transactional
     public Route update(Long id, Route updated, List<Long> organizerIds) {
+        validateTimes(updated.getMeetingTime(), updated.getDepartureTime());
         List<User> organizers = resolveOrganizers(organizerIds);
         Route existing = findById(id);
 
@@ -96,11 +100,42 @@ public class RoutesService {
         existing.setOrigin(updated.getOrigin());
         existing.setDestination(updated.getDestination());
         existing.setDate(updated.getDate());
+        existing.setMeetingTime(updated.getMeetingTime());
+        existing.setDepartureTime(updated.getDepartureTime());
         existing.setDistanceKm(updated.getDistanceKm());
         existing.setDifficulty(updated.getDifficulty());
         existing.setMaxParticipants(updated.getMaxParticipants());
         existing.setStatus(updated.getStatus());
         return existing;
+    }
+
+    @Transactional
+    public Route publish(Long id) {
+        Route route = findById(id);
+        if (route.getStatus() != RouteStatus.DRAFT) {
+            throw new ConflictException("Only DRAFT routes can be published");
+        }
+        if (route.getDate() == null || route.getDate().isBefore(LocalDate.now())) {
+            throw new ConflictException("Cannot publish a route with a past date");
+        }
+        if (route.getMeetingTime() == null || route.getDepartureTime() == null) {
+            throw new ConflictException("Meeting and departure times are required before publishing");
+        }
+        if (routeOrganizerRepository.findAllByRouteId(id).isEmpty()) {
+            throw new ConflictException("At least one organizer is required before publishing");
+        }
+        route.setStatus(RouteStatus.PUBLISHED);
+        return route;
+    }
+
+    @Transactional
+    public int completePastRoutes() {
+        List<Route> pastActive = routeRepository.findAllByStatusInAndDateBefore(
+                List.of(RouteStatus.PUBLISHED, RouteStatus.IN_PROGRESS), LocalDate.now());
+        for (Route route : pastActive) {
+            route.setStatus(RouteStatus.COMPLETED);
+        }
+        return pastActive.size();
     }
 
     @Transactional
@@ -126,5 +161,14 @@ public class RoutesService {
             }
         }
         return users;
+    }
+
+    private void validateTimes(LocalTime meetingTime, LocalTime departureTime) {
+        if (meetingTime == null || departureTime == null) {
+            throw new IllegalArgumentException("Meeting and departure times are required");
+        }
+        if (!departureTime.isAfter(meetingTime)) {
+            throw new IllegalArgumentException("Departure time must be after meeting time");
+        }
     }
 }

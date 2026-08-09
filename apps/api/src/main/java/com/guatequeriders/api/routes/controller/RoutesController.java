@@ -7,13 +7,18 @@ import com.guatequeriders.api.routes.dto.RouteResponse;
 import com.guatequeriders.api.routes.dto.UpdateRouteRequest;
 import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.routes.model.RouteOrganizer;
+import com.guatequeriders.api.routes.model.RouteStatus;
 import com.guatequeriders.api.routes.service.RoutesService;
+import com.guatequeriders.api.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,7 +44,10 @@ public class RoutesController {
 
     @GetMapping
     public ResponseEntity<List<RouteResponse>> getAll() {
-        List<Route> routes = routesService.findAll();
+        boolean isAdmin = isAdmin();
+        List<Route> routes = routesService.findAll().stream()
+                .filter(route -> isAdmin || route.getStatus() != RouteStatus.DRAFT)
+                .toList();
         Map<Long, List<RouteOrganizerResponse>> organizersByRoute = groupOrganizers(
                 routesService.findOrganizers(routes.stream().map(Route::getId).toList()));
         return ResponseEntity.ok(
@@ -54,9 +62,13 @@ public class RoutesController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RouteResponse> getById(@PathVariable Long id) {
+        Route route = routesService.findById(id);
+        if (route.getStatus() == RouteStatus.DRAFT && !isAdmin()) {
+            throw new ResourceNotFoundException("Route", id);
+        }
         return ResponseEntity.ok(
                 RouteResponse.from(
-                        routesService.findById(id),
+                        route,
                         registrationsService.countByRouteId(id),
                         toOrganizerResponses(routesService.findOrganizers(id)))
         );
@@ -84,12 +96,29 @@ public class RoutesController {
                 toOrganizerResponses(routesService.findOrganizers(id))));
     }
 
+    @PatchMapping("/{id}/publish")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RouteResponse> publish(@PathVariable Long id) {
+        Route published = routesService.publish(id);
+        return ResponseEntity.ok(RouteResponse.from(
+                published,
+                registrationsService.countByRouteId(id),
+                toOrganizerResponses(routesService.findOrganizers(id))));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         registrationsService.deleteByRouteId(id);
         routesService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null
+                && authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
 
     private Map<Long, List<RouteOrganizerResponse>> groupOrganizers(List<RouteOrganizer> organizers) {
@@ -114,6 +143,8 @@ public class RoutesController {
         route.setOrigin(r.getOrigin());
         route.setDestination(r.getDestination());
         route.setDate(r.getDate());
+        route.setMeetingTime(r.getMeetingTime());
+        route.setDepartureTime(r.getDepartureTime());
         route.setDistanceKm(r.getDistanceKm());
         route.setDifficulty(r.getDifficulty());
         route.setMaxParticipants(r.getMaxParticipants());
@@ -128,6 +159,8 @@ public class RoutesController {
         route.setOrigin(r.getOrigin());
         route.setDestination(r.getDestination());
         route.setDate(r.getDate());
+        route.setMeetingTime(r.getMeetingTime());
+        route.setDepartureTime(r.getDepartureTime());
         route.setDistanceKm(r.getDistanceKm());
         route.setDifficulty(r.getDifficulty());
         route.setMaxParticipants(r.getMaxParticipants());
