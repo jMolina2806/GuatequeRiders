@@ -8,6 +8,9 @@ import ProfilePage from '@/features/profile/pages/ProfilePage'
 import LoginPage from '@/features/auth/pages/LoginPage'
 import RegisterPage from '@/features/auth/pages/RegisterPage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import AdminDashboardPage from '@/features/admin/pages/AdminDashboardPage'
+import AdminUsersPage from '@/features/admin/pages/AdminUsersPage'
+import RequireAdmin from '@/features/admin/components/RequireAdmin'
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +45,22 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <ProfilePage />,
+      },
+      {
+        path: 'admin',
+        element: (
+          <RequireAdmin>
+            <AdminDashboardPage />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/users',
+        element: (
+          <RequireAdmin>
+            <AdminUsersPage />
+          </RequireAdmin>
+        ),
       },
     ],
   },

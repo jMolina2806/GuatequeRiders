@@ -1,0 +1,70 @@
+.role-change-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.role-change-confirm__text {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text);
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-change-confirm__hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.role-change-confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.role-change-confirm__cancel {
+  padding: 10px 18px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-change-confirm__cancel:hover:not(:disabled) {
+  border-color: var(--color-text-secondary);
+}
+
+.role-change-confirm__confirm {
+  padding: 10px 18px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-neon);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-neon-cyan);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-change-confirm__confirm:hover:not(:disabled) {
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+}
+
+.role-change-confirm__cancel:disabled,
+.role-change-confirm__confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

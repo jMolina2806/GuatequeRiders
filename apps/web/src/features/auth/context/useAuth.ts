@@ -8,6 +8,7 @@ export type AuthContextValue = {
   isLoading: boolean
   login: (data: LoginRequest) => Promise<User>
   register: (data: RegisterRequest) => Promise<User>
+  refreshUser: () => Promise<User>
   logout: () => void
 }
 

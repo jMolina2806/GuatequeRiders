@@ -3,7 +3,7 @@ import { useAuth } from '@/features/auth/context/useAuth'
 import './Navbar.css'
 
 export default function Navbar() {
-  const { user, isAuthenticated, isLoading, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, isAdmin, logout } = useAuth()
 
   return (
     <header className="navbar">
@@ -15,6 +15,7 @@ export default function Navbar() {
         <NavLink to="/events">Eventos</NavLink>
         <NavLink to="/merch">Merch</NavLink>
         <NavLink to="/profile">Perfil</NavLink>
+        {isAdmin && <NavLink to="/admin">Admin</NavLink>}
       </nav>
 
       <div className="navbar__actions">

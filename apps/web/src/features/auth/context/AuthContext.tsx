@@ -58,6 +58,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
+  const refreshUser = async (): Promise<User> => {
+    const token = getToken()
+    if (!token) {
+      throw new Error('No hay sesión activa')
+    }
+    const current = await authService.getCurrentUser(token)
+    setUser(current)
+    saveSession(token, current)
+    return current
+  }
+
   const value = {
     user,
     isAuthenticated: user !== null,
@@ -65,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     login,
     register,
+    refreshUser,
     logout,
   }
 
