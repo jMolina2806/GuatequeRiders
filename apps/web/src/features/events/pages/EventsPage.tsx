@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import EventList from '../components/EventList'
 import EventForm from '../components/EventForm'
+import EventDetailsModal from '../components/EventDetailsModal'
 import Modal from '@/components/Modal'
 import { useEvents } from '../hooks/useEvents'
 import { useAuth } from '@/features/auth/context/useAuth'
@@ -32,6 +33,7 @@ export default function EventsPage() {
   const navigate = useNavigate()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [detailsEvent, setDetailsEvent] = useState<Event | null>(null)
 
   const handleCreateEvent = () => {
     setIsModalOpen(true)
@@ -39,6 +41,7 @@ export default function EventsPage() {
 
   const handleEditEvent = (event: Parameters<typeof editEvent>[0]) => {
     editEvent(event)
+    setDetailsEvent(null)
     setIsModalOpen(true)
   }
 
@@ -128,8 +131,25 @@ export default function EventsPage() {
           onCancel={(event) => changeStatus(event, 'CANCELLED')}
           onEnroll={handleEnroll}
           onUnregister={handleUnregister}
+          onDetails={setDetailsEvent}
         />
       )}
+
+      <EventDetailsModal
+        event={detailsEvent}
+        isAdmin={isAdmin}
+        isAuthenticated={isAuthenticated}
+        isRegistered={detailsEvent ? !!registrations[detailsEvent.id] : false}
+        isProcessing={detailsEvent ? !!registrationLoading[detailsEvent.id] : false}
+        onClose={() => setDetailsEvent(null)}
+        onEnroll={handleEnroll}
+        onUnregister={handleUnregister}
+        onEdit={handleEditEvent}
+        onDelete={deleteEvent}
+        onPublish={(event) => changeStatus(event, 'PUBLISHED')}
+        onCloseEvent={(event) => changeStatus(event, 'CLOSED')}
+        onCancel={(event) => changeStatus(event, 'CANCELLED')}
+      />
 
       <Modal
         isOpen={isModalOpen}

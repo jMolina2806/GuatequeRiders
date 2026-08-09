@@ -9,6 +9,7 @@ import com.guatequeriders.api.events.model.EventStatus;
 import com.guatequeriders.api.events.repository.EventRepository;
 import com.guatequeriders.api.registrations.repository.RouteRegistrationRepository;
 import com.guatequeriders.api.routes.model.RouteStatus;
+import com.guatequeriders.api.routes.repository.RouteOrganizerRepository;
 import com.guatequeriders.api.routes.repository.RouteRepository;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
@@ -23,17 +24,20 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final RouteRepository routeRepository;
+    private final RouteOrganizerRepository routeOrganizerRepository;
     private final EventRepository eventRepository;
     private final RouteRegistrationRepository routeRegistrationRepository;
     private final EventRegistrationRepository eventRegistrationRepository;
 
     public AdminService(UserRepository userRepository,
                         RouteRepository routeRepository,
+                        RouteOrganizerRepository routeOrganizerRepository,
                         EventRepository eventRepository,
                         RouteRegistrationRepository routeRegistrationRepository,
                         EventRegistrationRepository eventRegistrationRepository) {
         this.userRepository = userRepository;
         this.routeRepository = routeRepository;
+        this.routeOrganizerRepository = routeOrganizerRepository;
         this.eventRepository = eventRepository;
         this.routeRegistrationRepository = routeRegistrationRepository;
         this.eventRegistrationRepository = eventRegistrationRepository;
@@ -68,6 +72,9 @@ public class AdminService {
             long adminCount = userRepository.countByRole(Role.ADMIN);
             if (adminCount <= 1) {
                 throw new ConflictException("Cannot remove the last admin");
+            }
+            if (routeOrganizerRepository.existsByUserId(userId)) {
+                throw new ConflictException("Cannot change role: user is organizer of one or more routes");
             }
         }
 

@@ -9,7 +9,9 @@ import com.guatequeriders.api.registrations.model.RouteRegistration;
 import com.guatequeriders.api.registrations.repository.RouteRegistrationRepository;
 import com.guatequeriders.api.routes.model.Difficulty;
 import com.guatequeriders.api.routes.model.Route;
+import com.guatequeriders.api.routes.model.RouteOrganizer;
 import com.guatequeriders.api.routes.model.RouteStatus;
+import com.guatequeriders.api.routes.repository.RouteOrganizerRepository;
 import com.guatequeriders.api.routes.repository.RouteRepository;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
@@ -28,6 +30,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final RouteRepository routeRepository;
+    private final RouteOrganizerRepository routeOrganizerRepository;
     private final RouteRegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
     private final EventRegistrationRepository eventRegistrationRepository;
@@ -35,12 +38,14 @@ public class DataInitializer implements CommandLineRunner {
 
     public DataInitializer(UserRepository userRepository,
                            RouteRepository routeRepository,
+                           RouteOrganizerRepository routeOrganizerRepository,
                            RouteRegistrationRepository registrationRepository,
                            EventRepository eventRepository,
                            EventRegistrationRepository eventRegistrationRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.routeRepository = routeRepository;
+        this.routeOrganizerRepository = routeOrganizerRepository;
         this.registrationRepository = registrationRepository;
         this.eventRepository = eventRepository;
         this.eventRegistrationRepository = eventRegistrationRepository;
@@ -94,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
                 RouteStatus.PUBLISHED
         ));
 
-        routeRepository.save(new Route(
+        Route ascensoMontana = routeRepository.save(new Route(
                 "Ascenso a la Montaña",
                 "Desafío de montaña con curvas cerradas y paisajes impresionantes.",
                 "Guatemala City",
@@ -106,7 +111,7 @@ public class DataInitializer implements CommandLineRunner {
                 RouteStatus.PUBLISHED
         ));
 
-        routeRepository.save(new Route(
+        Route costaAtardecer = routeRepository.save(new Route(
                 "Costa al Atardecer",
                 "Ruta costera ideal para disfrutar del atardecer junto al mar.",
                 "Escuintla",
@@ -118,6 +123,12 @@ public class DataInitializer implements CommandLineRunner {
                 RouteStatus.DRAFT
         ));
 
+        userRepository.findByUsername("admin").ifPresent(admin -> {
+            seedOrganizer(rutaDelValle, admin);
+            seedOrganizer(ascensoMontana, admin);
+            seedOrganizer(costaAtardecer, admin);
+        });
+
         userRepository.findByUsername("demo").ifPresent(demo -> {
             RouteRegistration registration = new RouteRegistration();
             registration.setRoute(rutaDelValle);
@@ -125,6 +136,13 @@ public class DataInitializer implements CommandLineRunner {
             registration.setRegisteredAt(LocalDateTime.now());
             registrationRepository.save(registration);
         });
+    }
+
+    private void seedOrganizer(Route route, User user) {
+        if (routeOrganizerRepository.findAllByRouteId(route.getId()).stream()
+                .noneMatch(ro -> ro.getUser().getId().equals(user.getId()))) {
+            routeOrganizerRepository.save(new RouteOrganizer(route, user));
+        }
     }
 
     private void seedEvents() {

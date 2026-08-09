@@ -12,6 +12,7 @@ type RouteListProps = {
   onClose?: (routeId: number) => void
   onEnroll?: (route: Route) => void
   onUnregister?: (route: Route) => void
+  onDetails?: (route: Route) => void
 }
 
 export default function RouteList({
@@ -25,6 +26,7 @@ export default function RouteList({
   onClose,
   onEnroll,
   onUnregister,
+  onDetails,
 }: RouteListProps) {
   return (
     <section>
@@ -41,6 +43,7 @@ export default function RouteList({
           onClose={onClose}
           onEnroll={onEnroll}
           onUnregister={onUnregister}
+          onDetails={onDetails}
         />
       ))}
     </section>

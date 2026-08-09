@@ -5,6 +5,7 @@ import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.routes.model.RouteStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class RouteResponse {
 
@@ -19,8 +20,10 @@ public class RouteResponse {
     private Integer maxParticipants;
     private Integer currentParticipants;
     private RouteStatus status;
+    private List<RouteOrganizerResponse> organizers;
 
-    public static RouteResponse from(Route route, long currentParticipants) {
+    public static RouteResponse from(Route route, long currentParticipants,
+                                     List<RouteOrganizerResponse> organizers) {
         RouteResponse r = new RouteResponse();
         r.id = route.getId();
         r.title = route.getTitle();
@@ -33,6 +36,7 @@ public class RouteResponse {
         r.maxParticipants = route.getMaxParticipants();
         r.currentParticipants = (int) currentParticipants;
         r.status = route.getStatus();
+        r.organizers = organizers;
         return r;
     }
 
@@ -47,4 +51,5 @@ public class RouteResponse {
     public Integer getMaxParticipants() { return maxParticipants; }
     public Integer getCurrentParticipants() { return currentParticipants; }
     public RouteStatus getStatus() { return status; }
+    public List<RouteOrganizerResponse> getOrganizers() { return organizers; }
 }

@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RouteList from '../components/RouteList/RouteList'
 import RouteForm from '../components/RouteForm'
+import RouteDetailsModal from '../components/RouteDetailsModal'
 import Modal from '@/components/Modal'
 import { useRoutes } from '../hooks/useRoutes'
 import { useAuth } from '@/features/auth/context/useAuth'
+import { getUsers } from '@/features/admin/services/admin.service'
+import type { User } from '@/features/auth/types/auth.types'
 import type { Route } from '../types/route.types'
 import './RoutesPage.css'
 
@@ -32,6 +35,25 @@ export default function RoutesPage() {
   const navigate = useNavigate()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [detailsRoute, setDetailsRoute] = useState<Route | null>(null)
+  const [availableUsers, setAvailableUsers] = useState<User[]>([])
+
+  const adminUsers = availableUsers.filter((user) => user.role === 'ADMIN')
+
+  useEffect(() => {
+    if (!isAdmin) return
+    let cancelled = false
+    getUsers()
+      .then((users) => {
+        if (!cancelled) setAvailableUsers(users)
+      })
+      .catch(() => {
+        if (!cancelled) setAvailableUsers([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [isAdmin])
 
   const handleCreateRoute = () => {
     setIsModalOpen(true)
@@ -39,6 +61,7 @@ export default function RoutesPage() {
 
   const handleEditRoute = (route: Parameters<typeof editRoute>[0]) => {
     editRoute(route)
+    setDetailsRoute(null)
     setIsModalOpen(true)
   }
 
@@ -126,8 +149,23 @@ export default function RoutesPage() {
           onClose={closeRoute}
           onEnroll={handleEnroll}
           onUnregister={handleUnregister}
+          onDetails={setDetailsRoute}
         />
       )}
+
+      <RouteDetailsModal
+        route={detailsRoute}
+        isAdmin={isAdmin}
+        isAuthenticated={isAuthenticated}
+        isRegistered={detailsRoute ? !!registrations[detailsRoute.id] : false}
+        isProcessing={detailsRoute ? !!registrationLoading[detailsRoute.id] : false}
+        onClose={() => setDetailsRoute(null)}
+        onEnroll={handleEnroll}
+        onUnregister={handleUnregister}
+        onEdit={handleEditRoute}
+        onDelete={deleteRoute}
+        onCloseRoute={closeRoute}
+      />
 
       <Modal
         isOpen={isModalOpen}
@@ -139,6 +177,7 @@ export default function RoutesPage() {
           onCancel={handleCloseModal}
           initialValues={editingInitialValues}
           submitLabel={submitLabel}
+          availableUsers={adminUsers}
         />
       </Modal>
     </section>

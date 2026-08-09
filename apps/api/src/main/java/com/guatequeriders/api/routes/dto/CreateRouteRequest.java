@@ -3,10 +3,12 @@ package com.guatequeriders.api.routes.dto;
 import com.guatequeriders.api.routes.model.Difficulty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class CreateRouteRequest {
 
@@ -36,6 +38,9 @@ public class CreateRouteRequest {
     @Min(value = 1, message = "Max participants must be at least 1")
     private Integer maxParticipants;
 
+    @NotEmpty(message = "At least one organizer is required")
+    private List<Long> organizerIds;
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -59,4 +64,7 @@ public class CreateRouteRequest {
 
     public Integer getMaxParticipants() { return maxParticipants; }
     public void setMaxParticipants(Integer maxParticipants) { this.maxParticipants = maxParticipants; }
+
+    public List<Long> getOrganizerIds() { return organizerIds; }
+    public void setOrganizerIds(List<Long> organizerIds) { this.organizerIds = organizerIds; }
 }

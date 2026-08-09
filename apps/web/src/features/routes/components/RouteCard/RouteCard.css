@@ -8,6 +8,7 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   margin-bottom: 16px;
   min-height: 160px;
+  cursor: pointer;
 }
 
 .route-card:hover {
@@ -88,10 +89,15 @@
 .route-card__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 14px;
-  font-size: 12.5px;
+  gap: 8px 16px;
+  margin: 8px 0 10px;
+  font-size: 13px;
   color: var(--color-text-secondary);
-  line-height: 1.8;
+}
+
+.route-card__organizers {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 /* Difficulty badge */
@@ -146,6 +152,30 @@
   border-left: 1px solid var(--color-border);
   justify-content: center;
   align-items: stretch;
+}
+
+/* Details action */
+.route-card__details-btn {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 4px 12px;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.route-card__details-btn:hover,
+.route-card__details-btn:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-neon-cyan);
+  outline: none;
 }
 
 .route-card__btn {

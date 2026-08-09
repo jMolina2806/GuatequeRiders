@@ -7,6 +7,7 @@ type RouteCardProps = {
   isAuthenticated?: boolean
   isRegistered?: boolean
   isProcessing?: boolean
+  onDetails?: (route: Route) => void
   onEdit?: (route: Route) => void
   onDelete?: (routeId: number) => void
   onClose?: (routeId: number) => void
@@ -50,6 +51,7 @@ export default function RouteCard({
   isAuthenticated = false,
   isRegistered = false,
   isProcessing = false,
+  onDetails,
   onEdit,
   onDelete,
   onClose,
@@ -59,12 +61,29 @@ export default function RouteCard({
   const canClose = route.status === 'PUBLISHED' || route.status === 'IN_PROGRESS'
   const isFull = route.currentParticipants >= route.maxParticipants
 
+  const handleDetails = () => {
+    onDetails?.(route)
+  }
+
+  const renderOrganizers = () => {
+    if (route.organizers.length === 0) return null
+    const [first] = route.organizers
+    const label =
+      route.organizers.length === 1
+        ? `Organizador: ${first.username}`
+        : `Organizadores: ${first.username} +${route.organizers.length - 1}`
+    return <span className="route-card__organizers">🧭 {label}</span>
+  }
+
   const renderEnrollButton = () => {
     if (isAuthenticated && isRegistered) {
       return (
         <button
           className="route-card__btn route-card__btn--unregister"
-          onClick={() => onUnregister?.(route)}
+          onClick={(event) => {
+            event.stopPropagation()
+            onUnregister?.(route)
+          }}
           disabled={isProcessing}
           type="button"
         >
@@ -75,7 +94,10 @@ export default function RouteCard({
     return (
       <button
         className="route-card__btn route-card__btn--enroll"
-        onClick={() => onEnroll?.(route)}
+        onClick={(event) => {
+          event.stopPropagation()
+          onEnroll?.(route)
+        }}
         disabled={isProcessing || isFull}
         type="button"
       >
@@ -85,7 +107,7 @@ export default function RouteCard({
   }
 
   return (
-    <article className="route-card">
+    <article className="route-card" onClick={handleDetails}>
       <div className="route-card__body">
         <div className="route-card__top">
           <h3 className="route-card__title">{route.title}</h3>
@@ -106,9 +128,21 @@ export default function RouteCard({
             {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
           </span>
           <span>👥 {route.currentParticipants}/{route.maxParticipants}</span>
+          {renderOrganizers()}
         </div>
 
         <p className="route-card__desc">{route.description}</p>
+
+        <button
+          className="route-card__details-btn"
+          onClick={(event) => {
+            event.stopPropagation()
+            handleDetails()
+          }}
+          type="button"
+        >
+          Ver detalles
+        </button>
       </div>
 
       <div className="route-card__sidebar">
@@ -116,14 +150,20 @@ export default function RouteCard({
           <>
             <button
               className="route-card__btn route-card__btn--edit"
-              onClick={() => onEdit?.(route)}
+              onClick={(event) => {
+                event.stopPropagation()
+                onEdit?.(route)
+              }}
               type="button"
             >
               Editar
             </button>
             <button
               className="route-card__btn route-card__btn--delete"
-              onClick={() => onDelete?.(route.id)}
+              onClick={(event) => {
+                event.stopPropagation()
+                onDelete?.(route.id)
+              }}
               type="button"
             >
               Eliminar
@@ -131,7 +171,10 @@ export default function RouteCard({
             {canClose && (
               <button
                 className="route-card__btn route-card__btn--close"
-                onClick={() => onClose?.(route.id)}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  onClose?.(route.id)
+                }}
                 type="button"
               >
                 Cerrar

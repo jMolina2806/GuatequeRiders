@@ -7,28 +7,30 @@ const previewRoutes: Route[] = [
   {
     id: 1,
     title: 'Ruta del Valle',
-    description: 'Recorrido escénico por los valles del sur con paradas en miradores naturales.',
+    description: 'Recorrido escénico por la sierra madrileña con paradas en miradores naturales.',
     date: '2026-06-03',
-    origin: 'Antigua Guatemala',
-    destination: 'San Miguel Dueñas',
+    origin: 'Madrid',
+    destination: 'Puerto de Navacerrada',
     distanceKm: 45,
     difficulty: 'EASY',
     maxParticipants: 20,
     currentParticipants: 5,
     status: 'PUBLISHED',
+    organizers: [],
   },
   {
     id: 2,
     title: 'Ascenso a la Montaña',
     description: 'Desafío de montaña con curvas cerradas y paisajes impresionantes.',
     date: '2026-06-10',
-    origin: 'Guatemala City',
-    destination: 'El Cerrito',
+    origin: 'Madrid',
+    destination: 'Puerto de Cotos',
     distanceKm: 120,
     difficulty: 'HARD',
     maxParticipants: 15,
     currentParticipants: 12,
     status: 'PUBLISHED',
+    organizers: [],
   },
 ]
 
@@ -62,7 +64,7 @@ const features = [
   },
   {
     title: 'Comunidad activa',
-    desc: 'Riders de Granada y provincia. Quedadas, eventos y mucha ruta.',
+    desc: 'Riders de Madrid y de toda la Comunidad de Madrid. Quedadas, eventos y mucha ruta.',
     icon: '🤝',
   },
   {
@@ -76,7 +78,7 @@ const previewEvents = [
   {
     title: 'Quedada nocturna',
     date: 'Sábado 14 Junio',
-    desc: 'Ruta nocturna por la costa con parada para cenar.',
+    desc: 'Ruta nocturna por la sierra madrileña con parada para cenar.',
     icon: '🌙',
   },
   {
@@ -105,7 +107,7 @@ export default function HomePage() {
         <div className="hero-glow hero-glow--right" />
         <div className="hero-inner">
           <h1 className="hero-logo">Guateque Riders</h1>
-          <p className="hero-tagline">La comunidad rider de Granada</p>
+          <p className="hero-tagline">La comunidad rider de Madrid</p>
           <p className="hero-sub">
             Rutas en grupo, eventos, y la mejor vibra sobre dos ruedas.
           </p>
@@ -238,7 +240,7 @@ export default function HomePage() {
             <div className="footer-brand">
               <span className="footer-logo">Guateque Riders</span>
               <p className="footer-desc">
-                Comunidad rider de Granada. Rodamos juntos.
+                Comunidad rider de Madrid. Rodamos juntos.
               </p>
             </div>
             <div className="footer-social">

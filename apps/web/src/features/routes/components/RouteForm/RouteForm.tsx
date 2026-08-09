@@ -4,12 +4,14 @@ import type {
   CreateRouteRequest,
   Difficulty,
 } from '@/features/routes/types/route.types'
+import type { User } from '@/features/auth/types/auth.types'
 
 type RouteFormProps = {
   onSubmit: (data: CreateRouteRequest) => void
   onCancel?: () => void
   initialValues?: CreateRouteRequest | null
   submitLabel?: string
+  availableUsers?: User[]
 }
 
 const DIFFICULTY_OPTIONS: { value: Difficulty; label: string }[] = [
@@ -28,6 +30,7 @@ const initialFormData: CreateRouteRequest = {
   distanceKm: 0,
   difficulty: 'EASY',
   maxParticipants: 10,
+  organizerIds: [],
 }
 
 export default function RouteForm({
@@ -35,6 +38,7 @@ export default function RouteForm({
   onCancel,
   initialValues = null,
   submitLabel = 'Crear ruta',
+  availableUsers = [],
 }: RouteFormProps) {
   const [formData, setFormData] = useState<CreateRouteRequest>(initialFormData)
 
@@ -58,6 +62,15 @@ export default function RouteForm({
         name === 'distanceKm' || name === 'maxParticipants'
           ? Number(value)
           : value,
+    }))
+  }
+
+  const toggleOrganizer = (userId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      organizerIds: prev.organizerIds.includes(userId)
+        ? prev.organizerIds.filter((id) => id !== userId)
+        : [...prev.organizerIds, userId],
     }))
   }
 
@@ -148,8 +161,47 @@ export default function RouteForm({
         />
       </div>
 
+      <fieldset className="route-form__organizers">
+        <legend>Organizadores</legend>
+        <p className="route-form__organizers-hint">
+          Selecciona al menos un usuario que organicen la ruta.
+        </p>
+        {availableUsers.length === 0 ? (
+          <p className="route-form__organizers-empty">
+            No hay administradores disponibles para asignar como organizadores. La
+            ruta no se puede guardar sin al menos un organizador.
+          </p>
+        ) : (
+          <div className="route-form__organizers-list">
+            {availableUsers.map((user) => {
+              const checked = formData.organizerIds.includes(user.id)
+              return (
+                <label
+                  key={user.id}
+                  className={`route-form__organizer ${checked ? 'route-form__organizer--selected' : ''}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleOrganizer(user.id)}
+                  />
+                  <span className="route-form__organizer-name">{user.username}</span>
+                  {user.email && (
+                    <span className="route-form__organizer-email">{user.email}</span>
+                  )}
+                </label>
+              )
+            })}
+          </div>
+        )}
+      </fieldset>
+
       <div className="route-form__actions">
-        <button className="route-form__submit" type="submit">
+        <button
+          className="route-form__submit"
+          type="submit"
+          disabled={formData.organizerIds.length === 0}
+        >
           {submitLabel}
         </button>
 

@@ -1,6 +1,11 @@
 export type Difficulty = 'EASY' | 'MODERATE' | 'HARD' | 'EXTREME'
 export type RouteStatus = 'DRAFT' | 'PUBLISHED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
 
+export type RouteOrganizer = {
+  id: number
+  username: string
+}
+
 export type Route = {
   id: number
   title: string
@@ -13,6 +18,7 @@ export type Route = {
   maxParticipants: number
   currentParticipants: number
   status: RouteStatus
+  organizers: RouteOrganizer[]
 }
 
 export type CreateRouteRequest = {
@@ -24,6 +30,7 @@ export type CreateRouteRequest = {
   distanceKm: number
   difficulty: Difficulty
   maxParticipants: number
+  organizerIds: number[]
 }
 
 export type UpdateRouteRequest = CreateRouteRequest & {

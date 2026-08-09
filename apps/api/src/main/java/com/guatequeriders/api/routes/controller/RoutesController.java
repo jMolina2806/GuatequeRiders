@@ -2,9 +2,11 @@ package com.guatequeriders.api.routes.controller;
 
 import com.guatequeriders.api.registrations.service.RegistrationsService;
 import com.guatequeriders.api.routes.dto.CreateRouteRequest;
+import com.guatequeriders.api.routes.dto.RouteOrganizerResponse;
 import com.guatequeriders.api.routes.dto.RouteResponse;
 import com.guatequeriders.api.routes.dto.UpdateRouteRequest;
 import com.guatequeriders.api.routes.model.Route;
+import com.guatequeriders.api.routes.model.RouteOrganizer;
 import com.guatequeriders.api.routes.service.RoutesService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/routes")
@@ -35,9 +39,15 @@ public class RoutesController {
 
     @GetMapping
     public ResponseEntity<List<RouteResponse>> getAll() {
+        List<Route> routes = routesService.findAll();
+        Map<Long, List<RouteOrganizerResponse>> organizersByRoute = groupOrganizers(
+                routesService.findOrganizers(routes.stream().map(Route::getId).toList()));
         return ResponseEntity.ok(
-                routesService.findAll().stream()
-                        .map(route -> RouteResponse.from(route, registrationsService.countByRouteId(route.getId())))
+                routes.stream()
+                        .map(route -> RouteResponse.from(
+                                route,
+                                registrationsService.countByRouteId(route.getId()),
+                                organizersByRoute.getOrDefault(route.getId(), List.of())))
                         .toList()
         );
     }
@@ -45,24 +55,33 @@ public class RoutesController {
     @GetMapping("/{id}")
     public ResponseEntity<RouteResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(
-                RouteResponse.from(routesService.findById(id), registrationsService.countByRouteId(id))
+                RouteResponse.from(
+                        routesService.findById(id),
+                        registrationsService.countByRouteId(id),
+                        toOrganizerResponses(routesService.findOrganizers(id)))
         );
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RouteResponse> create(@Valid @RequestBody CreateRouteRequest request) {
-        Route created = routesService.create(toRoute(request));
+        Route created = routesService.create(toRoute(request), request.getOrganizerIds());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(RouteResponse.from(created, registrationsService.countByRouteId(created.getId())));
+                .body(RouteResponse.from(
+                        created,
+                        registrationsService.countByRouteId(created.getId()),
+                        toOrganizerResponses(routesService.findOrganizers(created.getId()))));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RouteResponse> update(@PathVariable Long id,
                                                 @Valid @RequestBody UpdateRouteRequest request) {
-        Route updated = routesService.update(id, toRoute(id, request));
-        return ResponseEntity.ok(RouteResponse.from(updated, registrationsService.countByRouteId(id)));
+        Route updated = routesService.update(id, toRoute(id, request), request.getOrganizerIds());
+        return ResponseEntity.ok(RouteResponse.from(
+                updated,
+                registrationsService.countByRouteId(id),
+                toOrganizerResponses(routesService.findOrganizers(id))));
     }
 
     @DeleteMapping("/{id}")
@@ -71,6 +90,21 @@ public class RoutesController {
         registrationsService.deleteByRouteId(id);
         routesService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private Map<Long, List<RouteOrganizerResponse>> groupOrganizers(List<RouteOrganizer> organizers) {
+        return organizers.stream()
+                .collect(Collectors.groupingBy(
+                        organizer -> organizer.getRoute().getId(),
+                        Collectors.mapping(
+                                organizer -> RouteOrganizerResponse.from(organizer.getUser()),
+                                Collectors.toList())));
+    }
+
+    private List<RouteOrganizerResponse> toOrganizerResponses(List<RouteOrganizer> organizers) {
+        return organizers.stream()
+                .map(organizer -> RouteOrganizerResponse.from(organizer.getUser()))
+                .toList();
     }
 
     private Route toRoute(CreateRouteRequest r) {

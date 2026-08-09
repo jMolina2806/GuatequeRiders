@@ -73,6 +73,7 @@ export function useRoutes() {
       distanceKm: editingRoute.distanceKm,
       difficulty: editingRoute.difficulty,
       maxParticipants: editingRoute.maxParticipants,
+      organizerIds: editingRoute.organizers.map((organizer) => organizer.id),
     } satisfies CreateRouteRequest
   }, [editingRoute])
 
@@ -135,6 +136,7 @@ export function useRoutes() {
         distanceKm: route.distanceKm,
         difficulty: route.difficulty,
         maxParticipants: route.maxParticipants,
+        organizerIds: route.organizers.map((organizer) => organizer.id),
         status: 'COMPLETED' satisfies RouteStatus,
       })
       await fetchRoutes()

@@ -4,10 +4,12 @@ import com.guatequeriders.api.routes.model.Difficulty;
 import com.guatequeriders.api.routes.model.RouteStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateRouteRequest {
 
@@ -40,6 +42,9 @@ public class UpdateRouteRequest {
     @NotNull(message = "Status is required")
     private RouteStatus status;
 
+    @NotEmpty(message = "At least one organizer is required")
+    private List<Long> organizerIds;
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -66,4 +71,7 @@ public class UpdateRouteRequest {
 
     public RouteStatus getStatus() { return status; }
     public void setStatus(RouteStatus status) { this.status = status; }
+
+    public List<Long> getOrganizerIds() { return organizerIds; }
+    public void setOrganizerIds(List<Long> organizerIds) { this.organizerIds = organizerIds; }
 }

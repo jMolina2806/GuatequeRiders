@@ -7,6 +7,7 @@ type EventCardProps = {
   isAuthenticated?: boolean
   isRegistered?: boolean
   isProcessing?: boolean
+  onDetails?: (event: Event) => void
   onEdit?: (event: Event) => void
   onDelete?: (eventId: number) => void
   onPublish?: (event: Event) => void
@@ -40,6 +41,7 @@ export default function EventCard({
   isAuthenticated = false,
   isRegistered = false,
   isProcessing = false,
+  onDetails,
   onEdit,
   onDelete,
   onPublish,
@@ -56,12 +58,19 @@ export default function EventCard({
   const endTime = formatTime(event.endTime)
   const timeRange = endTime ? `${event.startTime} – ${endTime}` : event.startTime
 
+  const handleDetails = () => {
+    onDetails?.(event)
+  }
+
   const renderEnrollButton = () => {
     if (isAuthenticated && isRegistered) {
       return (
         <button
           className="event-card__btn event-card__btn--unregister"
-          onClick={() => onUnregister?.(event)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onUnregister?.(event)
+          }}
           disabled={isProcessing}
           type="button"
         >
@@ -72,7 +81,10 @@ export default function EventCard({
     return (
       <button
         className="event-card__btn event-card__btn--enroll"
-        onClick={() => onEnroll?.(event)}
+        onClick={(e) => {
+          e.stopPropagation()
+          onEnroll?.(event)
+        }}
         disabled={isProcessing || isFull}
         type="button"
       >
@@ -82,7 +94,7 @@ export default function EventCard({
   }
 
   return (
-    <article className="event-card">
+    <article className="event-card" onClick={handleDetails}>
       <div className="event-card__body">
         <div className="event-card__top">
           <h3 className="event-card__title">{event.title}</h3>
@@ -104,6 +116,17 @@ export default function EventCard({
         </div>
 
         <p className="event-card__desc">{event.description}</p>
+
+        <button
+          className="event-card__details-btn"
+          onClick={(e) => {
+            e.stopPropagation()
+            handleDetails()
+          }}
+          type="button"
+        >
+          Ver detalles
+        </button>
       </div>
 
       <div className="event-card__sidebar">
@@ -112,7 +135,10 @@ export default function EventCard({
             {canPublish && (
               <button
                 className="event-card__btn event-card__btn--publish"
-                onClick={() => onPublish?.(event)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onPublish?.(event)
+                }}
                 type="button"
               >
                 Publicar
@@ -121,7 +147,10 @@ export default function EventCard({
             {canClose && (
               <button
                 className="event-card__btn event-card__btn--close"
-                onClick={() => onClose?.(event)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onClose?.(event)
+                }}
                 type="button"
               >
                 Cerrar
@@ -130,7 +159,10 @@ export default function EventCard({
             {canCancel && (
               <button
                 className="event-card__btn event-card__btn--cancel"
-                onClick={() => onCancel?.(event)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onCancel?.(event)
+                }}
                 type="button"
               >
                 Cancelar
@@ -138,14 +170,20 @@ export default function EventCard({
             )}
             <button
               className="event-card__btn event-card__btn--edit"
-              onClick={() => onEdit?.(event)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onEdit?.(event)
+              }}
               type="button"
             >
               Editar
             </button>
             <button
               className="event-card__btn event-card__btn--delete"
-              onClick={() => onDelete?.(event.id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete?.(event.id)
+              }}
               type="button"
             >
               Eliminar

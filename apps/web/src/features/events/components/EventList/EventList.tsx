@@ -14,6 +14,7 @@ type EventListProps = {
   onCancel?: (event: Event) => void
   onEnroll?: (event: Event) => void
   onUnregister?: (event: Event) => void
+  onDetails?: (event: Event) => void
 }
 
 export default function EventList({
@@ -29,6 +30,7 @@ export default function EventList({
   onCancel,
   onEnroll,
   onUnregister,
+  onDetails,
 }: EventListProps) {
   return (
     <section>
@@ -47,6 +49,7 @@ export default function EventList({
           onCancel={onCancel}
           onEnroll={onEnroll}
           onUnregister={onUnregister}
+          onDetails={onDetails}
         />
       ))}
     </section>
