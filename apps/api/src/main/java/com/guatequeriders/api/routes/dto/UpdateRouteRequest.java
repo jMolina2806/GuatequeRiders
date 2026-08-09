@@ -37,10 +37,6 @@ public class UpdateRouteRequest {
     @Min(value = 1, message = "Max participants must be at least 1")
     private Integer maxParticipants;
 
-    @NotNull(message = "Current participants is required")
-    @Min(value = 0, message = "Current participants cannot be negative")
-    private Integer currentParticipants;
-
     @NotNull(message = "Status is required")
     private RouteStatus status;
 
@@ -67,9 +63,6 @@ public class UpdateRouteRequest {
 
     public Integer getMaxParticipants() { return maxParticipants; }
     public void setMaxParticipants(Integer maxParticipants) { this.maxParticipants = maxParticipants; }
-
-    public Integer getCurrentParticipants() { return currentParticipants; }
-    public void setCurrentParticipants(Integer currentParticipants) { this.currentParticipants = currentParticipants; }
 
     public RouteStatus getStatus() { return status; }
     public void setStatus(RouteStatus status) { this.status = status; }

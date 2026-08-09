@@ -1,5 +1,6 @@
 package com.guatequeriders.api.routes.controller;
 
+import com.guatequeriders.api.registrations.service.RegistrationsService;
 import com.guatequeriders.api.routes.dto.CreateRouteRequest;
 import com.guatequeriders.api.routes.dto.RouteResponse;
 import com.guatequeriders.api.routes.dto.UpdateRouteRequest;
@@ -25,9 +26,11 @@ import java.util.List;
 public class RoutesController {
 
     private final RoutesService routesService;
+    private final RegistrationsService registrationsService;
 
-    public RoutesController(RoutesService routesService) {
+    public RoutesController(RoutesService routesService, RegistrationsService registrationsService) {
         this.routesService = routesService;
+        this.registrationsService = registrationsService;
     }
 
     @GetMapping
@@ -65,6 +68,7 @@ public class RoutesController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        registrationsService.deleteByRouteId(id);
         routesService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -93,7 +97,6 @@ public class RoutesController {
         route.setDistanceKm(r.getDistanceKm());
         route.setDifficulty(r.getDifficulty());
         route.setMaxParticipants(r.getMaxParticipants());
-        route.setCurrentParticipants(r.getCurrentParticipants());
         route.setStatus(r.getStatus());
         return route;
     }

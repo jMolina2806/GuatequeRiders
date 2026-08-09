@@ -27,6 +27,9 @@ export type CreateRouteRequest = {
 }
 
 export type UpdateRouteRequest = CreateRouteRequest & {
-  currentParticipants: number
   status: RouteStatus
+}
+
+export type RegistrationStatus = {
+  registered: boolean
 }

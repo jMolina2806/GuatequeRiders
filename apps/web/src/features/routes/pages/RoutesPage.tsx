@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import RouteList from '../components/RouteList/RouteList'
 import RouteForm from '../components/RouteForm'
 import Modal from '@/components/Modal'
 import { useRoutes } from '../hooks/useRoutes'
-import { currentUser } from '../data/mockUser'
+import { useAuth } from '@/features/auth/context/useAuth'
+import type { Route } from '../types/route.types'
 import './RoutesPage.css'
 
 export default function RoutesPage() {
@@ -13,15 +15,23 @@ export default function RoutesPage() {
     submitLabel,
     isLoading,
     error,
+    registrations,
+    registrationLoading,
+    feedback,
     submitRoute,
     editRoute,
     deleteRoute,
     closeRoute,
+    registerToRoute,
+    unregisterFromRoute,
+    clearFeedback,
     cancelEdit,
   } = useRoutes()
 
+  const { isAdmin, isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const isAdmin = currentUser.role === 'admin'
 
   const handleCreateRoute = () => {
     setIsModalOpen(true)
@@ -35,6 +45,18 @@ export default function RoutesPage() {
   const handleCloseModal = () => {
     cancelEdit()
     setIsModalOpen(false)
+  }
+
+  const handleEnroll = (route: Route) => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/routes' } })
+      return
+    }
+    registerToRoute(route.id)
+  }
+
+  const handleUnregister = (route: Route) => {
+    unregisterFromRoute(route.id)
   }
 
   return (
@@ -55,6 +77,20 @@ export default function RoutesPage() {
           </button>
         )}
       </div>
+
+      {feedback && (
+        <div className={`routes-page__feedback routes-page__feedback--${feedback.type}`}>
+          <span>{feedback.message}</span>
+          <button
+            className="routes-page__feedback-close"
+            onClick={clearFeedback}
+            type="button"
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="routes-page__error">
@@ -82,9 +118,14 @@ export default function RoutesPage() {
         <RouteList
           routes={routes}
           isAdmin={isAdmin}
+          isAuthenticated={isAuthenticated}
+          registrations={registrations}
+          registrationLoading={registrationLoading}
           onEdit={handleEditRoute}
           onDelete={deleteRoute}
           onClose={closeRoute}
+          onEnroll={handleEnroll}
+          onUnregister={handleUnregister}
         />
       )}
 

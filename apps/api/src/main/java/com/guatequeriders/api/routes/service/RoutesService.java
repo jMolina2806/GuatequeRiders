@@ -95,7 +95,6 @@ public class RoutesService {
         existing.setDistanceKm(updated.getDistanceKm());
         existing.setDifficulty(updated.getDifficulty());
         existing.setMaxParticipants(updated.getMaxParticipants());
-        existing.setCurrentParticipants(updated.getCurrentParticipants());
         existing.setStatus(updated.getStatus());
         return existing;
     }

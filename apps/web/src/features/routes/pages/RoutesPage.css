@@ -83,6 +83,46 @@
   font-size: 14px;
 }
 
+/* Feedback */
+.routes-page__feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+.routes-page__feedback--success {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--color-success);
+}
+
+.routes-page__feedback--error {
+  background: rgba(255, 51, 85, 0.1);
+  border: 1px solid rgba(255, 51, 85, 0.3);
+  color: var(--color-danger);
+}
+
+.routes-page__feedback-close {
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+  transition: all 0.15s ease;
+}
+
+.routes-page__feedback-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .routes-page__retry-btn {
   padding: 6px 14px;
   border: 1px solid var(--color-danger);

@@ -171,6 +171,25 @@
   transform: translateY(-1px);
 }
 
+.route-card__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.route-card__btn--unregister {
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.route-card__btn--unregister:hover:not(:disabled) {
+  background: rgba(255, 51, 85, 0.1);
+  box-shadow: 0 0 12px rgba(255, 51, 85, 0.3);
+  transform: translateY(-1px);
+}
+
 .route-card__btn--edit {
   background: var(--color-info);
   color: #fff;

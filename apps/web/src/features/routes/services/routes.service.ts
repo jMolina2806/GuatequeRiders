@@ -1,12 +1,40 @@
-import type { Route, CreateRouteRequest, UpdateRouteRequest } from '@/features/routes/types/route.types'
+import type {
+  Route,
+  CreateRouteRequest,
+  RegistrationStatus,
+  UpdateRouteRequest,
+} from '@/features/routes/types/route.types'
+import { getToken } from '@/features/auth/services/session'
 
 const API_BASE = '/api/routes'
+
+function authHeaders(additional: HeadersInit = {}): HeadersInit {
+  const token = getToken()
+  return token
+    ? { ...additional, Authorization: `Bearer ${token}` }
+    : additional
+}
+
+const ERROR_MESSAGES: Record<string, string> = {
+  'Route is full': 'La ruta está completa',
+  'Route is not open for registration': 'La ruta está cerrada',
+  'Already registered to this route': 'Ya estás apuntado a esta ruta',
+  'Registration not found for route': 'No estás apuntado a esta ruta',
+}
+
+function translateError(message: string): string {
+  if (ERROR_MESSAGES[message]) return ERROR_MESSAGES[message]
+  if (message.startsWith('Registration not found for route')) {
+    return ERROR_MESSAGES['Registration not found for route']
+  }
+  return message
+}
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.json().catch(() => null)
-    const message = body?.message ?? `Error ${response.status}`
-    throw new Error(message)
+    const rawMessage = body?.message ?? `Error ${response.status}`
+    throw new Error(translateError(rawMessage))
   }
   if (response.status === 204) return undefined as T
   return response.json()
@@ -25,7 +53,7 @@ export async function getRouteById(id: number): Promise<Route> {
 export async function createRoute(data: CreateRouteRequest): Promise<Route> {
   const response = await fetch(API_BASE, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(data),
   })
   return handleResponse<Route>(response)
@@ -34,7 +62,7 @@ export async function createRoute(data: CreateRouteRequest): Promise<Route> {
 export async function updateRoute(id: number, data: UpdateRouteRequest): Promise<Route> {
   const response = await fetch(`${API_BASE}/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(data),
   })
   return handleResponse<Route>(response)
@@ -43,6 +71,30 @@ export async function updateRoute(id: number, data: UpdateRouteRequest): Promise
 export async function deleteRoute(id: number): Promise<void> {
   const response = await fetch(`${API_BASE}/${id}`, {
     method: 'DELETE',
+    headers: authHeaders(),
   })
   return handleResponse<void>(response)
+}
+
+export async function registerToRoute(routeId: number): Promise<unknown> {
+  const response = await fetch(`${API_BASE}/${routeId}/registrations`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  return handleResponse<unknown>(response)
+}
+
+export async function unregisterFromRoute(routeId: number): Promise<void> {
+  const response = await fetch(`${API_BASE}/${routeId}/registrations/me`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  return handleResponse<void>(response)
+}
+
+export async function getMyRegistration(routeId: number): Promise<RegistrationStatus> {
+  const response = await fetch(`${API_BASE}/${routeId}/registrations/me`, {
+    headers: authHeaders(),
+  })
+  return handleResponse<RegistrationStatus>(response)
 }

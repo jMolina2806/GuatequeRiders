@@ -4,9 +4,14 @@ import './RouteCard.css'
 type RouteCardProps = {
   route: Route
   isAdmin?: boolean
+  isAuthenticated?: boolean
+  isRegistered?: boolean
+  isProcessing?: boolean
   onEdit?: (route: Route) => void
   onDelete?: (routeId: number) => void
   onClose?: (routeId: number) => void
+  onEnroll?: (route: Route) => void
+  onUnregister?: (route: Route) => void
 }
 
 const DIFFICULTY_LABELS: Record<string, string> = {
@@ -42,11 +47,42 @@ const STATUS_CLASS: Record<string, string> = {
 export default function RouteCard({
   route,
   isAdmin = false,
+  isAuthenticated = false,
+  isRegistered = false,
+  isProcessing = false,
   onEdit,
   onDelete,
   onClose,
+  onEnroll,
+  onUnregister,
 }: RouteCardProps) {
   const canClose = route.status === 'PUBLISHED' || route.status === 'IN_PROGRESS'
+  const isFull = route.currentParticipants >= route.maxParticipants
+
+  const renderEnrollButton = () => {
+    if (isAuthenticated && isRegistered) {
+      return (
+        <button
+          className="route-card__btn route-card__btn--unregister"
+          onClick={() => onUnregister?.(route)}
+          disabled={isProcessing}
+          type="button"
+        >
+          {isProcessing ? 'Procesando...' : 'Desapuntarme'}
+        </button>
+      )
+    }
+    return (
+      <button
+        className="route-card__btn route-card__btn--enroll"
+        onClick={() => onEnroll?.(route)}
+        disabled={isProcessing || isFull}
+        type="button"
+      >
+        {isProcessing ? 'Procesando...' : isFull ? 'Llena' : 'Apuntarme'}
+      </button>
+    )
+  }
 
   return (
     <article className="route-card">
@@ -103,12 +139,7 @@ export default function RouteCard({
             )}
           </>
         ) : route.status === 'PUBLISHED' ? (
-          <button
-            className="route-card__btn route-card__btn--enroll"
-            type="button"
-          >
-            Apuntarme
-          </button>
+          renderEnrollButton()
         ) : null}
       </div>
     </article>

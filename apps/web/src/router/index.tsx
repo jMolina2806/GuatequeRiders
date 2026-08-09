@@ -5,6 +5,8 @@ import RoutesPage from '@/features/routes/pages/RoutesPage'
 import EventsPage from '@/pages/EventsPage'
 import MerchPage from '@/pages/MerchPage'
 import ProfilePage from '@/pages/ProfilePage'
+import LoginPage from '@/features/auth/pages/LoginPage'
+import RegisterPage from '@/features/auth/pages/RegisterPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 export const router = createBrowserRouter([
@@ -20,6 +22,14 @@ export const router = createBrowserRouter([
       {
         path: 'routes',
         element: <RoutesPage />,
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'register',
+        element: <RegisterPage />,
       },
       {
         path: 'events',

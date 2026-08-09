@@ -1,12 +1,43 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import * as routesService from '../services/routes.service'
+import { useAuth } from '@/features/auth/context/useAuth'
 import type { CreateRouteRequest, Route, RouteStatus } from '@/features/routes/types/route.types'
 
+export type RegistrationFeedback = {
+  message: string
+  type: 'success' | 'error'
+}
+
 export function useRoutes() {
+  const { isAuthenticated } = useAuth()
+
   const [routes, setRoutes] = useState<Route[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [editingRouteId, setEditingRouteId] = useState<number | null>(null)
+  const [registrations, setRegistrations] = useState<Record<number, boolean>>({})
+  const [registrationLoading, setRegistrationLoading] = useState<Record<number, boolean>>({})
+  const [feedback, setFeedback] = useState<RegistrationFeedback | null>(null)
+
+  const refreshRegistrations = useCallback(async (routeList: Route[]) => {
+    if (!isAuthenticated) {
+      setRegistrations({})
+      return
+    }
+    const results = await Promise.all(
+      routeList.map(async (route) => {
+        const status = await routesService
+          .getMyRegistration(route.id)
+          .catch(() => ({ registered: false }))
+        return { id: route.id, registered: status.registered }
+      }),
+    )
+    const next: Record<number, boolean> = {}
+    results.forEach((result) => {
+      next[result.id] = result.registered
+    })
+    setRegistrations(next)
+  }, [isAuthenticated])
 
   const fetchRoutes = useCallback(async () => {
     setIsLoading(true)
@@ -14,12 +45,13 @@ export function useRoutes() {
     try {
       const data = await routesService.getRoutes()
       setRoutes(data)
+      await refreshRegistrations(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar rutas')
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [refreshRegistrations])
 
   useEffect(() => {
     fetchRoutes()
@@ -46,13 +78,22 @@ export function useRoutes() {
 
   const submitLabel = editingRoute ? 'Guardar cambios' : 'Crear ruta'
 
+  const updateParticipants = useCallback((routeId: number, delta: number) => {
+    setRoutes((prev) =>
+      prev.map((route) =>
+        route.id === routeId
+          ? { ...route, currentParticipants: Math.max(0, route.currentParticipants + delta) }
+          : route,
+      ),
+    )
+  }, [])
+
   const submitRoute = async (data: CreateRouteRequest) => {
     try {
       if (editingRouteId !== null) {
         const current = routes.find((r) => r.id === editingRouteId)
         await routesService.updateRoute(editingRouteId, {
           ...data,
-          currentParticipants: current?.currentParticipants ?? 0,
           status: current?.status ?? 'DRAFT',
         })
         setEditingRouteId(null)
@@ -94,13 +135,52 @@ export function useRoutes() {
         distanceKm: route.distanceKm,
         difficulty: route.difficulty,
         maxParticipants: route.maxParticipants,
-        currentParticipants: route.currentParticipants,
         status: 'COMPLETED' satisfies RouteStatus,
       })
       await fetchRoutes()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cerrar ruta')
     }
+  }
+
+  const registerToRoute = async (routeId: number) => {
+    setRegistrationLoading((prev) => ({ ...prev, [routeId]: true }))
+    setFeedback(null)
+    try {
+      await routesService.registerToRoute(routeId)
+      updateParticipants(routeId, 1)
+      setRegistrations((prev) => ({ ...prev, [routeId]: true }))
+      setFeedback({ message: 'Inscripción realizada correctamente', type: 'success' })
+    } catch (err) {
+      setFeedback({
+        message: err instanceof Error ? err.message : 'Error al inscribirse',
+        type: 'error',
+      })
+    } finally {
+      setRegistrationLoading((prev) => ({ ...prev, [routeId]: false }))
+    }
+  }
+
+  const unregisterFromRoute = async (routeId: number) => {
+    setRegistrationLoading((prev) => ({ ...prev, [routeId]: true }))
+    setFeedback(null)
+    try {
+      await routesService.unregisterFromRoute(routeId)
+      updateParticipants(routeId, -1)
+      setRegistrations((prev) => ({ ...prev, [routeId]: false }))
+      setFeedback({ message: 'Inscripción cancelada', type: 'success' })
+    } catch (err) {
+      setFeedback({
+        message: err instanceof Error ? err.message : 'Error al desapuntarse',
+        type: 'error',
+      })
+    } finally {
+      setRegistrationLoading((prev) => ({ ...prev, [routeId]: false }))
+    }
+  }
+
+  const clearFeedback = () => {
+    setFeedback(null)
   }
 
   const cancelEdit = () => {
@@ -113,10 +193,16 @@ export function useRoutes() {
     submitLabel,
     isLoading,
     error,
+    registrations,
+    registrationLoading,
+    feedback,
     submitRoute,
     editRoute,
     deleteRoute,
     closeRoute,
+    registerToRoute,
+    unregisterFromRoute,
+    clearFeedback,
     cancelEdit,
   }
 }
