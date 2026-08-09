@@ -1,5 +1,10 @@
 package com.guatequeriders.api.config;
 
+import com.guatequeriders.api.eventregistrations.model.EventRegistration;
+import com.guatequeriders.api.eventregistrations.repository.EventRegistrationRepository;
+import com.guatequeriders.api.events.model.Event;
+import com.guatequeriders.api.events.model.EventStatus;
+import com.guatequeriders.api.events.repository.EventRepository;
 import com.guatequeriders.api.registrations.model.RouteRegistration;
 import com.guatequeriders.api.registrations.repository.RouteRegistrationRepository;
 import com.guatequeriders.api.routes.model.Difficulty;
@@ -16,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -23,15 +29,21 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final RouteRepository routeRepository;
     private final RouteRegistrationRepository registrationRepository;
+    private final EventRepository eventRepository;
+    private final EventRegistrationRepository eventRegistrationRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserRepository userRepository,
                            RouteRepository routeRepository,
                            RouteRegistrationRepository registrationRepository,
+                           EventRepository eventRepository,
+                           EventRegistrationRepository eventRegistrationRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.routeRepository = routeRepository;
         this.registrationRepository = registrationRepository;
+        this.eventRepository = eventRepository;
+        this.eventRegistrationRepository = eventRegistrationRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,6 +52,7 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         seedUsers();
         seedRoutes();
+        seedEvents();
     }
 
     private void seedUsers() {
@@ -111,6 +124,59 @@ public class DataInitializer implements CommandLineRunner {
             registration.setUser(demo);
             registration.setRegisteredAt(LocalDateTime.now());
             registrationRepository.save(registration);
+        });
+    }
+
+    private void seedEvents() {
+        if (eventRepository.count() > 0) {
+            return;
+        }
+
+        Event nocheDePelicula = new Event(
+                "Noche de Película",
+                "Proyección de moto-documentales en pantalla grande con palomitas y buen ambiente.",
+                "Salón del Club",
+                LocalDate.now().plusDays(3),
+                LocalTime.of(19, 0),
+                LocalTime.of(22, 0),
+                30,
+                EventStatus.PUBLISHED
+        );
+        nocheDePelicula.setCreatedAt(LocalDateTime.now());
+        eventRepository.save(nocheDePelicula);
+
+        Event torneoDeBolos = new Event(
+                "Torneo de Bolos",
+                "Torneo amistoso de bolos entre miembros del club. Sin plazas limitadas.",
+                "Bolera Central",
+                LocalDate.now().plusDays(10),
+                LocalTime.of(18, 30),
+                null,
+                null,
+                EventStatus.PUBLISHED
+        );
+        torneoDeBolos.setCreatedAt(LocalDateTime.now());
+        eventRepository.save(torneoDeBolos);
+
+        Event picnicEnElLago = new Event(
+                "Picnic en el Lago",
+                "Quedada familiar junto al lago con juegos y convivencia.",
+                "Lago de Amatitlán",
+                LocalDate.now().plusDays(25),
+                LocalTime.of(10, 0),
+                LocalTime.of(15, 0),
+                40,
+                EventStatus.DRAFT
+        );
+        picnicEnElLago.setCreatedAt(LocalDateTime.now());
+        eventRepository.save(picnicEnElLago);
+
+        userRepository.findByUsername("demo").ifPresent(demo -> {
+            EventRegistration registration = new EventRegistration();
+            registration.setEvent(nocheDePelicula);
+            registration.setUser(demo);
+            registration.setRegisteredAt(LocalDateTime.now());
+            eventRegistrationRepository.save(registration);
         });
     }
 }
