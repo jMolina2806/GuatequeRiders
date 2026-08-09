@@ -18,6 +18,7 @@
   text-align: left;
   font-size: 14px;
   border-bottom: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
 }
 
 .user-table th {
@@ -26,6 +27,9 @@
   letter-spacing: 0.5px;
   color: var(--color-muted);
   background: var(--color-surface-elevated);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .user-table tbody tr:last-child td {
@@ -45,26 +49,69 @@
   text-align: right;
 }
 
-.user-table__role-btn {
-  padding: 8px 14px;
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-text);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
+@media (max-width: 640px) {
+  .user-table__wrapper {
+    overflow: visible;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
 
-.user-table__role-btn:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  box-shadow: var(--shadow-neon-cyan);
-}
+  .user-table {
+    min-width: 0;
+    display: block;
+    border-spacing: 0;
+  }
 
-.user-table__role-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  .user-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .user-table tbody {
+    display: block;
+  }
+
+  .user-table tr {
+    display: block;
+    margin-bottom: 12px;
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .user-table th,
+  .user-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .user-table tbody tr:last-child td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .user-table td:last-child {
+    border-bottom: none;
+  }
+
+  .user-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-muted);
+  }
 }

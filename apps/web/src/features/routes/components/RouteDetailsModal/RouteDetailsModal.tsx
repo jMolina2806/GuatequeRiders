@@ -74,7 +74,7 @@ export default function RouteDetailsModal({
         <>
           {route.status === 'DRAFT' && (
             <button
-              className="route-details__btn route-details__btn--publish"
+              className="btn btn--primary"
               onClick={() => onPublish?.(route.id)}
               type="button"
             >
@@ -82,14 +82,14 @@ export default function RouteDetailsModal({
             </button>
           )}
           <button
-            className="route-details__btn route-details__btn--edit"
+            className="btn btn--secondary"
             onClick={() => onEdit?.(route)}
             type="button"
           >
             Editar
           </button>
           <button
-            className="route-details__btn route-details__btn--delete"
+            className="btn btn--danger"
             onClick={() => onDelete?.(route.id)}
             type="button"
           >
@@ -97,7 +97,7 @@ export default function RouteDetailsModal({
           </button>
           {(route.status === 'PUBLISHED' || route.status === 'IN_PROGRESS') && (
             <button
-              className="route-details__btn route-details__btn--close"
+              className="btn btn--ghost"
               onClick={() => onCloseRoute?.(route.id)}
               type="button"
             >
@@ -113,7 +113,7 @@ export default function RouteDetailsModal({
     if (isAuthenticated && isRegistered) {
       return (
         <button
-          className="route-details__btn route-details__btn--unregister"
+          className="btn btn--outline-danger"
           onClick={() => onUnregister?.(route)}
           disabled={isProcessing}
           type="button"
@@ -125,7 +125,7 @@ export default function RouteDetailsModal({
 
     return (
       <button
-        className="route-details__btn route-details__btn--enroll"
+        className="btn btn--primary"
         onClick={() => onEnroll?.(route)}
         disabled={isProcessing || isFull}
         type="button"

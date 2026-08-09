@@ -53,7 +53,10 @@ export default function AdminUsersPage() {
       </header>
 
       {feedback && (
-        <div className={`admin-users__feedback admin-users__feedback--${feedback.type}`}>
+        <div
+          className={`admin-users__feedback admin-users__feedback--${feedback.type}`}
+          role="status"
+        >
           <span>{feedback.message}</span>
           <button
             className="admin-users__feedback-close"
@@ -67,22 +70,22 @@ export default function AdminUsersPage() {
       )}
 
       {error && (
-        <div className="admin-users__error">
+        <div className="admin-users__error" role="alert">
           <span>{error}</span>
-          <button className="admin-users__retry-btn" onClick={retry} type="button">
+          <button className="btn btn--outline-danger btn--sm" onClick={retry} type="button">
             Reintentar
           </button>
         </div>
       )}
 
       {isLoading ? (
-        <div className="admin-users__loading">
+        <div className="admin-users__loading" role="status" aria-live="polite">
           <div className="admin-users__spinner" />
           <p>Cargando usuarios...</p>
         </div>
-      ) : users.length === 0 && !error ? (
+      ) : users.length === 0 ? (
         <div className="admin-users__empty">
-          <p>No hay usuarios registrados.</p>
+          <p>{error ? 'No se pudieron cargar los usuarios.' : 'No hay usuarios registrados.'}</p>
         </div>
       ) : (
         <UserTable users={users} roleUpdatingId={roleUpdatingId} onToggleRole={handleToggleRole} />

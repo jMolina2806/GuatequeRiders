@@ -64,7 +64,7 @@ export default function EventDetailsModal({
         <>
           {canPublish && (
             <button
-              className="event-details__btn event-details__btn--publish"
+              className="btn btn--primary"
               onClick={() => onPublish?.(event)}
               type="button"
             >
@@ -73,7 +73,7 @@ export default function EventDetailsModal({
           )}
           {canClose && (
             <button
-              className="event-details__btn event-details__btn--close"
+              className="btn btn--ghost"
               onClick={() => onCloseEvent?.(event)}
               type="button"
             >
@@ -82,7 +82,7 @@ export default function EventDetailsModal({
           )}
           {canCancel && (
             <button
-              className="event-details__btn event-details__btn--cancel"
+              className="btn btn--outline-danger"
               onClick={() => onCancel?.(event)}
               type="button"
             >
@@ -90,14 +90,14 @@ export default function EventDetailsModal({
             </button>
           )}
           <button
-            className="event-details__btn event-details__btn--edit"
+            className="btn btn--secondary"
             onClick={() => onEdit?.(event)}
             type="button"
           >
             Editar
           </button>
           <button
-            className="event-details__btn event-details__btn--delete"
+            className="btn btn--danger"
             onClick={() => onDelete?.(event.id)}
             type="button"
           >
@@ -112,7 +112,7 @@ export default function EventDetailsModal({
     if (isAuthenticated && isRegistered) {
       return (
         <button
-          className="event-details__btn event-details__btn--unregister"
+          className="btn btn--outline-danger"
           onClick={() => onUnregister?.(event)}
           disabled={isProcessing}
           type="button"
@@ -124,7 +124,7 @@ export default function EventDetailsModal({
 
     return (
       <button
-        className="event-details__btn event-details__btn--enroll"
+        className="btn btn--primary"
         onClick={() => onEnroll?.(event)}
         disabled={isProcessing || isFull}
         type="button"

@@ -14,16 +14,16 @@ export default function AdminDashboardPage() {
       </header>
 
       {error && (
-        <div className="admin-dashboard__error">
+        <div className="admin-dashboard__error" role="alert">
           <span>{error}</span>
-          <button className="admin-dashboard__retry-btn" onClick={retry} type="button">
+          <button className="btn btn--outline-danger btn--sm" onClick={retry} type="button">
             Reintentar
           </button>
         </div>
       )}
 
       {isLoading ? (
-        <div className="admin-dashboard__loading">
+        <div className="admin-dashboard__loading" role="status" aria-live="polite">
           <div className="admin-dashboard__spinner" />
           <p>Cargando estadísticas...</p>
         </div>

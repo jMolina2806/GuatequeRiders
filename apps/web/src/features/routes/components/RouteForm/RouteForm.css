@@ -62,7 +62,7 @@
 .route-form__field textarea:focus,
 .route-form__field select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .route-form__field textarea {
@@ -122,7 +122,7 @@
 .route-form__organizer--selected {
   border-color: var(--color-primary);
   background: rgba(0, 240, 255, 0.06);
-  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .route-form__organizer input[type='checkbox'] {
@@ -153,46 +153,33 @@
   padding-top: 8px;
 }
 
-.route-form__submit {
-  padding: 12px 24px;
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: var(--gradient-neon);
-  color: #fff;
-  box-shadow: var(--shadow-neon-cyan);
-  transition: all 0.2s ease;
+
+
+@media (max-width: 640px) {
+  .route-form__grid,
+  .route-form__date-group,
+  .route-form__organizers-list {
+    grid-template-columns: 1fr;
+  }
+
+  .route-form__organizer-email {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+
+  .route-form__actions {
+    flex-wrap: wrap;
+  }
+
+  .route-form__actions .btn {
+    flex: 1 1 auto;
+  }
 }
 
-.route-form__submit:hover {
-  opacity: 0.9;
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
-}
-
-.route-form__submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.route-form__cancel {
-  padding: 12px 20px;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  background: transparent;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-  transition: all 0.2s ease;
-}
-
-.route-form__cancel:hover {
-  color: var(--color-text);
-  border-color: var(--color-border-light);
-  background: var(--color-surface-elevated);
+@media (max-width: 480px) {
+  .route-form {
+    padding: 16px;
+  }
 }

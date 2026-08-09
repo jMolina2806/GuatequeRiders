@@ -196,6 +196,7 @@ export function useEvents() {
     registrations,
     registrationLoading,
     feedback,
+    retry: fetchEvents,
     submitEvent,
     editEvent,
     deleteEvent,

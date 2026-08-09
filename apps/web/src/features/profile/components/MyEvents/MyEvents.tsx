@@ -20,10 +20,6 @@ const STATUS_CLASS: Record<string, string> = {
   CANCELLED: 'my-events__status--cancelled',
 }
 
-function formatTime(time: string | null): string | null {
-  return time ?? null
-}
-
 export default function MyEvents({ events }: MyEventsProps) {
   return (
     <section className="my-events">
@@ -44,7 +40,7 @@ export default function MyEvents({ events }: MyEventsProps) {
       ) : (
         <ul className="my-events__list">
           {events.map((event) => {
-            const endTime = formatTime(event.endTime)
+            const endTime = event.endTime
             const timeRange = endTime ? `${event.startTime} – ${endTime}` : event.startTime
             return (
               <li key={event.id} className="my-events__card">

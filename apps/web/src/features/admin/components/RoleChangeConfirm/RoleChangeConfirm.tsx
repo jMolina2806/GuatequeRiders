@@ -37,7 +37,7 @@ export default function RoleChangeConfirm({
         </p>
         <div className="role-change-confirm__actions">
           <button
-            className="role-change-confirm__cancel"
+            className="btn btn--ghost"
             onClick={onCancel}
             disabled={isUpdating}
             type="button"
@@ -45,7 +45,7 @@ export default function RoleChangeConfirm({
             Cancelar
           </button>
           <button
-            className="role-change-confirm__confirm"
+            className="btn btn--primary"
             onClick={onConfirm}
             disabled={isUpdating}
             type="button"

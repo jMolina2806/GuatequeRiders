@@ -13,6 +13,19 @@
   --color-success: #00ff88;
   --color-danger: #ff3355;
   --color-info: #3b82f6;
+  --color-gold: #ffd700;
+  --color-warning: #ffb020;
+
+  /* Fondos suaves (soft) */
+  --color-primary-soft: var(--color-primary-soft);
+  --color-secondary-soft: var(--color-secondary-soft);
+  --color-success-soft: var(--color-success-soft);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-warning-soft: var(--color-warning-soft);
+
+  /* Texto sobre fondos coloreados */
+  --color-text-on-gradient: #ffffff;
+  --color-text-on-success: #04260f;
 
   /* Texto */
   --color-text: #f0f0f0;

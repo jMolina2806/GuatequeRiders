@@ -73,6 +73,7 @@
   margin: 0;
   color: var(--color-text-secondary);
   font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
 .profile-header__since {

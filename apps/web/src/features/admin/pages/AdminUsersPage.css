@@ -34,13 +34,13 @@
 }
 
 .admin-users__feedback--success {
-  background: rgba(0, 255, 136, 0.1);
+  background: var(--color-success-soft);
   border: 1px solid rgba(0, 255, 136, 0.3);
   color: var(--color-success);
 }
 
 .admin-users__feedback--error {
-  background: rgba(255, 51, 85, 0.1);
+  background: var(--color-danger-soft);
   border: 1px solid rgba(255, 51, 85, 0.3);
   color: var(--color-danger);
 }
@@ -65,28 +65,11 @@
   gap: 12px;
   padding: 16px 20px;
   margin-bottom: 16px;
-  background: rgba(255, 51, 85, 0.1);
+  background: var(--color-danger-soft);
   border: 1px solid rgba(255, 51, 85, 0.3);
   border-radius: var(--radius-md);
   color: var(--color-danger);
   font-size: 14px;
-}
-
-.admin-users__retry-btn {
-  padding: 6px 14px;
-  border: 1px solid var(--color-danger);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-danger);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 12px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.admin-users__retry-btn:hover {
-  background: rgba(255, 51, 85, 0.15);
 }
 
 .admin-users__loading {

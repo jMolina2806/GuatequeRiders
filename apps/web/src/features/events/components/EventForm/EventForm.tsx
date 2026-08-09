@@ -116,12 +116,12 @@ export default function EventForm({
       </div>
 
       <div className="event-form__actions">
-        <button className="event-form__submit" type="submit">
+        <button className="btn btn--primary btn--lg" type="submit">
           {submitLabel}
         </button>
 
         {onCancel && (
-          <button className="event-form__cancel" onClick={onCancel} type="button">
+          <button className="btn btn--ghost" onClick={onCancel} type="button">
             Cancelar
           </button>
         )}

@@ -42,7 +42,7 @@
 .event-form__field input:focus,
 .event-form__field textarea:focus {
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px rgba(255, 0, 229, 0.1);
+  box-shadow: 0 0 0 3px var(--color-secondary-soft);
 }
 
 .event-form__field textarea {
@@ -57,40 +57,24 @@
   padding-top: 8px;
 }
 
-.event-form__submit {
-  padding: 12px 24px;
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: var(--gradient-neon);
-  color: #fff;
-  box-shadow: var(--shadow-neon-magenta);
-  transition: all 0.2s ease;
+
+
+@media (max-width: 640px) {
+  .event-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-form__actions {
+    flex-wrap: wrap;
+  }
+
+  .event-form__actions .btn {
+    flex: 1 1 auto;
+  }
 }
 
-.event-form__submit:hover {
-  opacity: 0.9;
-  box-shadow: 0 0 24px rgba(255, 0, 229, 0.4);
-}
-
-.event-form__cancel {
-  padding: 12px 20px;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  background: transparent;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-  transition: all 0.2s ease;
-}
-
-.event-form__cancel:hover {
-  color: var(--color-text);
-  border-color: var(--color-border-light);
-  background: var(--color-surface-elevated);
+@media (max-width: 480px) {
+  .event-form {
+    padding: 16px;
+  }
 }

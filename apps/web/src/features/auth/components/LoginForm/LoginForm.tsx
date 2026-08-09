@@ -33,7 +33,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       <h1 className="auth-form__title">Iniciar sesión</h1>
       <p className="auth-form__subtitle">Accede a tu cuenta para apuntarte a las rutas.</p>
 
-      {error && <div className="auth-form__error">{error}</div>}
+      {error && <div className="auth-form__error" role="alert">{error}</div>}
 
       <form className="auth-form__fields" onSubmit={handleSubmit}>
         <div className="auth-form__field">
@@ -61,7 +61,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           />
         </div>
 
-        <button className="auth-form__submit" type="submit" disabled={isSubmitting}>
+        <button className="btn btn--primary btn--lg" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
         </button>
       </form>

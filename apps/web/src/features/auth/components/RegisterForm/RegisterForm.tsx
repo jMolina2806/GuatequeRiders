@@ -34,7 +34,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       <h1 className="auth-form__title">Crear cuenta</h1>
       <p className="auth-form__subtitle">Únete al club y apúntate a las rutas.</p>
 
-      {error && <div className="auth-form__error">{error}</div>}
+      {error && <div className="auth-form__error" role="alert">{error}</div>}
 
       <form className="auth-form__fields" onSubmit={handleSubmit}>
         <div className="auth-form__field">
@@ -77,7 +77,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
           />
         </div>
 
-        <button className="auth-form__submit" type="submit" disabled={isSubmitting}>
+        <button className="btn btn--primary btn--lg" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta'}
         </button>
       </form>

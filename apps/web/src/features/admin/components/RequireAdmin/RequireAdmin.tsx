@@ -9,7 +9,7 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <section className="require-admin__loading">
+      <section className="require-admin__loading" role="status" aria-live="polite">
         <div className="require-admin__spinner" />
         <p>Cargando...</p>
       </section>

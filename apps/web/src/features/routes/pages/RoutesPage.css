@@ -21,27 +21,6 @@
   margin: 0;
 }
 
-.routes-page__create-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: var(--gradient-neon);
-  color: #fff;
-  box-shadow: var(--shadow-neon-cyan);
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.routes-page__create-btn:hover {
-  opacity: 0.9;
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
-}
-
 /* Loading */
 .routes-page__loading {
   display: flex;
@@ -76,7 +55,7 @@
   gap: 12px;
   padding: 16px 20px;
   margin-bottom: 16px;
-  background: rgba(255, 51, 85, 0.1);
+  background: var(--color-danger-soft);
   border: 1px solid rgba(255, 51, 85, 0.3);
   border-radius: var(--radius-md);
   color: var(--color-danger);
@@ -96,13 +75,13 @@
 }
 
 .routes-page__feedback--success {
-  background: rgba(0, 255, 136, 0.1);
+  background: var(--color-success-soft);
   border: 1px solid rgba(0, 255, 136, 0.3);
   color: var(--color-success);
 }
 
 .routes-page__feedback--error {
-  background: rgba(255, 51, 85, 0.1);
+  background: var(--color-danger-soft);
   border: 1px solid rgba(255, 51, 85, 0.3);
   color: var(--color-danger);
 }
@@ -123,23 +102,6 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.routes-page__retry-btn {
-  padding: 6px 14px;
-  border: 1px solid var(--color-danger);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-danger);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 12px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.routes-page__retry-btn:hover {
-  background: rgba(255, 51, 85, 0.15);
-}
-
 /* Empty state */
 .routes-page__empty {
   display: flex;
@@ -147,4 +109,17 @@
   padding: 48px 24px;
   color: var(--color-text-secondary);
   font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .routes-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .routes-page__error,
+  .routes-page__feedback {
+    flex-wrap: wrap;
+  }
 }

@@ -1,6 +1,7 @@
 import type { Event } from '@/features/events/types/event.types'
 import type { Route } from '@/features/routes/types/route.types'
 import { getToken } from '@/features/auth/services/session'
+import { translateApiMessage } from '@/utils/apiMessages'
 
 const API_BASE = '/api/users/me'
 
@@ -13,7 +14,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.json().catch(() => null)
     const rawMessage = body?.message ?? `Error ${response.status}`
-    throw new Error(rawMessage)
+    throw new Error(translateApiMessage(rawMessage))
   }
   return response.json()
 }

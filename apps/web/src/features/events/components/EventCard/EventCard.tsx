@@ -31,10 +31,6 @@ const STATUS_CLASS: Record<string, string> = {
   CANCELLED: 'event-card__status--cancelled',
 }
 
-function formatTime(time: string | null): string | null {
-  return time ?? null
-}
-
 export default function EventCard({
   event,
   isAdmin = false,
@@ -55,7 +51,7 @@ export default function EventCard({
   const canCancel = event.status === 'PUBLISHED' || event.status === 'CLOSED'
   const isFull =
     event.maxParticipants !== null && event.currentParticipants >= event.maxParticipants
-  const endTime = formatTime(event.endTime)
+  const endTime = event.endTime
   const timeRange = endTime ? `${event.startTime} – ${endTime}` : event.startTime
 
   const handleDetails = () => {
@@ -66,7 +62,7 @@ export default function EventCard({
     if (isAuthenticated && isRegistered) {
       return (
         <button
-          className="event-card__btn event-card__btn--unregister"
+          className="btn btn--outline-danger btn--sm"
           onClick={(e) => {
             e.stopPropagation()
             onUnregister?.(event)
@@ -80,7 +76,7 @@ export default function EventCard({
     }
     return (
       <button
-        className="event-card__btn event-card__btn--enroll"
+        className="btn btn--primary btn--sm"
         onClick={(e) => {
           e.stopPropagation()
           onEnroll?.(event)
@@ -118,7 +114,7 @@ export default function EventCard({
         <p className="event-card__desc">{event.description}</p>
 
         <button
-          className="event-card__details-btn"
+          className="btn btn--ghost btn--sm event-card__details-btn"
           onClick={(e) => {
             e.stopPropagation()
             handleDetails()
@@ -134,7 +130,7 @@ export default function EventCard({
           <>
             {canPublish && (
               <button
-                className="event-card__btn event-card__btn--publish"
+                className="btn btn--primary btn--sm"
                 onClick={(e) => {
                   e.stopPropagation()
                   onPublish?.(event)
@@ -146,7 +142,7 @@ export default function EventCard({
             )}
             {canClose && (
               <button
-                className="event-card__btn event-card__btn--close"
+                className="btn btn--ghost btn--sm"
                 onClick={(e) => {
                   e.stopPropagation()
                   onClose?.(event)
@@ -158,7 +154,7 @@ export default function EventCard({
             )}
             {canCancel && (
               <button
-                className="event-card__btn event-card__btn--cancel"
+                className="btn btn--outline-danger btn--sm"
                 onClick={(e) => {
                   e.stopPropagation()
                   onCancel?.(event)
@@ -169,7 +165,7 @@ export default function EventCard({
               </button>
             )}
             <button
-              className="event-card__btn event-card__btn--edit"
+              className="btn btn--secondary btn--sm"
               onClick={(e) => {
                 e.stopPropagation()
                 onEdit?.(event)
@@ -179,7 +175,7 @@ export default function EventCard({
               Editar
             </button>
             <button
-              className="event-card__btn event-card__btn--delete"
+              className="btn btn--danger btn--sm"
               onClick={(e) => {
                 e.stopPropagation()
                 onDelete?.(event.id)

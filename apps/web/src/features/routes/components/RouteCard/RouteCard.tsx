@@ -81,7 +81,7 @@ export default function RouteCard({
     if (isAuthenticated && isRegistered) {
       return (
         <button
-          className="route-card__btn route-card__btn--unregister"
+          className="btn btn--outline-danger btn--sm"
           onClick={(event) => {
             event.stopPropagation()
             onUnregister?.(route)
@@ -95,7 +95,7 @@ export default function RouteCard({
     }
     return (
       <button
-        className="route-card__btn route-card__btn--enroll"
+        className="btn btn--primary btn--sm"
         onClick={(event) => {
           event.stopPropagation()
           onEnroll?.(route)
@@ -138,7 +138,7 @@ export default function RouteCard({
         <p className="route-card__desc">{route.description}</p>
 
         <button
-          className="route-card__details-btn"
+          className="btn btn--ghost btn--sm route-card__details-btn"
           onClick={(event) => {
             event.stopPropagation()
             handleDetails()
@@ -154,7 +154,7 @@ export default function RouteCard({
           <>
             {route.status === 'DRAFT' && (
               <button
-                className="route-card__btn route-card__btn--publish"
+                className="btn btn--primary btn--sm"
                 onClick={(event) => {
                   event.stopPropagation()
                   onPublish?.(route.id)
@@ -165,7 +165,7 @@ export default function RouteCard({
               </button>
             )}
             <button
-              className="route-card__btn route-card__btn--edit"
+              className="btn btn--secondary btn--sm"
               onClick={(event) => {
                 event.stopPropagation()
                 onEdit?.(route)
@@ -175,7 +175,7 @@ export default function RouteCard({
               Editar
             </button>
             <button
-              className="route-card__btn route-card__btn--delete"
+              className="btn btn--danger btn--sm"
               onClick={(event) => {
                 event.stopPropagation()
                 onDelete?.(route.id)
@@ -186,7 +186,7 @@ export default function RouteCard({
             </button>
             {canClose && (
               <button
-                className="route-card__btn route-card__btn--close"
+                className="btn btn--ghost btn--sm"
                 onClick={(event) => {
                   event.stopPropagation()
                   onClose?.(route.id)

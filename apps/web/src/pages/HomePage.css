@@ -41,7 +41,7 @@
   bottom: -30%;
   left: auto;
   right: -5%;
-  background: radial-gradient(circle, rgba(255, 0, 229, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--color-secondary-soft) 0%, transparent 70%);
 }
 
 .hero-inner {
@@ -227,12 +227,6 @@
   border: 1px solid rgba(0, 255, 136, 0.3);
 }
 
-.preview-card__status--closed {
-  background: rgba(255, 51, 85, 0.12);
-  color: var(--color-danger);
-  border: 1px solid rgba(255, 51, 85, 0.3);
-}
-
 .preview-card__meta {
   font-size: 13px;
   color: var(--color-text-secondary);
@@ -394,7 +388,7 @@
 
 .footer-social__link:hover {
   border-color: rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 12px var(--color-primary-soft);
   transform: translateY(-2px);
 }
 
@@ -450,6 +444,12 @@
 
   .footer-desc {
     max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -21,6 +21,7 @@ export default function RoutesPage() {
     registrations,
     registrationLoading,
     feedback,
+    retry,
     submitRoute,
     editRoute,
     deleteRoute,
@@ -93,7 +94,7 @@ export default function RoutesPage() {
 
         {isAdmin && (
           <button
-            className="routes-page__create-btn"
+            className="btn btn--primary"
             onClick={handleCreateRoute}
             type="button"
           >
@@ -103,7 +104,10 @@ export default function RoutesPage() {
       </div>
 
       {feedback && (
-        <div className={`routes-page__feedback routes-page__feedback--${feedback.type}`}>
+        <div
+          className={`routes-page__feedback routes-page__feedback--${feedback.type}`}
+          role="status"
+        >
           <span>{feedback.message}</span>
           <button
             className="routes-page__feedback-close"
@@ -117,11 +121,11 @@ export default function RoutesPage() {
       )}
 
       {error && (
-        <div className="routes-page__error">
+        <div className="routes-page__error" role="alert">
           <span>{error}</span>
           <button
-            className="routes-page__retry-btn"
-            onClick={() => window.location.reload()}
+            className="btn btn--outline-danger btn--sm"
+            onClick={retry}
             type="button"
           >
             Reintentar
@@ -130,7 +134,7 @@ export default function RoutesPage() {
       )}
 
       {isLoading ? (
-        <div className="routes-page__loading">
+        <div className="routes-page__loading" role="status" aria-live="polite">
           <div className="routes-page__spinner" />
           <p>Cargando rutas...</p>
         </div>

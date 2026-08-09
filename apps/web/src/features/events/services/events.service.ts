@@ -5,6 +5,7 @@ import type {
   UpdateEventRequest,
 } from '@/features/events/types/event.types'
 import { getToken } from '@/features/auth/services/session'
+import { translateApiMessage } from '@/utils/apiMessages'
 
 const API_BASE = '/api/events'
 
@@ -15,26 +16,11 @@ function authHeaders(additional: HeadersInit = {}): HeadersInit {
     : additional
 }
 
-const ERROR_MESSAGES: Record<string, string> = {
-  'Event is full': 'El evento está completo',
-  'Event is not open for registration': 'El evento está cerrado',
-  'Already registered to this event': 'Ya estás apuntado a este evento',
-  'Registration not found for event': 'No estás apuntado a este evento',
-}
-
-function translateError(message: string): string {
-  if (ERROR_MESSAGES[message]) return ERROR_MESSAGES[message]
-  if (message.startsWith('Registration not found for event')) {
-    return ERROR_MESSAGES['Registration not found for event']
-  }
-  return message
-}
-
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.json().catch(() => null)
     const rawMessage = body?.message ?? `Error ${response.status}`
-    throw new Error(translateError(rawMessage))
+    throw new Error(translateApiMessage(rawMessage))
   }
   if (response.status === 204) return undefined as T
   return response.json()

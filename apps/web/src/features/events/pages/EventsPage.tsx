@@ -19,6 +19,7 @@ export default function EventsPage() {
     registrations,
     registrationLoading,
     feedback,
+    retry,
     submitEvent,
     editEvent,
     deleteEvent,
@@ -72,7 +73,7 @@ export default function EventsPage() {
 
         {isAdmin && (
           <button
-            className="events-page__create-btn"
+            className="btn btn--primary"
             onClick={handleCreateEvent}
             type="button"
           >
@@ -82,7 +83,10 @@ export default function EventsPage() {
       </div>
 
       {feedback && (
-        <div className={`events-page__feedback events-page__feedback--${feedback.type}`}>
+        <div
+          className={`events-page__feedback events-page__feedback--${feedback.type}`}
+          role="status"
+        >
           <span>{feedback.message}</span>
           <button
             className="events-page__feedback-close"
@@ -96,20 +100,16 @@ export default function EventsPage() {
       )}
 
       {error && (
-        <div className="events-page__error">
+        <div className="events-page__error" role="alert">
           <span>{error}</span>
-          <button
-            className="events-page__retry-btn"
-            onClick={() => window.location.reload()}
-            type="button"
-          >
+          <button className="btn btn--outline-danger btn--sm" onClick={retry} type="button">
             Reintentar
           </button>
         </div>
       )}
 
       {isLoading ? (
-        <div className="events-page__loading">
+        <div className="events-page__loading" role="status" aria-live="polite">
           <div className="events-page__spinner" />
           <p>Cargando eventos...</p>
         </div>

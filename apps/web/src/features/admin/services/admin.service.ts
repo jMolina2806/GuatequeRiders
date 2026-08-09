@@ -1,5 +1,6 @@
 import type { User } from '@/features/auth/types/auth.types'
 import { getToken } from '@/features/auth/services/session'
+import { translateApiMessage } from '@/utils/apiMessages'
 import type { AdminStats, UpdateRoleRequest } from '../types/admin.types'
 
 const API_BASE = '/api/admin'
@@ -9,19 +10,11 @@ function authHeaders(additional: HeadersInit = {}): HeadersInit {
   return token ? { ...additional, Authorization: `Bearer ${token}` } : additional
 }
 
-const ERROR_MESSAGES: Record<string, string> = {
-  'Cannot remove the last admin': 'No puedes quitar el último administrador',
-}
-
-function translateError(message: string): string {
-  return ERROR_MESSAGES[message] ?? message
-}
-
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.json().catch(() => null)
     const rawMessage = body?.message ?? `Error ${response.status}`
-    throw new Error(translateError(rawMessage))
+    throw new Error(translateApiMessage(rawMessage))
   }
   if (response.status === 204) return undefined as T
   return response.json()

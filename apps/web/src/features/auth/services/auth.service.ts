@@ -4,6 +4,7 @@ import type {
   RegisterRequest,
   User,
 } from '../types/auth.types'
+import { translateApiMessage } from '@/utils/apiMessages'
 
 const API_BASE = '/api/auth'
 
@@ -14,20 +15,11 @@ type ApiErrorBody = {
 
 function getErrorMessage(body: ApiErrorBody | null, status: number): string {
   const message = body?.message
+  if (message === 'Validation failed' && body?.errors && body.errors.length > 0) {
+    return body.errors[0]
+  }
   if (message) {
-    if (message === 'Invalid username or password') {
-      return 'Usuario o contraseña incorrectos'
-    }
-    if (message.startsWith('Username already exists')) {
-      return 'El nombre de usuario ya está en uso'
-    }
-    if (message.startsWith('Email already registered')) {
-      return 'El email ya está registrado'
-    }
-    if (message === 'Validation failed' && body.errors && body.errors.length > 0) {
-      return body.errors[0]
-    }
-    return message
+    return translateApiMessage(message)
   }
   if (status === 401) {
     return 'Credenciales inválidas'

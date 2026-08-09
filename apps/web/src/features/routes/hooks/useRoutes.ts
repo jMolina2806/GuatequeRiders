@@ -218,6 +218,7 @@ export function useRoutes() {
     registrations,
     registrationLoading,
     feedback,
+    retry: fetchRoutes,
     submitRoute,
     editRoute,
     deleteRoute,

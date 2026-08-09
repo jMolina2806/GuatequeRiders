@@ -20,11 +20,11 @@ export default function UserTable({ users, roleUpdatingId, onToggleRole }: UserT
       <table className="user-table">
         <thead>
           <tr>
-            <th>Usuario</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Registro</th>
-            <th className="user-table__actions-head">Acciones</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Email</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Registro</th>
+            <th scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -33,15 +33,17 @@ export default function UserTable({ users, roleUpdatingId, onToggleRole }: UserT
             const nextRole = user.role === 'ADMIN' ? 'USER' : 'ADMIN'
             return (
               <tr key={user.id}>
-                <td className="user-table__username">{user.username}</td>
-                <td>{user.email}</td>
-                <td>
+                <td className="user-table__username" data-label="Usuario">
+                  {user.username}
+                </td>
+                <td data-label="Email">{user.email}</td>
+                <td data-label="Rol">
                   <RoleBadge role={user.role} />
                 </td>
-                <td>{formatDate(user.createdAt)}</td>
-                <td className="user-table__actions">
+                <td data-label="Registro">{formatDate(user.createdAt)}</td>
+                <td className="user-table__actions" data-label="Acciones">
                   <button
-                    className="user-table__role-btn"
+                    className="btn btn--ghost btn--sm"
                     onClick={() => onToggleRole(user)}
                     disabled={isUpdating}
                     type="button"

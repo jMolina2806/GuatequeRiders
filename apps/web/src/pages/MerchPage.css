@@ -1,0 +1,37 @@
+.merch-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 24px;
+  text-align: center;
+  gap: 12px;
+}
+
+.merch-page__icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.merch-page__title {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800;
+  margin: 0;
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.merch-page__subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+.merch-page__note {
+  margin: 20px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+}

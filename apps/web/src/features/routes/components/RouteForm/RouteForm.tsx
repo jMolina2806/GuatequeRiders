@@ -128,7 +128,9 @@ export default function RouteForm({
           </div>
 
           {timesInvalid && (
-            <p className="route-form__field-error">La hora de salida debe ser posterior a la de quedada.</p>
+            <p className="route-form__field-error" role="alert">
+              La hora de salida debe ser posterior a la de quedada.
+            </p>
           )}
         </div>
 
@@ -234,7 +236,7 @@ export default function RouteForm({
 
       <div className="route-form__actions">
         <button
-          className="route-form__submit"
+          className="btn btn--primary btn--lg"
           type="submit"
           disabled={formData.organizerIds.length === 0 || timesInvalid}
         >
@@ -242,7 +244,7 @@ export default function RouteForm({
         </button>
 
         {onCancel && (
-          <button className="route-form__cancel" onClick={onCancel} type="button">
+          <button className="btn btn--ghost" onClick={onCancel} type="button">
             Cancelar
           </button>
         )}

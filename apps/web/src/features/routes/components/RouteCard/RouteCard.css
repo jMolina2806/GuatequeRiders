@@ -109,19 +109,19 @@
 }
 
 .route-card__difficulty--easy {
-  background: rgba(0, 255, 136, 0.1);
+  background: var(--color-success-soft);
   color: var(--color-success);
   border: 1px solid rgba(0, 255, 136, 0.2);
 }
 
 .route-card__difficulty--moderate {
-  background: rgba(255, 215, 0, 0.1);
-  color: #ffd700;
+  background: var(--color-warning-soft);
+  color: var(--color-gold);
   border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .route-card__difficulty--hard {
-  background: rgba(255, 51, 85, 0.1);
+  background: var(--color-danger-soft);
   color: var(--color-danger);
   border: 1px solid rgba(255, 51, 85, 0.2);
 }
@@ -158,108 +158,26 @@
 .route-card__details-btn {
   align-self: flex-start;
   margin-top: 2px;
-  padding: 4px 12px;
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-primary);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.route-card__details-btn:hover,
-.route-card__details-btn:focus-visible {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-neon-cyan);
-  outline: none;
-}
+@media (max-width: 640px) {
+  .route-card {
+    grid-template-columns: 1fr;
+  }
 
-.route-card__btn {
-  padding: 7px 14px;
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 12px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  text-align: center;
-}
+  .route-card__top {
+    flex-wrap: wrap;
+  }
 
-.route-card__btn--enroll {
-  background: var(--gradient-neon);
-  color: #fff;
-  box-shadow: var(--shadow-neon-cyan);
-}
+  .route-card__sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding: 12px 16px;
+  }
 
-.route-card__btn--enroll:hover {
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.45);
-  transform: translateY(-1px);
-}
-
-.route-card__btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.route-card__btn--unregister {
-  background: transparent;
-  color: var(--color-danger);
-  border: 1px solid var(--color-danger);
-}
-
-.route-card__btn--unregister:hover:not(:disabled) {
-  background: rgba(255, 51, 85, 0.1);
-  box-shadow: 0 0 12px rgba(255, 51, 85, 0.3);
-  transform: translateY(-1px);
-}
-
-.route-card__btn--edit {
-  background: var(--color-info);
-  color: #fff;
-}
-
-.route-card__btn--publish {
-  background: var(--gradient-neon);
-  color: #fff;
-  box-shadow: var(--shadow-neon-cyan);
-}
-
-.route-card__btn--publish:hover {
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.45);
-  transform: translateY(-1px);
-}
-
-.route-card__btn--edit:hover {
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
-  transform: translateY(-1px);
-}
-
-.route-card__btn--delete {
-  background: var(--color-danger);
-  color: #fff;
-}
-
-.route-card__btn--delete:hover {
-  box-shadow: 0 0 12px rgba(255, 51, 85, 0.45);
-  transform: translateY(-1px);
-}
-
-.route-card__btn--close {
-  background: transparent;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
-}
-
-.route-card__btn--close:hover {
-  border-color: rgba(255, 0, 229, 0.4);
-  color: var(--color-secondary);
-  box-shadow: 0 0 10px rgba(255, 0, 229, 0.15);
-  transform: translateY(-1px);
+  .route-card__details-btn {
+    align-self: auto;
+  }
 }
