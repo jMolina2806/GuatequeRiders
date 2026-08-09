@@ -6,6 +6,7 @@ import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class UsersService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User register(String username, String email, String password) {
         if (userRepository.existsByUsername(username)) {
             throw new DuplicateResourceException("Username already exists: " + username);

@@ -20,7 +20,7 @@ public class RouteResponse {
     private Integer currentParticipants;
     private RouteStatus status;
 
-    public static RouteResponse from(Route route) {
+    public static RouteResponse from(Route route, long currentParticipants) {
         RouteResponse r = new RouteResponse();
         r.id = route.getId();
         r.title = route.getTitle();
@@ -31,7 +31,7 @@ public class RouteResponse {
         r.distanceKm = route.getDistanceKm();
         r.difficulty = route.getDifficulty();
         r.maxParticipants = route.getMaxParticipants();
-        r.currentParticipants = route.getCurrentParticipants();
+        r.currentParticipants = (int) currentParticipants;
         r.status = route.getStatus();
         return r;
     }

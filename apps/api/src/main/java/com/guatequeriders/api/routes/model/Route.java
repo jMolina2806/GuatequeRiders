@@ -1,27 +1,57 @@
 package com.guatequeriders.api.routes.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "routes")
 public class Route {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false, length = 2000)
     private String description;
+
+    @Column(nullable = false)
     private String origin;
+
+    @Column(nullable = false)
     private String destination;
+
+    @Column(name = "route_date", nullable = false)
     private LocalDate date;
+
     private Double distanceKm;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Difficulty difficulty;
+
+    @Column(name = "max_participants", nullable = false)
     private Integer maxParticipants;
-    private Integer currentParticipants;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private RouteStatus status;
 
     public Route() {}
 
-    public Route(Long id, String title, String description, String origin, String destination,
+    public Route(String title, String description, String origin, String destination,
                  LocalDate date, Double distanceKm, Difficulty difficulty,
-                 Integer maxParticipants, Integer currentParticipants, RouteStatus status) {
-        this.id = id;
+                 Integer maxParticipants, RouteStatus status) {
         this.title = title;
         this.description = description;
         this.origin = origin;
@@ -30,7 +60,6 @@ public class Route {
         this.distanceKm = distanceKm;
         this.difficulty = difficulty;
         this.maxParticipants = maxParticipants;
-        this.currentParticipants = currentParticipants;
         this.status = status;
     }
 
@@ -60,9 +89,6 @@ public class Route {
 
     public Integer getMaxParticipants() { return maxParticipants; }
     public void setMaxParticipants(Integer maxParticipants) { this.maxParticipants = maxParticipants; }
-
-    public Integer getCurrentParticipants() { return currentParticipants; }
-    public void setCurrentParticipants(Integer currentParticipants) { this.currentParticipants = currentParticipants; }
 
     public RouteStatus getStatus() { return status; }
     public void setStatus(RouteStatus status) { this.status = status; }

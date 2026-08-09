@@ -11,8 +11,8 @@ public record RegistrationResponse(
 ) {
     public static RegistrationResponse from(RouteRegistration registration) {
         return new RegistrationResponse(
-                registration.getRouteId(),
-                registration.getUserId(),
+                registration.getRoute().getId(),
+                registration.getUser().getId(),
                 registration.getRegisteredAt()
         );
     }

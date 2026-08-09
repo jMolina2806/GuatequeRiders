@@ -1,90 +1,43 @@
 package com.guatequeriders.api.routes.service;
 
 import com.guatequeriders.api.common.exception.ResourceNotFoundException;
-import com.guatequeriders.api.routes.model.Difficulty;
 import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.routes.model.RouteStatus;
-import jakarta.annotation.PostConstruct;
+import com.guatequeriders.api.routes.repository.RouteRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class RoutesService {
 
-    private final List<Route> routes = new CopyOnWriteArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
+    private final RouteRepository routeRepository;
 
-    @PostConstruct
-    public void init() {
-        routes.add(new Route(
-                idCounter.getAndIncrement(),
-                "Ruta del Valle",
-                "Recorrido escénico por los valles del sur con paradas en miradores naturales.",
-                "Antigua Guatemala",
-                "San Miguel Dueñas",
-                LocalDate.now().plusDays(7),
-                45.0,
-                Difficulty.EASY,
-                20,
-                5,
-                RouteStatus.PUBLISHED
-        ));
-
-        routes.add(new Route(
-                idCounter.getAndIncrement(),
-                "Ascenso a la Montaña",
-                "Desafío de montaña con curvas cerradas y paisajes impresionantes.",
-                "Guatemala City",
-                "El Cerrito",
-                LocalDate.now().plusDays(14),
-                120.0,
-                Difficulty.HARD,
-                15,
-                12,
-                RouteStatus.PUBLISHED
-        ));
-
-        routes.add(new Route(
-                idCounter.getAndIncrement(),
-                "Costa al Atardecer",
-                "Ruta costera ideal para disfrutar del atardecer junto al mar.",
-                "Escuintla",
-                "Monterrico",
-                LocalDate.now().plusDays(21),
-                85.0,
-                Difficulty.MODERATE,
-                25,
-                8,
-                RouteStatus.DRAFT
-        ));
+    public RoutesService(RouteRepository routeRepository) {
+        this.routeRepository = routeRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Route> findAll() {
-        return new ArrayList<>(routes);
+        return routeRepository.findAllByOrderByIdAsc();
     }
 
+    @Transactional(readOnly = true)
     public Route findById(Long id) {
-        return routes.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst()
+        return routeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Route", id));
     }
 
+    @Transactional
     public Route create(Route route) {
-        route.setId(idCounter.getAndIncrement());
-        route.setCurrentParticipants(0);
         if (route.getStatus() == null) {
             route.setStatus(RouteStatus.DRAFT);
         }
-        routes.add(route);
-        return route;
+        return routeRepository.save(route);
     }
 
+    @Transactional
     public Route update(Long id, Route updated) {
         Route existing = findById(id);
         existing.setTitle(updated.getTitle());
@@ -99,8 +52,11 @@ public class RoutesService {
         return existing;
     }
 
+    @Transactional
     public void delete(Long id) {
-        Route route = findById(id);
-        routes.remove(route);
+        if (!routeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Route", id);
+        }
+        routeRepository.deleteById(id);
     }
 }

@@ -37,7 +37,7 @@ public class RoutesController {
     public ResponseEntity<List<RouteResponse>> getAll() {
         return ResponseEntity.ok(
                 routesService.findAll().stream()
-                        .map(RouteResponse::from)
+                        .map(route -> RouteResponse.from(route, registrationsService.countByRouteId(route.getId())))
                         .toList()
         );
     }
@@ -45,7 +45,7 @@ public class RoutesController {
     @GetMapping("/{id}")
     public ResponseEntity<RouteResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(
-                RouteResponse.from(routesService.findById(id))
+                RouteResponse.from(routesService.findById(id), registrationsService.countByRouteId(id))
         );
     }
 
@@ -54,7 +54,7 @@ public class RoutesController {
     public ResponseEntity<RouteResponse> create(@Valid @RequestBody CreateRouteRequest request) {
         Route created = routesService.create(toRoute(request));
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(RouteResponse.from(created));
+                .body(RouteResponse.from(created, registrationsService.countByRouteId(created.getId())));
     }
 
     @PutMapping("/{id}")
@@ -62,7 +62,7 @@ public class RoutesController {
     public ResponseEntity<RouteResponse> update(@PathVariable Long id,
                                                 @Valid @RequestBody UpdateRouteRequest request) {
         Route updated = routesService.update(id, toRoute(id, request));
-        return ResponseEntity.ok(RouteResponse.from(updated));
+        return ResponseEntity.ok(RouteResponse.from(updated, registrationsService.countByRouteId(id)));
     }
 
     @DeleteMapping("/{id}")
