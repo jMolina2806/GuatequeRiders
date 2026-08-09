@@ -86,6 +86,13 @@ public class RegistrationsService {
         return registrationRepository.countByRouteId(routeId);
     }
 
+    @Transactional(readOnly = true)
+    public List<Route> findRoutesForUser(User user) {
+        return registrationRepository.findAllByUserId(user.getId()).stream()
+                .map(RouteRegistration::getRoute)
+                .toList();
+    }
+
     @Transactional
     public void deleteByRouteId(Long routeId) {
         registrationRepository.deleteByRouteId(routeId);

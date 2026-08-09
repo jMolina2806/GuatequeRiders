@@ -88,6 +88,13 @@ public class EventRegistrationsService {
         return registrationRepository.countByEventId(eventId);
     }
 
+    @Transactional(readOnly = true)
+    public List<Event> findEventsForUser(User user) {
+        return registrationRepository.findAllByUserId(user.getId()).stream()
+                .map(EventRegistration::getEvent)
+                .toList();
+    }
+
     @Transactional
     public void deleteByEventId(Long eventId) {
         registrationRepository.deleteByEventId(eventId);
