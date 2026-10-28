@@ -57,7 +57,7 @@ export default function CheckoutResultPage({ result }: CheckoutResultPageProps) 
   }
 
   const paid = order.paymentStatus === 'PAID'
-  const cancelled = result === 'cancel'
+  const cancelled = result === 'cancel' && !paid
 
   return (
     <section className="checkout-page checkout-page--empty">
