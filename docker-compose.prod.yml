@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-guatequeriders}
+      POSTGRES_USER: ${POSTGRES_USER:-guatequeriders}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-guatequeriders} -d ${POSTGRES_DB:-guatequeriders}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./apps/api
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      APP_PUBLIC_URL: https://${APP_DOMAIN}
+      APP_ALLOWED_ORIGINS: https://${APP_DOMAIN}
+      APP_UPLOAD_DIR: /app/uploads
+      APP_WHATSAPP_GROUP_URL: ${APP_WHATSAPP_GROUP_URL:-}
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-guatequeriders}
+      DB_USERNAME: ${POSTGRES_USER:-guatequeriders}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      RATE_LIMIT_ENABLED: "true"
+      MERCH_TEST_PAYMENTS_ENABLED: "false"
+      STRIPE_ENABLED: ${STRIPE_ENABLED:-false}
+      STRIPE_MODE: ${STRIPE_MODE:-live}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      MAIL_ENABLED: ${MAIL_ENABLED:-false}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-true}
+      MAIL_STARTTLS: ${MAIL_STARTTLS:-true}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      UNSUBSCRIBE_SECRET: ${UNSUBSCRIBE_SECRET:?UNSUBSCRIBE_SECRET is required}
+    volumes:
+      - uploads_prod:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./apps/web
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?APP_DOMAIN is required}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+volumes:
+  postgres_prod:
+    name: guatequeriders-postgres-prod
+  uploads_prod:
+    name: guatequeriders-uploads-prod
+  caddy_data:
+    name: guatequeriders-caddy-data
+  caddy_config:
+    name: guatequeriders-caddy-config

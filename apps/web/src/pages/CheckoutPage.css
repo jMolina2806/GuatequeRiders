@@ -203,3 +203,28 @@
     flex-wrap: wrap;
   }
 }
+
+
+.checkout-page__consent {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.checkout-page__consent input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  flex: 0 0 auto;
+  accent-color: var(--color-primary);
+}
+
+.checkout-page__consent a {
+  color: var(--color-primary);
+  font-weight: 600;
+}

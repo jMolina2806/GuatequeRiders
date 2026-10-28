@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const [customerEmail, setCustomerEmail] = useState(user?.email ?? '')
   const [customerPhone, setCustomerPhone] = useState('')
   const [notes, setNotes] = useState('')
+  const [merchTermsAccepted, setMerchTermsAccepted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -62,6 +63,7 @@ export default function CheckoutPage() {
         customerEmail,
         customerPhone,
         notes: notes || undefined,
+        merchTermsAccepted,
       })
       markCartOrder(order.id)
       navigate(`/checkout/payment/${order.id}`)
@@ -110,7 +112,19 @@ export default function CheckoutPage() {
               <textarea value={notes} onChange={(event) => setNotes(event.target.value)} maxLength={1000} rows={4} />
             </label>
           </div>
-          <button className="btn btn--primary checkout-page__submit" type="submit" disabled={isSubmitting}>
+          <label className="checkout-page__consent">
+            <input
+              type="checkbox"
+              checked={merchTermsAccepted}
+              onChange={(event) => setMerchTermsAccepted(event.target.checked)}
+              required
+            />
+            <span>
+              He leído y acepto las <Link to="/merch-terms" target="_blank" rel="noopener noreferrer">Condiciones de Merch</Link>, incluidas las reglas aplicables a personalización, pago, entrega y desistimiento.
+            </span>
+          </label>
+
+          <button className="btn btn--primary checkout-page__submit" type="submit" disabled={isSubmitting || !merchTermsAccepted}>
              {isSubmitting ? 'Preparando pedido...' : 'Continuar al pago'}
           </button>
         </form>

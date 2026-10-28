@@ -12,6 +12,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -20,7 +21,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     setError(null)
     setIsSubmitting(true)
     try {
-      await register({ username, email, password })
+      await register({ username, email, password, privacyAccepted })
       onSuccess?.()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrarse')
@@ -77,7 +78,19 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
           />
         </div>
 
-        <button className="btn btn--primary btn--lg" type="submit" disabled={isSubmitting}>
+        <label className="auth-form__consent">
+          <input
+            type="checkbox"
+            checked={privacyAccepted}
+            onChange={(event) => setPrivacyAccepted(event.target.checked)}
+            required
+          />
+          <span>
+            He leído la <Link to="/privacy" target="_blank" rel="noopener noreferrer">Política de privacidad</Link> y entiendo cómo se tratarán mis datos.
+          </span>
+        </label>
+
+        <button className="btn btn--primary btn--lg" type="submit" disabled={isSubmitting || !privacyAccepted}>
           {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta'}
         </button>
       </form>

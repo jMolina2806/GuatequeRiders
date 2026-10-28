@@ -114,6 +114,7 @@ class DevelopmentPaymentIntegrationTest {
         body.put("customerName", "Cliente de desarrollo");
         body.put("customerEmail", "dev@example.com");
         body.put("customerPhone", "+34123456789");
+        body.put("merchTermsAccepted", true);
         body.put("items", java.util.List.of(Map.of(
                 "productCode", "TSHIRT",
                 "size", "M",
