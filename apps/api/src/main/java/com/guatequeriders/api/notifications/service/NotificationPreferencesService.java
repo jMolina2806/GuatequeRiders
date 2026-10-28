@@ -79,17 +79,17 @@ public class NotificationPreferencesService {
     private UserNotificationPreferences defaultPreferences(User user) {
         UserNotificationPreferences preferences = new UserNotificationPreferences();
         preferences.setUser(user);
-        preferences.setMerchNotifications(true);
-        preferences.setRouteNotifications(true);
-        preferences.setEventNotifications(true);
-        preferences.setCircuitNotifications(true);
+        preferences.setMerchNotifications(false);
+        preferences.setRouteNotifications(false);
+        preferences.setEventNotifications(false);
+        preferences.setCircuitNotifications(false);
         preferences.setUpdatedAt(LocalDateTime.now());
         return preferences;
     }
 
     private boolean isEnabled(UserNotificationPreferences preferences, NotificationCategory category) {
         if (preferences == null) {
-            return true;
+            return false;
         }
         return switch (category) {
             case MERCH -> preferences.isMerchNotifications();
