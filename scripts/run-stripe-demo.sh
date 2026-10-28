@@ -53,7 +53,7 @@ until docker compose exec -T postgres pg_isready -U postgres -d guatequeriders >
 done
 
 echo "Obteniendo secreto local del webhook de Stripe..."
-STRIPE_WEBHOOK_SECRET="$(stripe listen --events "$EVENTS" --forward-to "$WEBHOOK_URL" --print-secret)"
+STRIPE_WEBHOOK_SECRET="$(stripe --api-key "$STRIPE_SECRET_KEY" listen --events "$EVENTS" --forward-to "$WEBHOOK_URL" --print-secret)"
 export STRIPE_WEBHOOK_SECRET
 export SPRING_PROFILES_ACTIVE=dev
 export STRIPE_ENABLED=true
@@ -74,7 +74,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 echo "Iniciando Stripe listener..."
-stripe listen \
+stripe --api-key "$STRIPE_SECRET_KEY" listen \
   --events "$EVENTS" \
   --forward-to "$WEBHOOK_URL" &
 STRIPE_PID=$!
