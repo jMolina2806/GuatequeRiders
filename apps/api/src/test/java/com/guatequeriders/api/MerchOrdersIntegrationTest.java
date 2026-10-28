@@ -443,6 +443,59 @@ class MerchOrdersIntegrationTest {
         assertThat(batchRepository.findByCampaignId(campaignId)).isEmpty();
     }
 
+    @Test
+    void adminCanAdvanceIncludedPaidOrderThroughFulfillmentLifecycle() throws Exception {
+        long campaignId = openCampaign();
+        String userToken = login("demo", "demo123");
+        String adminToken = login("admin", "admin123");
+        long orderId = createOrder(userToken, orderJson("TSHIRT", "M", 1));
+        markPaid(orderId);
+        closeCurrentCampaign();
+
+        mockMvc.perform(post("/api/admin/orders/{id}/advance-status", orderId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isConflict());
+
+        mockMvc.perform(post("/api/admin/merch/campaigns/{id}/ordered", campaignId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/admin/orders/{id}/advance-status", orderId)
+                        .header("Authorization", bearer(userToken)))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(post("/api/admin/orders/{id}/advance-status", orderId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("IN_PRODUCTION"));
+
+        mockMvc.perform(post("/api/admin/orders/{id}/advance-status", orderId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("READY"));
+
+        mockMvc.perform(post("/api/admin/orders/{id}/advance-status", orderId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("DELIVERED"));
+
+        mockMvc.perform(post("/api/admin/orders/{id}/advance-status", orderId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isConflict());
+
+        mockMvc.perform(get("/api/admin/merch/campaigns/{id}/dashboard", campaignId)
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fulfillmentOrders.length()").value(1))
+                .andExpect(jsonPath("$.fulfillmentOrders[0].id").value(orderId))
+                .andExpect(jsonPath("$.fulfillmentOrders[0].status").value("DELIVERED"));
+
+        mockMvc.perform(get("/api/orders/{id}", orderId)
+                        .header("Authorization", bearer(userToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("DELIVERED"));
+    }
+
     private long openCampaign() throws Exception {
         String response = mockMvc.perform(post("/api/admin/merch/campaigns")
                         .header("Authorization", bearer(login("admin", "admin123"))))
