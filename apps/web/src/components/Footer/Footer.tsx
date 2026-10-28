@@ -64,6 +64,7 @@ export default function Footer() {
           <Link to="/legal">Aviso legal</Link>
           <Link to="/privacy">Privacidad</Link>
           <Link to="/merch-terms">Condiciones Merch</Link>
+          <Link to="/cookies">Cookies y almacenamiento</Link>
         </div>
       </div>
 
