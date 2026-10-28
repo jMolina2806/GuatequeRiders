@@ -26,16 +26,16 @@ public class UserNotificationPreferences {
     private User user;
 
     @Column(name = "merch_notifications", nullable = false)
-    private boolean merchNotifications = true;
+    private boolean merchNotifications;
 
     @Column(name = "route_notifications", nullable = false)
-    private boolean routeNotifications = true;
+    private boolean routeNotifications;
 
     @Column(name = "event_notifications", nullable = false)
-    private boolean eventNotifications = true;
+    private boolean eventNotifications;
 
     @Column(name = "circuit_notifications", nullable = false)
-    private boolean circuitNotifications = true;
+    private boolean circuitNotifications;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
