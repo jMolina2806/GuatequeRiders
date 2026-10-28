@@ -18,18 +18,15 @@ La aplicación está preparada para desplegarse con:
 
 No publicar hasta completar estos puntos:
 
-1. Sustituir en las páginas legales todos los campos `[PENDIENTE DE COMPLETAR]`:
-   - titular o denominación,
-   - NIF/CIF,
-   - domicilio,
-   - email legal/privacidad/pedidos,
-   - datos registrales si aplican.
-2. Revisar las condiciones de Merch con la modalidad real de entrega y costes.
-3. Comprar/configurar el dominio.
-4. Contratar un servidor o plataforma compatible con Docker.
-5. Configurar backups externos y probar una restauración.
-6. Verificar el dominio de email.
-7. Activar Stripe LIVE únicamente después de probar el despliegue completo.
+1. Definir quién actúa como responsable de la plataforma y del tratamiento de datos antes de abrir el registro público.
+2. Crear un email de contacto de la comunidad cuando exista dominio.
+3. Si se va a activar venta real de Merch, definir antes quién recibe los pagos y actúa como vendedor o responsable de la operación.
+4. Revisar las condiciones reales de entrega, costes, cancelaciones y devoluciones antes de activar Stripe LIVE.
+5. Comprar/configurar el dominio.
+6. Contratar un servidor o plataforma compatible con Docker.
+7. Configurar backups externos y probar una restauración.
+8. Verificar el dominio de email.
+9. Activar Stripe LIVE únicamente después de probar el despliegue completo y cerrar los puntos anteriores.
 
 ## Dominio y HTTPS
 
