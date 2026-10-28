@@ -11,69 +11,70 @@ type LegalSection = {
   eyebrow: string
   title: string
   intro: string
-  requiresIdentity?: boolean
+  requiresDefinition?: boolean
   blocks: LegalBlock[]
 }
 
-const IDENTITY_NOTICE =
-  'Antes de publicar en producción deben sustituirse los campos entre corchetes por los datos reales del titular de Guateque Riders.'
+const DEFINITION_NOTICE =
+  'Guateque Riders es una comunidad motera, no una empresa ni una sociedad mercantil. Antes de abrir la plataforma al público deberá definirse quién actúa como responsable de la plataforma y del tratamiento de datos. Si se activa la venta real de Merch, también deberá definirse quién realiza jurídicamente esa venta y recibe los pagos.'
 
 const SECTIONS: Record<string, LegalSection> = {
   '/legal': {
     eyebrow: 'Información del sitio',
     title: 'Aviso legal',
     intro:
-      'Información general sobre el titular, el uso de la plataforma y las condiciones de acceso a Guateque Riders.',
-    requiresIdentity: true,
+      'Información general sobre Guateque Riders, el uso de la plataforma y las condiciones de acceso.',
+    requiresDefinition: true,
     blocks: [
       {
-        title: '1. Titular del sitio',
+        title: '1. Sobre Guateque Riders',
+        paragraphs: [
+          'Guateque Riders es una comunidad motera y esta plataforma se ha creado para facilitar la organización de rutas, eventos, actividades de circuito, colaboradores, comunidad y merchandising.',
+          'Guateque Riders no se presenta en esta versión como sociedad mercantil, empresa o asociación formalizada.',
+        ],
         items: [
-          'Titular o denominación social: [PENDIENTE DE COMPLETAR]',
-          'NIF/CIF: [PENDIENTE DE COMPLETAR]',
-          'Domicilio: [PENDIENTE DE COMPLETAR]',
-          'Email de contacto legal: [PENDIENTE DE COMPLETAR]',
-          'Datos registrales, si resultan aplicables: [PENDIENTE DE COMPLETAR]',
+          'Responsable de la plataforma: [PENDIENTE DE DEFINIR]',
+          'Email general de contacto: [PENDIENTE HASTA DISPONER DE DOMINIO]',
         ],
       },
       {
         title: '2. Objeto',
         paragraphs: [
-          'Guateque Riders es una plataforma destinada a la comunidad motera para consultar y gestionar rutas, eventos, actividades de circuito, colaboradores y campañas de merchandising.',
-          'Determinadas funciones requieren una cuenta de usuario. Las funciones de administración están reservadas a las personas autorizadas por Guateque Riders.',
+          'La plataforma permite consultar y gestionar rutas, eventos, actividades de circuito, colaboradores y campañas de merchandising.',
+          'Determinadas funciones requieren una cuenta de usuario. Las funciones de administración están reservadas a las personas autorizadas por la comunidad.',
         ],
       },
       {
         title: '3. Uso de la plataforma',
         items: [
           'La persona usuaria debe facilitar información veraz y mantener la confidencialidad de sus credenciales.',
-          'No está permitido utilizar la plataforma para actividades ilícitas, fraudulentas, abusivas o que perjudiquen a otras personas o a la propia comunidad.',
-          'Guateque Riders podrá limitar o suspender accesos cuando sea necesario para proteger la seguridad, el funcionamiento de la plataforma o el cumplimiento de estas condiciones.',
+          'No está permitido utilizar la plataforma para actividades ilícitas, fraudulentas, abusivas o que perjudiquen a otras personas o a la comunidad.',
+          'El acceso podrá limitarse o suspenderse cuando sea necesario para proteger la seguridad, el funcionamiento de la plataforma o a sus usuarios.',
         ],
       },
       {
         title: '4. Contenidos y propiedad intelectual',
         paragraphs: [
           'Los textos, diseños, marcas, logotipos, fotografías y demás contenidos estarán sujetos a los derechos de sus respectivos titulares. Su disponibilidad en la plataforma no implica una cesión de derechos salvo indicación expresa.',
-          'Quien aporte contenidos a la plataforma, como fotografías de rutas, declara disponer de los derechos o autorizaciones necesarios para su publicación.',
+          'Quien aporte contenidos a la plataforma, como fotografías de rutas, debe disponer de los derechos o autorizaciones necesarios para su publicación.',
         ],
       },
       {
         title: '5. Enlaces y servicios externos',
         paragraphs: [
-          'La plataforma puede enlazar con servicios externos, entre ellos Instagram, WhatsApp y proveedores de pago. Guateque Riders no controla sus contenidos, disponibilidad ni políticas de privacidad.',
+          'La plataforma puede enlazar con servicios externos como Instagram, WhatsApp o proveedores de pago. Cada servicio externo se rige por sus propias condiciones y políticas.',
         ],
       },
       {
         title: '6. Disponibilidad y seguridad',
         paragraphs: [
-          'Se aplican medidas técnicas razonables para mantener la seguridad y disponibilidad del servicio. No obstante, no puede garantizarse una disponibilidad ininterrumpida ni la ausencia absoluta de incidencias técnicas.',
+          'Se aplican medidas técnicas razonables para mantener la seguridad y disponibilidad del servicio. No puede garantizarse una disponibilidad ininterrumpida ni la ausencia absoluta de incidencias técnicas.',
         ],
       },
       {
-        title: '7. Legislación aplicable',
+        title: '7. Actividad económica futura',
         paragraphs: [
-          'Este aviso se interpretará conforme a la normativa española y de la Unión Europea que resulte aplicable, sin perjuicio de los derechos imperativos de las personas consumidoras y usuarias.',
+          'Si en el futuro la plataforma desarrolla una actividad económica real, por ejemplo mediante venta de Merch con pagos LIVE, este aviso deberá revisarse y completarse con la identificación y demás información legal que corresponda a la persona o entidad que preste ese servicio.',
         ],
       },
     ],
@@ -82,16 +83,17 @@ const SECTIONS: Record<string, LegalSection> = {
     eyebrow: 'Protección de datos',
     title: 'Política de privacidad',
     intro:
-      'Esta política explica qué datos trata Guateque Riders, para qué se utilizan y qué derechos tienes.',
-    requiresIdentity: true,
+      'Esta política explica qué datos trata la plataforma de Guateque Riders, para qué se utilizan y qué derechos tienes.',
+    requiresDefinition: true,
     blocks: [
       {
         title: '1. Responsable del tratamiento',
+        paragraphs: [
+          'Guateque Riders es una comunidad motera. La persona que finalmente determine los fines y medios del tratamiento de los datos deberá identificarse como responsable antes de abrir el registro público de usuarios.',
+        ],
         items: [
-          'Responsable: [PENDIENTE DE COMPLETAR]',
-          'NIF/CIF: [PENDIENTE DE COMPLETAR]',
-          'Domicilio: [PENDIENTE DE COMPLETAR]',
-          'Email para privacidad y ejercicio de derechos: [PENDIENTE DE COMPLETAR]',
+          'Responsable del tratamiento: [PENDIENTE DE DEFINIR]',
+          'Email para privacidad y ejercicio de derechos: [PENDIENTE HASTA DISPONER DE DOMINIO]',
         ],
       },
       {
@@ -108,33 +110,32 @@ const SECTIONS: Record<string, LegalSection> = {
       {
         title: '3. Finalidades y bases jurídicas',
         items: [
-          'Crear y mantener la cuenta, autenticar al usuario y prestar las funciones solicitadas: ejecución de la relación con la persona usuaria.',
-          'Gestionar inscripciones, pedidos, pagos, producción, entrega e incidencias: ejecución del servicio o contrato solicitado.',
-          'Conservar la información exigida por normativa fiscal, contable, de consumo u otras obligaciones aplicables: cumplimiento de obligaciones legales.',
-          'Enviar comunicaciones operativas sobre pedidos, pagos, inscripciones o cambios relevantes: ejecución del servicio solicitado.',
-          'Enviar avisos generales de Merch, rutas, eventos o circuitos: consentimiento, que puede activarse o retirarse por categoría desde el perfil.',
-          'Proteger la plataforma frente a fraude, abuso e incidentes de seguridad: interés legítimo en mantener la seguridad del servicio, cuando resulte aplicable.',
+          'Crear y mantener la cuenta, autenticar al usuario y prestar las funciones solicitadas.',
+          'Gestionar inscripciones, pedidos, pagos, producción, entrega e incidencias cuando esas funciones estén activas.',
+          'Enviar comunicaciones operativas sobre pedidos, pagos, inscripciones o cambios relevantes.',
+          'Enviar avisos generales de Merch, rutas, eventos o circuitos únicamente cuando el usuario los haya activado.',
+          'Proteger la plataforma frente a fraude, abuso e incidentes de seguridad.',
         ],
       },
       {
         title: '4. Destinatarios',
         paragraphs: [
-          'Los datos podrán ser tratados por proveedores que presten servicios necesarios de alojamiento, base de datos, correo electrónico o soporte técnico bajo las condiciones contractuales correspondientes.',
-          'Para pagos con tarjeta se utiliza Stripe Checkout. Para preparar o entregar pedidos podrán comunicarse únicamente los datos necesarios a proveedores o servicios logísticos cuando resulte imprescindible.',
+          'Los datos podrán ser tratados por proveedores necesarios para alojamiento, base de datos, correo electrónico o soporte técnico bajo las condiciones que correspondan.',
+          'Si se activan pagos reales, Stripe procesará el pago mediante Checkout. Para preparar o entregar pedidos podrán comunicarse únicamente los datos necesarios al proveedor o servicio logístico correspondiente.',
           'No se venderán datos personales a terceros.',
         ],
       },
       {
         title: '5. Transferencias internacionales',
         paragraphs: [
-          'Si alguno de los proveedores utilizados trata datos fuera del Espacio Económico Europeo, se comprobará que exista un mecanismo válido de transferencia internacional y las garantías exigidas por la normativa aplicable.',
+          'Si alguno de los proveedores utilizados trata datos fuera del Espacio Económico Europeo, antes de producción se comprobarán las garantías y mecanismos aplicables.',
         ],
       },
       {
         title: '6. Conservación',
         items: [
-          'Los datos de cuenta se conservarán mientras la cuenta permanezca activa y posteriormente durante el tiempo necesario para atender responsabilidades legales.',
-          'Los datos de pedidos y pagos se conservarán durante los plazos exigidos por la normativa aplicable y para atender incidencias o reclamaciones.',
+          'Los datos de cuenta se conservarán mientras la cuenta permanezca activa y posteriormente durante el tiempo necesario para atender responsabilidades que resulten aplicables.',
+          'Los datos de pedidos y pagos se conservarán durante el tiempo necesario para gestionar el servicio y las obligaciones que correspondan si se activa la venta real.',
           'Las preferencias de comunicaciones se conservarán mientras sean necesarias para respetar la elección del usuario.',
           'Los contenidos aportados se conservarán mientras formen parte de la funcionalidad correspondiente o hasta que proceda su retirada.',
         ],
@@ -143,7 +144,7 @@ const SECTIONS: Record<string, LegalSection> = {
         title: '7. Derechos',
         paragraphs: [
           'Puedes solicitar acceso, rectificación, supresión, oposición, limitación y portabilidad cuando correspondan, así como retirar un consentimiento sin afectar a la licitud del tratamiento anterior.',
-          'Las solicitudes deberán enviarse al email de privacidad indicado en esta política, una vez completado el dato del responsable. También puedes presentar una reclamación ante la Agencia Española de Protección de Datos.',
+          'Antes de abrir el registro público deberá publicarse el email de contacto del responsable para poder ejercer estos derechos. También puede presentarse una reclamación ante la Agencia Española de Protección de Datos.',
         ],
       },
       {
@@ -158,65 +159,67 @@ const SECTIONS: Record<string, LegalSection> = {
     eyebrow: 'Merchandising',
     title: 'Condiciones de Merch',
     intro:
-      'Condiciones aplicables a las campañas y pedidos de merchandising gestionados mediante Guateque Riders.',
-    requiresIdentity: true,
+      'Funcionamiento previsto para las campañas y pedidos de merchandising gestionados mediante Guateque Riders.',
+    requiresDefinition: true,
     blocks: [
       {
-        title: '1. Vendedor y contacto',
+        title: '1. Situación del Merch',
+        paragraphs: [
+          'Guateque Riders es una comunidad motera y estas condiciones describen el funcionamiento técnico previsto de las campañas de Merch.',
+          'Mientras Stripe LIVE no esté activado, esta funcionalidad se mantiene en entorno de prueba y no constituye por sí sola una oferta pública de venta real.',
+          'Antes de aceptar pagos reales deberá definirse quién actúa jurídicamente como vendedor o responsable de la operación, quién recibe los pagos y cuál será el canal de contacto para pedidos e incidencias.',
+        ],
         items: [
-          'Titular responsable de la venta: [PENDIENTE DE COMPLETAR]',
-          'NIF/CIF: [PENDIENTE DE COMPLETAR]',
-          'Domicilio: [PENDIENTE DE COMPLETAR]',
-          'Email para pedidos, desistimiento e incidencias: [PENDIENTE DE COMPLETAR]',
+          'Responsable de la venta real: [PENDIENTE ANTES DE ACTIVAR STRIPE LIVE]',
+          'Email para pedidos e incidencias: [PENDIENTE HASTA DISPONER DE DOMINIO]',
         ],
       },
       {
         title: '2. Funcionamiento de las campañas',
         paragraphs: [
-          'El Merch funciona por campañas con un periodo de apertura. Mientras la campaña esté abierta pueden crearse pedidos y completarse pagos. Al cerrarse se congela el lote que se utilizará para preparar el pedido al proveedor.',
-          'Un pedido no se considera pagado hasta que Guateque Riders recibe la confirmación válida del proveedor de pago.',
+          'El Merch funciona por campañas con un periodo de apertura. Mientras la campaña esté abierta pueden crearse pedidos y completarse pagos cuando el sistema de pago esté habilitado. Al cerrarse se congela el lote que se utilizará para preparar el pedido al proveedor.',
+          'Un pedido no se considera pagado hasta que la plataforma recibe la confirmación válida del proveedor de pago.',
         ],
       },
       {
         title: '3. Productos, tallas y personalización',
         paragraphs: [
           'La ficha del producto y el resumen previo al pago muestran el producto, talla, cantidad, personalización e importe seleccionado.',
-          'La persona compradora es responsable de revisar talla y texto de personalización antes de confirmar el pedido. Una personalización solicitada por el usuario puede convertir el producto en un bien confeccionado conforme a sus especificaciones.',
+          'La persona compradora es responsable de revisar talla y texto de personalización antes de confirmar el pedido.',
         ],
       },
       {
         title: '4. Precio y pago',
         paragraphs: [
-          'El importe total aplicable se muestra antes de abrir Stripe Checkout. Cualquier impuesto o coste adicional que legalmente corresponda deberá estar incluido o identificado antes de finalizar la compra.',
-          'Los pagos con tarjeta se procesan mediante Stripe Checkout. Guateque Riders no recibe ni almacena el número completo de tarjeta ni el CVC.',
+          'Antes de activar una venta real deberán quedar definidos y mostrados de forma clara el precio final, los posibles costes de entrega y cualquier otro importe aplicable.',
+          'Cuando se active Stripe LIVE, los pagos con tarjeta se procesarán mediante Stripe Checkout. Guateque Riders no recibirá ni almacenará el número completo de tarjeta ni el CVC.',
         ],
       },
       {
         title: '5. Confirmación y seguimiento',
         paragraphs: [
-          'Tras confirmarse el pago se registra el pedido y se envía una comunicación operativa al email indicado. El estado puede avanzar por las fases Confirmado, En producción, Listo para entregar y Entregado.',
+          'Tras confirmarse un pago se registra el pedido y se envía una comunicación operativa al email indicado. El estado puede avanzar por las fases Confirmado, En producción, Listo para entregar y Entregado.',
           'La versión de estas condiciones aceptada al crear el pedido queda registrada junto con la fecha de aceptación.',
         ],
       },
       {
-        title: '6. Cancelación y desistimiento',
+        title: '6. Cancelación, devolución y personalización',
         paragraphs: [
-          'La aplicación permite cancelar directamente un pedido pendiente que todavía no haya sido pagado. Esta limitación técnica no reduce los derechos legales de la persona consumidora.',
-          'Con carácter general, en las ventas a distancia a consumidores existe un plazo legal de desistimiento, salvo las excepciones previstas por la normativa.',
-          'El derecho de desistimiento puede no resultar aplicable a bienes confeccionados conforme a las especificaciones de la persona consumidora o claramente personalizados. La excepción se aplicará únicamente cuando el producto concreto cumpla legalmente esos requisitos.',
-          'Los productos no personalizados mantienen los derechos de desistimiento y devolución que resulten aplicables. Los derechos por falta de conformidad o producto defectuoso no quedan afectados por la personalización.',
+          'La aplicación permite cancelar directamente un pedido pendiente que todavía no haya sido pagado.',
+          'Antes de activar ventas reales deberán concretarse las condiciones de desistimiento, devolución e incidencias según el tipo de producto y la persona o entidad que actúe como vendedor.',
+          'Si existen productos claramente personalizados, se revisará específicamente cómo afecta esa personalización al derecho de desistimiento. Los derechos frente a productos defectuosos o no conformes deberán mantenerse en todo caso cuando resulten aplicables.',
         ],
       },
       {
         title: '7. Entrega',
         paragraphs: [
-          'La modalidad y condiciones de entrega deberán comunicarse antes de finalizar la compra. Si se habilitan envíos, sus costes y condiciones se mostrarán previamente. Cuando la entrega se coordine de forma presencial, se informará al comprador cuando el pedido esté listo.',
+          'Antes de activar ventas reales se definirá si la entrega será presencial, mediante envío o ambas opciones, y se mostrará al usuario cualquier coste y condición antes del pago.',
         ],
       },
       {
-        title: '8. Incidencias',
+        title: '8. Activación de venta real',
         paragraphs: [
-          'Las incidencias de pago, producción, entrega, talla, personalización o producto deberán comunicarse al email de pedidos indicado en estas condiciones. La respuesta se realizará respetando los derechos que correspondan conforme a la normativa de consumo.',
+          'Stripe LIVE permanecerá desactivado hasta que estén definidos el responsable de la venta, las condiciones reales de entrega y devolución, el canal de contacto y la información legal que corresponda.',
         ],
       },
     ],
@@ -263,10 +266,10 @@ export default function LegalInfoPage() {
         <small>Versión: 28/10/2026</small>
       </header>
 
-      {section.requiresIdentity && (
+      {section.requiresDefinition && (
         <div className="legal-info__notice">
-          <strong>Datos obligatorios pendientes</strong>
-          <p>{IDENTITY_NOTICE}</p>
+          <strong>Definición pendiente antes de producción</strong>
+          <p>{DEFINITION_NOTICE}</p>
         </div>
       )}
 
@@ -287,7 +290,7 @@ export default function LegalInfoPage() {
       <div className="legal-info__reference">
         <strong>Revisión antes de producción</strong>
         <p>
-          Estos textos están preparados para la funcionalidad actual de la plataforma. Antes de publicar deben completarse los datos identificativos del titular y revisarse contra la configuración real de dominio, hosting, correo, pagos, proveedores y entrega.
+          Los textos reflejan que Guateque Riders es una comunidad motera. Antes de abrir el registro público deberá identificarse al responsable real del tratamiento de datos. Antes de activar Stripe LIVE deberá definirse además quién realiza la venta de Merch y adaptar la información legal a esa situación concreta.
         </p>
       </div>
     </section>
