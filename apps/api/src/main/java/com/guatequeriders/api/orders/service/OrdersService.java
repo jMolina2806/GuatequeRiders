@@ -2,6 +2,7 @@ package com.guatequeriders.api.orders.service;
 
 import com.guatequeriders.api.common.exception.ConflictException;
 import com.guatequeriders.api.common.exception.ResourceNotFoundException;
+import com.guatequeriders.api.legal.LegalVersions;
 import com.guatequeriders.api.merch.model.CampaignStatus;
 import com.guatequeriders.api.merch.model.MerchCampaign;
 import com.guatequeriders.api.merch.repository.MerchCampaignRepository;
@@ -81,6 +82,8 @@ public class OrdersService {
         order.setCity(request.city());
         order.setPostalCode(request.postalCode());
         order.setProvince(request.province());
+        order.setMerchTermsAcceptedAt(java.time.LocalDateTime.now());
+        order.setMerchTermsVersion(LegalVersions.MERCH_TERMS);
 
         BigDecimal total = BigDecimal.ZERO.setScale(2);
         Set<String> lineKeys = new HashSet<>();
