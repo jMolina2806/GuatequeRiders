@@ -58,7 +58,7 @@ public class UnsubscribeTokenService {
             }
 
             return Long.valueOf(payloadParts[0]);
-        } catch (NumberFormatException | IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("Invalid unsubscribe token");
         }
     }
