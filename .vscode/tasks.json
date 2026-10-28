@@ -42,10 +42,22 @@
       "problemMatcher": []
     },
     {
+      "label": "Start Mailpit",
+      "type": "shell",
+      "command": "docker compose up -d mailpit",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Run Backend",
       "type": "shell",
       "command": "set -a; [ ! -f ../../.env ] || source ../../.env; set +a; ./mvnw spring-boot:run",
-      "dependsOn": "Start Database",
+      "dependsOn": [
+        "Start Database",
+        "Start Mailpit"
+      ],
       "dependsOrder": "sequence",
       "options": {
         "cwd": "${workspaceFolder}/apps/api",
