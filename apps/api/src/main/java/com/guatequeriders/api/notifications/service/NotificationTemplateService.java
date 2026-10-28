@@ -14,6 +14,46 @@ public class NotificationTemplateService {
                          List<String> details,
                          String actionLabel,
                          String actionUrl) {
+        return renderInternal(
+                eyebrow,
+                title,
+                message,
+                details,
+                actionLabel,
+                actionUrl,
+                null,
+                null
+        );
+    }
+
+    public String renderMarketing(String eyebrow,
+                                  String title,
+                                  String message,
+                                  List<String> details,
+                                  String actionLabel,
+                                  String actionUrl,
+                                  String preferencesUrl,
+                                  String unsubscribeUrl) {
+        return renderInternal(
+                eyebrow,
+                title,
+                message,
+                details,
+                actionLabel,
+                actionUrl,
+                preferencesUrl,
+                unsubscribeUrl
+        );
+    }
+
+    private String renderInternal(String eyebrow,
+                                  String title,
+                                  String message,
+                                  List<String> details,
+                                  String actionLabel,
+                                  String actionUrl,
+                                  String preferencesUrl,
+                                  String unsubscribeUrl) {
         StringBuilder detailRows = new StringBuilder();
         for (String detail : details) {
             if (detail == null || detail.isBlank()) {
@@ -38,6 +78,20 @@ public class NotificationTemplateService {
             );
         }
 
+        String preferences = "";
+        if (preferencesUrl != null && unsubscribeUrl != null) {
+            preferences = """
+                    <div style="margin-top:24px;padding-top:18px;border-top:1px solid #223044;text-align:center;font-size:12px;line-height:1.7;color:#7d8ca0;">
+                      <a href="%s" style="color:#9fb0c5;text-decoration:underline;">Gestionar notificaciones</a>
+                      <span style="padding:0 7px;">·</span>
+                      <a href="%s" style="color:#9fb0c5;text-decoration:underline;">Dejar de recibir estos avisos</a>
+                    </div>
+                    """.formatted(
+                    HtmlUtils.htmlEscape(preferencesUrl),
+                    HtmlUtils.htmlEscape(unsubscribeUrl)
+            );
+        }
+
         return """
                 <!doctype html>
                 <html lang="es">
@@ -54,6 +108,7 @@ public class NotificationTemplateService {
                       <p style="margin:0 0 18px;color:#b7c0cc;font-size:15px;line-height:1.7;">%s</p>
                       <div style="margin-top:18px;border-top:1px solid #223044;">%s</div>
                       %s
+                      %s
                     </div>
                     <p style="margin:18px 0 0;color:#66758a;font-size:11px;line-height:1.6;text-align:center;">
                       Este correo ha sido enviado automáticamente por Guateque Riders.
@@ -66,7 +121,8 @@ public class NotificationTemplateService {
                 HtmlUtils.htmlEscape(title),
                 HtmlUtils.htmlEscape(message),
                 detailRows,
-                action
+                action,
+                preferences
         );
     }
 }
