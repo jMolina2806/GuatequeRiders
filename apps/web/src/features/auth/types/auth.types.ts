@@ -17,6 +17,7 @@ export type RegisterRequest = {
   username: string
   email: string
   password: string
+  privacyAccepted: boolean
 }
 
 export type AuthResponse = {
