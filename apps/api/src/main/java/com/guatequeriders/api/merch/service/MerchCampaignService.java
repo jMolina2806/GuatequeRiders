@@ -21,6 +21,7 @@ import com.guatequeriders.api.orders.model.SupplierOrderBatchItem;
 import com.guatequeriders.api.orders.model.SupplierOrderBatchOrder;
 import com.guatequeriders.api.orders.repository.OrderRepository;
 import com.guatequeriders.api.orders.repository.SupplierOrderBatchRepository;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import com.guatequeriders.api.users.model.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -36,13 +37,16 @@ public class MerchCampaignService {
     private final MerchCampaignRepository campaignRepository;
     private final OrderRepository orderRepository;
     private final SupplierOrderBatchRepository batchRepository;
+    private final NotificationService notificationService;
 
     public MerchCampaignService(MerchCampaignRepository campaignRepository,
                                 OrderRepository orderRepository,
-                                SupplierOrderBatchRepository batchRepository) {
+                                SupplierOrderBatchRepository batchRepository,
+                                NotificationService notificationService) {
         this.campaignRepository = campaignRepository;
         this.orderRepository = orderRepository;
         this.batchRepository = batchRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +73,9 @@ public class MerchCampaignService {
         campaign.setOpenedAt(LocalDateTime.now());
         campaign.setOpenedByUser(openedBy);
         try {
-            return campaignRepository.saveAndFlush(campaign);
+            MerchCampaign saved = campaignRepository.saveAndFlush(campaign);
+            notificationService.notifyMerchCampaignOpened(saved);
+            return saved;
         } catch (DataIntegrityViolationException exception) {
             throw new ConflictException("There is already an open Merch campaign");
         }

@@ -4,6 +4,7 @@ import com.guatequeriders.api.common.exception.ResourceNotFoundException;
 import com.guatequeriders.api.events.model.Event;
 import com.guatequeriders.api.events.model.EventStatus;
 import com.guatequeriders.api.events.repository.EventRepository;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,12 @@ import java.util.List;
 public class EventsService {
 
     private final EventRepository eventRepository;
+    private final NotificationService notificationService;
 
-    public EventsService(EventRepository eventRepository) {
+    public EventsService(EventRepository eventRepository,
+                         NotificationService notificationService) {
         this.eventRepository = eventRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +48,7 @@ public class EventsService {
     @Transactional
     public Event update(Long id, Event updated) {
         Event existing = findById(id);
+        EventStatus previousStatus = existing.getStatus();
         existing.setTitle(updated.getTitle());
         existing.setDescription(updated.getDescription());
         existing.setLocation(updated.getLocation());
@@ -52,6 +57,15 @@ public class EventsService {
         existing.setEndTime(updated.getEndTime());
         existing.setMaxParticipants(updated.getMaxParticipants());
         existing.setStatus(updated.getStatus());
+
+        if (previousStatus != EventStatus.PUBLISHED && existing.getStatus() == EventStatus.PUBLISHED) {
+            notificationService.notifyEventPublished(existing);
+        } else if (previousStatus == EventStatus.PUBLISHED
+                && (existing.getStatus() == EventStatus.CANCELLED || existing.getStatus() == EventStatus.CLOSED)) {
+            notificationService.notifyEventStatusChanged(existing);
+        } else if (previousStatus == EventStatus.PUBLISHED && existing.getStatus() == EventStatus.PUBLISHED) {
+            notificationService.notifyEventUpdated(existing);
+        }
         return existing;
     }
 

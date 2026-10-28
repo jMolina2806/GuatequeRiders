@@ -7,6 +7,7 @@ import CircuitsPage from '@/features/circuits/pages/CircuitsPage'
 import MerchPage from '@/pages/MerchPage'
 import CollaboratorsPage from '@/features/collaborators/pages/CollaboratorsPage'
 import ProfilePage from '@/features/profile/pages/ProfilePage'
+import UnsubscribePage from '@/features/profile/pages/UnsubscribePage'
 import LoginPage from '@/features/auth/pages/LoginPage'
 import RegisterPage from '@/features/auth/pages/RegisterPage'
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <ProfilePage />,
+      },
+      {
+        path: 'unsubscribe',
+        element: <UnsubscribePage />,
       },
       {
         path: 'legal',

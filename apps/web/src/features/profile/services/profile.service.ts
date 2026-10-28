@@ -1,9 +1,14 @@
 import type { Event } from '@/features/events/types/event.types'
 import type { Route } from '@/features/routes/types/route.types'
+import type {
+  NotificationCategory,
+  NotificationPreferences,
+} from '../types/profile.types'
 import { getToken } from '@/features/auth/services/session'
 import { translateApiMessage } from '@/utils/apiMessages'
 
 const API_BASE = '/api/users/me'
+const NOTIFICATION_API_BASE = '/api/notifications'
 
 function authHeaders(): HeadersInit {
   const token = getToken()
@@ -31,4 +36,40 @@ export async function getMyEvents(): Promise<Event[]> {
     headers: authHeaders(),
   })
   return handleResponse<Event[]>(response)
+}
+
+export async function getNotificationPreferences(): Promise<NotificationPreferences> {
+  const response = await fetch(`${NOTIFICATION_API_BASE}/preferences`, {
+    headers: authHeaders(),
+  })
+  return handleResponse<NotificationPreferences>(response)
+}
+
+export async function updateNotificationPreferences(
+  preferences: NotificationPreferences,
+): Promise<NotificationPreferences> {
+  const response = await fetch(`${NOTIFICATION_API_BASE}/preferences`, {
+    method: 'PUT',
+    headers: {
+      ...authHeaders(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(preferences),
+  })
+  return handleResponse<NotificationPreferences>(response)
+}
+
+export async function unsubscribeFromCategory(
+  token: string,
+  category: NotificationCategory,
+): Promise<void> {
+  const response = await fetch(`${NOTIFICATION_API_BASE}/unsubscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token, category }),
+  })
+
+  await handleResponse<{ unsubscribed: boolean }>(response)
 }

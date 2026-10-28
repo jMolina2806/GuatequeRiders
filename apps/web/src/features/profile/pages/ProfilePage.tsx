@@ -4,6 +4,7 @@ import ProfileStats from '../components/ProfileStats'
 import MyRoutes from '../components/MyRoutes'
 import MyEvents from '../components/MyEvents'
 import MyOrders from '../components/MyOrders'
+import NotificationPreferences from '../components/NotificationPreferences'
 import { useProfile } from '../hooks/useProfile'
 import { useAuth } from '@/features/auth/context/useAuth'
 import './ProfilePage.css'
@@ -65,6 +66,7 @@ export default function ProfilePage() {
           <MyRoutes routes={routes} />
           <MyEvents events={events} />
           <MyOrders />
+          <NotificationPreferences />
         </>
       )}
     </section>

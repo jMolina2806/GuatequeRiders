@@ -1,0 +1,63 @@
+.unsubscribe-page {
+  display: grid;
+  min-height: 60vh;
+  place-items: center;
+  padding: 42px 0;
+}
+
+.unsubscribe-page__card {
+  width: min(620px, 100%);
+  padding: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.unsubscribe-page__eyebrow {
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.unsubscribe-page h1 {
+  margin: 9px 0 12px;
+  color: var(--color-text);
+  font-size: 28px;
+}
+
+.unsubscribe-page p {
+  margin: 0 auto;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.unsubscribe-page strong {
+  color: var(--color-text);
+}
+
+.unsubscribe-page__error {
+  margin-top: 16px !important;
+  color: var(--color-danger) !important;
+}
+
+.unsubscribe-page__actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .unsubscribe-page__card {
+    padding: 22px 18px;
+  }
+
+  .unsubscribe-page__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

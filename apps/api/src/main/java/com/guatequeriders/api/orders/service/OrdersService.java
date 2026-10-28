@@ -22,6 +22,7 @@ import com.guatequeriders.api.payments.model.PaymentAttemptStatus;
 import com.guatequeriders.api.payments.repository.PaymentAttemptRepository;
 import com.guatequeriders.api.payments.service.StripeCheckoutService;
 import com.guatequeriders.api.orders.validation.CustomNameNormalizer;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import org.slf4j.Logger;
@@ -46,17 +47,20 @@ public class OrdersService {
     private final SupplierOrderBatchRepository supplierOrderBatchRepository;
     private final PaymentAttemptRepository paymentAttemptRepository;
     private final ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider;
+    private final NotificationService notificationService;
 
     public OrdersService(OrderRepository orderRepository,
                          MerchCampaignRepository campaignRepository,
                          SupplierOrderBatchRepository supplierOrderBatchRepository,
                          PaymentAttemptRepository paymentAttemptRepository,
-                         ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider) {
+                         ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider,
+                         NotificationService notificationService) {
         this.orderRepository = orderRepository;
         this.campaignRepository = campaignRepository;
         this.supplierOrderBatchRepository = supplierOrderBatchRepository;
         this.paymentAttemptRepository = paymentAttemptRepository;
         this.stripeCheckoutServiceProvider = stripeCheckoutServiceProvider;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -146,6 +150,7 @@ public class OrdersService {
         order.setPaidAt(java.time.LocalDateTime.now());
         order.setStatus(OrderStatus.CONFIRMED);
         order.setLatePayment(campaign.getStatus() != CampaignStatus.OPEN);
+        notificationService.notifyOrderPaid(order);
         return order;
     }
 
@@ -208,6 +213,7 @@ public class OrdersService {
         order.setPaidAt(java.time.LocalDateTime.now());
         order.setStatus(OrderStatus.CONFIRMED);
         order.setLatePayment(campaign.getStatus() != CampaignStatus.OPEN);
+        notificationService.notifyOrderPaid(order);
         return PaymentApplicationResult.PAID;
     }
 
@@ -259,6 +265,7 @@ public class OrdersService {
         };
 
         order.setStatus(nextStatus);
+        notificationService.notifyOrderStatusChanged(order);
         return order;
     }
 

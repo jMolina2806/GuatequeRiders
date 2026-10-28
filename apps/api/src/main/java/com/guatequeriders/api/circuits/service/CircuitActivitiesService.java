@@ -5,6 +5,7 @@ import com.guatequeriders.api.circuits.model.CircuitActivityStatus;
 import com.guatequeriders.api.circuits.repository.CircuitActivityRepository;
 import com.guatequeriders.api.common.exception.ConflictException;
 import com.guatequeriders.api.common.exception.ResourceNotFoundException;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +19,12 @@ import java.util.List;
 public class CircuitActivitiesService {
 
     private final CircuitActivityRepository circuitActivityRepository;
+    private final NotificationService notificationService;
 
-    public CircuitActivitiesService(CircuitActivityRepository circuitActivityRepository) {
+    public CircuitActivitiesService(CircuitActivityRepository circuitActivityRepository,
+                                    NotificationService notificationService) {
         this.circuitActivityRepository = circuitActivityRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -45,6 +49,7 @@ public class CircuitActivitiesService {
     @Transactional
     public CircuitActivity update(Long id, CircuitActivity updated) {
         CircuitActivity existing = findById(id);
+        CircuitActivityStatus previousStatus = existing.getStatus();
         if (isFinal(existing.getStatus())) {
             throw new ConflictException("Completed or cancelled circuit activities cannot be edited");
         }
@@ -63,6 +68,9 @@ public class CircuitActivitiesService {
         existing.setRegistrationUrl(updated.getRegistrationUrl());
         existing.setInformationUrl(updated.getInformationUrl());
         existing.setImageUrl(updated.getImageUrl());
+        if (previousStatus == CircuitActivityStatus.PUBLISHED) {
+            notificationService.notifyCircuitUpdated(existing);
+        }
         return existing;
     }
 
@@ -77,6 +85,7 @@ public class CircuitActivitiesService {
             throw new ConflictException("Cannot publish a circuit activity with a past date");
         }
         activity.setStatus(CircuitActivityStatus.PUBLISHED);
+        notificationService.notifyCircuitPublished(activity);
         return activity;
     }
 
@@ -97,7 +106,11 @@ public class CircuitActivitiesService {
                 && activity.getStatus() != CircuitActivityStatus.PUBLISHED) {
             throw new ConflictException("Only DRAFT or PUBLISHED circuit activities can be cancelled");
         }
+        boolean wasPublished = activity.getStatus() == CircuitActivityStatus.PUBLISHED;
         activity.setStatus(CircuitActivityStatus.CANCELLED);
+        if (wasPublished) {
+            notificationService.notifyCircuitCancelled(activity);
+        }
         return activity;
     }
 

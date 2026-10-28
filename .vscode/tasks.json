@@ -42,15 +42,33 @@
       "problemMatcher": []
     },
     {
+      "label": "Start Mailpit",
+      "type": "shell",
+      "command": "docker compose up -d mailpit",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Run Backend",
       "type": "shell",
       "command": "set -a; [ ! -f ../../.env ] || source ../../.env; set +a; ./mvnw spring-boot:run",
-      "dependsOn": "Start Database",
+      "dependsOn": [
+        "Start Database",
+        "Start Mailpit"
+      ],
       "dependsOrder": "sequence",
       "options": {
         "cwd": "${workspaceFolder}/apps/api",
         "env": {
-          "SPRING_PROFILES_ACTIVE": "dev"
+          "SPRING_PROFILES_ACTIVE": "dev",
+          "MAIL_ENABLED": "true",
+          "MAIL_HOST": "localhost",
+          "MAIL_PORT": "1025",
+          "MAIL_SMTP_AUTH": "false",
+          "MAIL_STARTTLS": "false",
+          "MAIL_FROM": "Guateque Riders <no-reply@guatequeriders.local>"
         }
       },
       "problemMatcher": []

@@ -51,9 +51,9 @@ if ss -ltn 2>/dev/null | grep -Eq '[:.]5173[[:space:]]'; then
   exit 1
 fi
 
-echo "Iniciando PostgreSQL..."
+echo "Iniciando PostgreSQL y Mailpit..."
 cd "$ROOT_DIR"
-docker compose up -d postgres
+docker compose up -d postgres mailpit
 
 until docker compose exec -T postgres pg_isready -U postgres -d guatequeriders >/dev/null 2>&1; do
   sleep 1
@@ -66,6 +66,12 @@ export SPRING_PROFILES_ACTIVE=dev
 export STRIPE_ENABLED=true
 export STRIPE_MODE=test
 export APP_PUBLIC_URL="${APP_PUBLIC_URL:-http://localhost:5173}"
+export MAIL_ENABLED="${MAIL_ENABLED:-true}"
+export MAIL_HOST="${MAIL_HOST:-localhost}"
+export MAIL_PORT="${MAIL_PORT:-1025}"
+export MAIL_SMTP_AUTH="${MAIL_SMTP_AUTH:-false}"
+export MAIL_STARTTLS="${MAIL_STARTTLS:-false}"
+export MAIL_FROM="${MAIL_FROM:-Guateque Riders <no-reply@guatequeriders.local>}"
 
 cleanup() {
   echo
@@ -105,6 +111,7 @@ echo "Demo iniciada:"
 echo "  Frontend: $APP_PUBLIC_URL"
 echo "  Backend:  http://localhost:8080"
 echo "  Stripe:   TEST + webhooks locales"
+echo "  Emails:   http://localhost:8025"
 echo
 echo "Cuando termines, pulsa Ctrl+C para cerrar frontend, backend y Stripe listener."
 

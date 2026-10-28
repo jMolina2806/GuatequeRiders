@@ -7,6 +7,7 @@ import com.guatequeriders.api.routes.model.RouteOrganizer;
 import com.guatequeriders.api.routes.model.RouteStatus;
 import com.guatequeriders.api.routes.repository.RouteOrganizerRepository;
 import com.guatequeriders.api.routes.repository.RouteRepository;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
@@ -27,13 +28,16 @@ public class RoutesService {
     private final RouteRepository routeRepository;
     private final RouteOrganizerRepository routeOrganizerRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public RoutesService(RouteRepository routeRepository,
                          RouteOrganizerRepository routeOrganizerRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         NotificationService notificationService) {
         this.routeRepository = routeRepository;
         this.routeOrganizerRepository = routeOrganizerRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -79,6 +83,7 @@ public class RoutesService {
         validateTimes(updated.getMeetingTime(), updated.getDepartureTime());
         List<User> organizers = resolveOrganizers(organizerIds);
         Route existing = findById(id);
+        RouteStatus previousStatus = existing.getStatus();
 
         Set<Long> requestedIds = new HashSet<>(organizers.stream().map(User::getId).toList());
         List<RouteOrganizer> currentOrganizers = routeOrganizerRepository.findAllByRouteId(id);
@@ -106,6 +111,14 @@ public class RoutesService {
         existing.setDifficulty(updated.getDifficulty());
         existing.setMaxParticipants(updated.getMaxParticipants());
         existing.setStatus(updated.getStatus());
+
+        if (previousStatus != RouteStatus.PUBLISHED && existing.getStatus() == RouteStatus.PUBLISHED) {
+            notificationService.notifyRoutePublished(existing);
+        } else if (previousStatus == RouteStatus.PUBLISHED && existing.getStatus() == RouteStatus.CANCELLED) {
+            notificationService.notifyRouteCancelled(existing);
+        } else if (previousStatus == RouteStatus.PUBLISHED && existing.getStatus() == RouteStatus.PUBLISHED) {
+            notificationService.notifyRouteUpdated(existing);
+        }
         return existing;
     }
 
@@ -125,6 +138,7 @@ public class RoutesService {
             throw new ConflictException("At least one organizer is required before publishing");
         }
         route.setStatus(RouteStatus.PUBLISHED);
+        notificationService.notifyRoutePublished(route);
         return route;
     }
 

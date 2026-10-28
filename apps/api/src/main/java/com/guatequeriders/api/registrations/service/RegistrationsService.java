@@ -11,6 +11,7 @@ import com.guatequeriders.api.routes.model.RouteStatus;
 import com.guatequeriders.api.routes.service.RoutesService;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +24,16 @@ public class RegistrationsService {
     private final RouteRegistrationRepository registrationRepository;
     private final RoutesService routesService;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public RegistrationsService(RouteRegistrationRepository registrationRepository,
                                 RoutesService routesService,
-                                UserRepository userRepository) {
+                                UserRepository userRepository,
+                                NotificationService notificationService) {
         this.registrationRepository = registrationRepository;
         this.routesService = routesService;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -51,6 +55,7 @@ public class RegistrationsService {
         registration.setUser(user);
         registration.setRegisteredAt(LocalDateTime.now());
         registrationRepository.save(registration);
+        notificationService.notifyRouteRegistration(route, user);
 
         return RegistrationResponse.from(registration);
     }
