@@ -5,6 +5,7 @@ import { useAuth } from '@/features/auth/context/useAuth'
 import { useCart } from '@/features/merch/context/useCart'
 import { useMerch } from '@/features/merch/context/useMerch'
 import { createOrder } from '@/features/merch/services/orders.service'
+import { markCartOrder } from '@/features/merch/utils/cartCheckout'
 import './CheckoutPage.css'
 
 const euro = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' })
@@ -62,7 +63,8 @@ export default function CheckoutPage() {
         customerPhone,
         notes: notes || undefined,
       })
-       navigate(`/checkout/payment/${order.id}`)
+      markCartOrder(order.id)
+      navigate(`/checkout/payment/${order.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo crear el pedido')
       await refresh()
