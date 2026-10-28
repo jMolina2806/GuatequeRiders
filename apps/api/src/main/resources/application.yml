@@ -19,7 +19,6 @@ app:
     enabled: ${MAIL_ENABLED:false}
     from: ${MAIL_FROM:Guateque Riders <no-reply@guatequeriders.local>}
     public-url: ${APP_PUBLIC_URL:http://localhost:5173}
-    unsubscribe-secret: ${UNSUBSCRIBE_SECRET:${JWT_SECRET:GuatequeRidersDevUnsubscribeSecretKey2026ChangeMe}}
 
 spring:
   application:

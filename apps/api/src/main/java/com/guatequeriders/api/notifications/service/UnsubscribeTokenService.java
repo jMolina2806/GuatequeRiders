@@ -18,7 +18,7 @@ public class UnsubscribeTokenService {
     private final byte[] secret;
 
     public UnsubscribeTokenService(
-            @Value("${app.mail.unsubscribe-secret}") String secret) {
+            @Value("${UNSUBSCRIBE_SECRET:GuatequeRidersDevUnsubscribeSecretKey2026ChangeMe}") String secret) {
         if (secret == null || secret.length() < 32) {
             throw new IllegalStateException("UNSUBSCRIBE_SECRET must contain at least 32 characters");
         }
