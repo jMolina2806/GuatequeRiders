@@ -2,22 +2,36 @@
 
 Este documento resume los puntos que deben validarse antes de publicar Guateque Riders. No sustituye una revisión jurídica profesional cuando resulte necesaria.
 
-## Identificación del prestador
+## Naturaleza de Guateque Riders
 
-La LSSI exige que el prestador permita acceder de forma permanente, fácil, directa y gratuita a información identificativa como nombre o denominación, domicilio, email, NIF y, cuando corresponda, datos registrales.
+Guateque Riders se plantea actualmente como una comunidad motera, no como sociedad mercantil, empresa o asociación formalizada.
 
-Antes de producción deben completarse esos datos en:
+Por tanto, la web no debe presentar a Guateque Riders como si fuera una entidad jurídica inexistente ni inventar CIF, domicilio social o datos registrales.
 
-- Aviso legal.
-- Política de privacidad.
-- Condiciones de Merch.
+Lo que sí debe definirse antes de abrir ciertas funciones al público es quién actúa realmente en cada papel:
+
+- responsable de la plataforma,
+- responsable del tratamiento de datos personales,
+- y, solo si se activa la venta real de Merch, quién actúa jurídicamente como vendedor o responsable de esa operación.
+
+## Aviso legal y actividad económica
+
+La LSSI exige determinada información al prestador cuando resulte aplicable a un servicio de la sociedad de la información, especialmente si existe actividad económica.
+
+Si Guateque Riders activa venta real de Merch u otra actividad económica, deberá revisarse el aviso legal con la situación real de la persona o entidad que preste ese servicio, incluyendo la información exigida por el artículo 10 de la LSSI.
+
+No debe publicarse un CIF, domicilio social o inscripción registral de Guateque Riders mientras tales datos no existan.
 
 Referencia:
 - Ley 34/2002, artículo 10: https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758
 
 ## Información de privacidad
 
-Cuando los datos se obtienen de la persona interesada debe facilitarse, entre otra información:
+El RGPD sí exige identificar al responsable del tratamiento cuando se recogen datos personales.
+
+Antes de abrir el registro público de usuarios debe definirse quién decide realmente los fines y medios del tratamiento de los datos de la comunidad y publicar al menos su identidad y un medio de contacto adecuado.
+
+La política debe informar, entre otros puntos, sobre:
 
 - identidad y contacto del responsable,
 - finalidades,
@@ -29,13 +43,33 @@ Cuando los datos se obtienen de la persona interesada debe facilitarse, entre ot
 
 Referencias:
 - RGPD, artículo 13: https://eur-lex.europa.eu/eli/reg/2016/679/oj
-- AEPD, derecho de información: https://www.aepd.es/derechos-y-deberes/conoce-tus-derechos/derecho-de-informacion
+- AEPD, responsable y encargado: https://www.aepd.es/preguntas-frecuentes/2-tus-obligaciones-como-responsable-del-tratamiento/8-responsable-y-encargado-del-tratamiento/FAQ-0251-como-se-si-soy-responsable-o-encargado
+- AEPD, ejercicio de derechos: https://www.aepd.es/preguntas-frecuentes/17-internet-y-redes-sociales/FAQ-1703-donde-me-debo-dirigir-para-poder-ejercer-un-derecho-en-proteccion-de-datos
+
+## Merch
+
+Mientras Stripe LIVE esté desactivado, el Merch puede mantenerse como flujo técnico de prueba.
+
+Antes de aceptar dinero real deben definirse:
+
+- quién recibe los pagos,
+- quién actúa como vendedor o responsable de la operación,
+- canal de contacto para pedidos e incidencias,
+- modalidad y costes de entrega,
+- condiciones de cancelación, devolución y desistimiento,
+- tratamiento de productos personalizados.
+
+Solo en ese momento deben completarse las obligaciones de información que correspondan a la situación jurídica real.
+
+Referencias:
+- Real Decreto Legislativo 1/2007, artículos 102 y 103.
+- https://www.boe.es/buscar/act.php?id=BOE-A-2007-20555
 
 ## Comunicaciones por email
 
 Los avisos generales de Merch, rutas, eventos y circuitos se mantienen desactivados por defecto y requieren activación voluntaria.
 
-La baja debe ser sencilla y gratuita. La aplicación incluye:
+La aplicación incluye:
 
 - preferencias por categoría,
 - baja desde el perfil,
@@ -44,17 +78,6 @@ La baja debe ser sencilla y gratuita. La aplicación incluye:
 
 Referencia:
 - Ley 34/2002, artículos 21 y 22: https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758
-
-## Merch y desistimiento
-
-Con carácter general, los contratos a distancia con consumidores tienen derecho de desistimiento durante 14 días naturales, salvo excepciones legales.
-
-Los bienes confeccionados conforme a especificaciones del consumidor o claramente personalizados pueden estar exceptuados. Esta excepción no debe aplicarse automáticamente a productos no personalizados.
-
-Referencias:
-- Real Decreto Legislativo 1/2007, artículo 102.
-- Real Decreto Legislativo 1/2007, artículo 103.c.
-- https://www.boe.es/buscar/act.php?id=BOE-A-2007-20555
 
 ## Cookies y almacenamiento
 
@@ -71,7 +94,7 @@ Antes de producción debe documentarse la configuración real de:
 
 - hosting y base de datos,
 - correo transaccional,
-- Stripe,
+- Stripe si se activa,
 - proveedor de merchandising,
 - logística si existe.
 
