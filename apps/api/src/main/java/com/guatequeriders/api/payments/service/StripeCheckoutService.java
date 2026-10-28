@@ -1,5 +1,6 @@
 package com.guatequeriders.api.payments.service;
 
+import com.guatequeriders.api.common.exception.ConflictException;
 import com.guatequeriders.api.payments.config.StripeProperties;
 import com.guatequeriders.api.payments.dto.CheckoutSessionResponse;
 import com.guatequeriders.api.payments.exception.PaymentProviderException;
@@ -8,6 +9,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionExpireParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -57,6 +59,38 @@ public class StripeCheckoutService {
         log.info("Stripe Checkout Session created: orderId={}, paymentAttemptId={}, stripeSessionId={}",
                 preparation.orderId(), preparation.paymentAttemptId(), session.getId());
         return new CheckoutSessionResponse(session.getUrl(), session.getId());
+    }
+
+    public void expireCheckoutSession(String sessionId) {
+        if (sessionId == null || sessionId.isBlank()) {
+            throw new PaymentProviderException("Stripe Checkout Session id is missing", null);
+        }
+        try {
+            Session session = stripeClient.v1().checkout().sessions()
+                    .expire(sessionId, SessionExpireParams.builder().build());
+            validateLivemode(session);
+            if (!"expired".equalsIgnoreCase(session.getStatus())) {
+                throw new PaymentProviderException("Stripe did not expire the Checkout Session", null);
+            }
+            log.info("Stripe Checkout Session expired: stripeSessionId={}", sessionId);
+        } catch (StripeException expireException) {
+            try {
+                Session currentSession = stripeClient.v1().checkout().sessions().retrieve(sessionId);
+                validateLivemode(currentSession);
+                if ("expired".equalsIgnoreCase(currentSession.getStatus())) {
+                    return;
+                }
+                if ("complete".equalsIgnoreCase(currentSession.getStatus())) {
+                    throw new ConflictException("El pago ya se ha completado y el pedido no se puede cancelar");
+                }
+            } catch (ConflictException conflictException) {
+                throw conflictException;
+            } catch (StripeException retrieveException) {
+                expireException.addSuppressed(retrieveException);
+            }
+            log.warn("Unable to expire Stripe Checkout Session: stripeSessionId={}", sessionId);
+            throw new PaymentProviderException("No se pudo cancelar la sesión de pago en Stripe", expireException);
+        }
     }
 
     private CheckoutSessionResponse retrieveExistingSession(CheckoutPreparation preparation) {
