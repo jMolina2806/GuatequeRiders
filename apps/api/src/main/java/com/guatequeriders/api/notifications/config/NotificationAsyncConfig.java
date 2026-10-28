@@ -1,5 +1,6 @@
 package com.guatequeriders.api.notifications.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -9,6 +10,7 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
+@ConditionalOnProperty(name = "app.mail.enabled", havingValue = "true")
 public class NotificationAsyncConfig {
 
     @Bean(name = "mailTaskExecutor")
