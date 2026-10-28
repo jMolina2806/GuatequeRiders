@@ -10,6 +10,7 @@ import com.stripe.StripeClient;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionExpireParams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -128,6 +129,22 @@ class StripeCheckoutServiceTest {
         verify(stripeClient.v1().checkout().sessions(), never())
                 .create(any(SessionCreateParams.class), any(RequestOptions.class));
         verify(paymentAttemptService, never()).markSessionCreated(anyLong(), any(Session.class));
+    }
+
+    @Test
+    void expiresActiveCheckoutSession() throws Exception {
+        Session expiredSession = new Session();
+        expiredSession.setId("cs_test_123");
+        expiredSession.setLivemode(false);
+        expiredSession.setStatus("expired");
+        when(stripeClient.v1().checkout().sessions()
+                .expire(any(String.class), any(SessionExpireParams.class)))
+                .thenReturn(expiredSession);
+
+        service.expireCheckoutSession("cs_test_123");
+
+        verify(stripeClient.v1().checkout().sessions())
+                .expire(any(String.class), any(SessionExpireParams.class));
     }
 
     private CheckoutPreparation preparation(String sessionId, String checkoutUrl) {
