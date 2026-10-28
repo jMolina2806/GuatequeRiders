@@ -6,11 +6,11 @@ import com.guatequeriders.api.events.model.Event;
 import com.guatequeriders.api.events.model.EventStatus;
 import com.guatequeriders.api.merch.model.MerchCampaign;
 import com.guatequeriders.api.notifications.model.EmailNotification;
+import com.guatequeriders.api.notifications.model.NotificationCategory;
 import com.guatequeriders.api.orders.model.Order;
 import com.guatequeriders.api.registrations.repository.RouteRegistrationRepository;
 import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.users.model.User;
-import com.guatequeriders.api.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 @Service
 public class NotificationService {
@@ -25,38 +26,40 @@ public class NotificationService {
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm");
 
-    private final UserRepository userRepository;
     private final RouteRegistrationRepository routeRegistrationRepository;
     private final EventRegistrationRepository eventRegistrationRepository;
+    private final NotificationPreferencesService preferencesService;
     private final NotificationTemplateService templateService;
     private final ApplicationEventPublisher eventPublisher;
     private final String publicUrl;
 
-    public NotificationService(UserRepository userRepository,
-                               RouteRegistrationRepository routeRegistrationRepository,
+    public NotificationService(RouteRegistrationRepository routeRegistrationRepository,
                                EventRegistrationRepository eventRegistrationRepository,
+                               NotificationPreferencesService preferencesService,
                                NotificationTemplateService templateService,
                                ApplicationEventPublisher eventPublisher,
                                @Value("${app.mail.public-url:http://localhost:5173}") String publicUrl) {
-        this.userRepository = userRepository;
         this.routeRegistrationRepository = routeRegistrationRepository;
         this.eventRegistrationRepository = eventRegistrationRepository;
+        this.preferencesService = preferencesService;
         this.templateService = templateService;
         this.eventPublisher = eventPublisher;
         this.publicUrl = stripTrailingSlash(publicUrl);
     }
 
     public void notifyMerchCampaignOpened(MerchCampaign campaign) {
-        publish(
-                allUserEmails(),
+        publishMarketing(
+                NotificationCategory.MERCH,
                 "Nueva campaña Merch abierta",
-                templateService.render(
+                user -> templateService.renderMarketing(
                         "Merch",
                         "Nueva campaña Merch",
                         "Ya puedes hacer tu pedido en la nueva campaña de Guateque Riders.",
                         List.of("Campaña #" + campaign.getId()),
                         "Ver Merch",
-                        publicUrl + "/merch"
+                        publicUrl + "/merch",
+                        preferencesUrl(),
+                        unsubscribeUrl(user, NotificationCategory.MERCH)
                 )
         );
     }
@@ -113,16 +116,18 @@ public class NotificationService {
     }
 
     public void notifyRoutePublished(Route route) {
-        publish(
-                allUserEmails(),
+        publishMarketing(
+                NotificationCategory.ROUTES,
                 "Nueva ruta · " + route.getTitle(),
-                templateService.render(
+                user -> templateService.renderMarketing(
                         "Rutas",
                         route.getTitle(),
                         "Se ha publicado una nueva ruta de Guateque Riders.",
                         routeDetails(route),
                         "Ver rutas",
-                        publicUrl + "/routes"
+                        publicUrl + "/routes",
+                        preferencesUrl(),
+                        unsubscribeUrl(user, NotificationCategory.ROUTES)
                 )
         );
     }
@@ -173,16 +178,18 @@ public class NotificationService {
     }
 
     public void notifyEventPublished(Event event) {
-        publish(
-                allUserEmails(),
+        publishMarketing(
+                NotificationCategory.EVENTS,
                 "Nuevo evento · " + event.getTitle(),
-                templateService.render(
+                user -> templateService.renderMarketing(
                         "Eventos",
                         event.getTitle(),
                         "Se ha publicado un nuevo evento de Guateque Riders.",
                         eventDetails(event),
                         "Ver eventos",
-                        publicUrl + "/events"
+                        publicUrl + "/events",
+                        preferencesUrl(),
+                        unsubscribeUrl(user, NotificationCategory.EVENTS)
                 )
         );
     }
@@ -244,48 +251,62 @@ public class NotificationService {
     }
 
     public void notifyCircuitPublished(CircuitActivity activity) {
-        publish(
-                allUserEmails(),
+        publishMarketing(
+                NotificationCategory.CIRCUITS,
                 "Nueva actividad de circuito · " + activity.getTitle(),
-                templateService.render(
+                user -> templateService.renderMarketing(
                         "Circuitos",
                         activity.getTitle(),
                         "Se ha publicado una nueva actividad de circuito.",
                         circuitDetails(activity),
                         "Ver circuitos",
-                        publicUrl + "/circuits"
+                        publicUrl + "/circuits",
+                        preferencesUrl(),
+                        unsubscribeUrl(user, NotificationCategory.CIRCUITS)
                 )
         );
     }
 
     public void notifyCircuitUpdated(CircuitActivity activity) {
-        publish(
-                allUserEmails(),
+        publishMarketing(
+                NotificationCategory.CIRCUITS,
                 "Circuito actualizado · " + activity.getTitle(),
-                templateService.render(
+                user -> templateService.renderMarketing(
                         "Circuitos",
                         "Cambios en " + activity.getTitle(),
                         "Se han actualizado los datos de una actividad de circuito publicada.",
                         circuitDetails(activity),
                         "Ver circuitos",
-                        publicUrl + "/circuits"
+                        publicUrl + "/circuits",
+                        preferencesUrl(),
+                        unsubscribeUrl(user, NotificationCategory.CIRCUITS)
                 )
         );
     }
 
     public void notifyCircuitCancelled(CircuitActivity activity) {
-        publish(
-                allUserEmails(),
+        publishMarketing(
+                NotificationCategory.CIRCUITS,
                 "Actividad de circuito cancelada · " + activity.getTitle(),
-                templateService.render(
+                user -> templateService.renderMarketing(
                         "Circuitos",
                         "Actividad cancelada",
                         "Una actividad de circuito publicada ha sido cancelada.",
                         circuitDetails(activity),
                         "Ver circuitos",
-                        publicUrl + "/circuits"
+                        publicUrl + "/circuits",
+                        preferencesUrl(),
+                        unsubscribeUrl(user, NotificationCategory.CIRCUITS)
                 )
         );
+    }
+
+    private void publishMarketing(NotificationCategory category,
+                                  String subject,
+                                  Function<User, String> htmlFactory) {
+        for (User user : preferencesService.usersEnabledFor(category)) {
+            publish(List.of(user.getEmail()), subject, htmlFactory.apply(user));
+        }
     }
 
     private void publish(List<String> recipients, String subject, String html) {
@@ -299,12 +320,6 @@ public class NotificationService {
             return;
         }
         eventPublisher.publishEvent(new EmailNotification(normalized, subject, html));
-    }
-
-    private List<String> allUserEmails() {
-        return userRepository.findAllByOrderByIdAsc().stream()
-                .map(User::getEmail)
-                .toList();
     }
 
     private List<String> routeParticipantEmails(Long routeId) {
@@ -344,6 +359,18 @@ public class NotificationService {
                 "Circuito: " + activity.getCircuitName(),
                 "Lugar: " + activity.getLocation()
         );
+    }
+
+    private String preferencesUrl() {
+        return publicUrl + "/profile#notifications";
+    }
+
+    private String unsubscribeUrl(User user, NotificationCategory category) {
+        return publicUrl
+                + "/unsubscribe?category="
+                + category.name()
+                + "&token="
+                + preferencesService.tokenFor(user, category);
     }
 
     private String stripTrailingSlash(String value) {
