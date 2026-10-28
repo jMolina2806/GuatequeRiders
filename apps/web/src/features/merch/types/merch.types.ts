@@ -1,7 +1,7 @@
 export type ProductCode = 'TSHIRT' | 'CROP_TOP' | 'HOODIE'
 export type ProductSize = 'S' | 'M' | 'L' | 'XL'
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED'
-export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED'
+export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'IN_PRODUCTION' | 'READY' | 'DELIVERED' | 'CANCELLED'
 
 export type CampaignStatus = 'OPEN' | 'CLOSED' | 'ORDERED'
 
@@ -37,6 +37,7 @@ export type CampaignDashboard = {
   stats: CampaignStats
   provisionalPreparation: PreparationOrders | null
   supplierOrder: SupplierOrderBatch | null
+  fulfillmentOrders: Order[]
   excludedOrders: Order[]
   latePaymentOrders: Order[]
 }
