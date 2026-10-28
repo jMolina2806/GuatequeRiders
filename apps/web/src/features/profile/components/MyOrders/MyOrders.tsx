@@ -93,6 +93,11 @@ export default function MyOrders() {
                 ))}
               </ul>
               <div className="my-orders__actions">
+                {order.status === 'PENDING' && order.paymentStatus === 'PENDING' && (
+                  <Link className="btn btn--primary btn--sm" to={`/checkout/payment/${order.id}`}>
+                    Continuar pago
+                  </Link>
+                )}
                 {devPaymentsEnabled && order.paymentStatus === 'PENDING' && (
                   <div className="my-orders__dev-payment">
                     <span className="my-orders__dev-badge">MODO DESARROLLO</span>
