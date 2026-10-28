@@ -3,10 +3,10 @@ package com.guatequeriders.api.notifications.service;
 import com.guatequeriders.api.circuits.model.CircuitActivity;
 import com.guatequeriders.api.eventregistrations.repository.EventRegistrationRepository;
 import com.guatequeriders.api.events.model.Event;
+import com.guatequeriders.api.events.model.EventStatus;
 import com.guatequeriders.api.merch.model.MerchCampaign;
 import com.guatequeriders.api.notifications.model.EmailNotification;
 import com.guatequeriders.api.orders.model.Order;
-import com.guatequeriders.api.orders.model.OrderStatus;
 import com.guatequeriders.api.registrations.repository.RouteRegistrationRepository;
 import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.users.model.User;
@@ -218,7 +218,7 @@ public class NotificationService {
                 templateService.render(
                         "Eventos",
                         status,
-                        event.getStatus().name().equals("CANCELLED")
+                        event.getStatus() == EventStatus.CANCELLED
                                 ? "El evento al que estabas apuntado ha sido cancelado."
                                 : "Las inscripciones de este evento se han cerrado.",
                         eventDetails(event),
