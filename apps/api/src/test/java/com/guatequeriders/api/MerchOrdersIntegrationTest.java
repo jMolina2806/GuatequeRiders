@@ -572,6 +572,7 @@ class MerchOrdersIntegrationTest {
         body.put("customerEmail", "cliente@example.com");
         body.put("customerPhone", "+34123456789");
         body.put("notes", "Entrega coordinada");
+        body.put("merchTermsAccepted", true);
         return body;
     }
 
