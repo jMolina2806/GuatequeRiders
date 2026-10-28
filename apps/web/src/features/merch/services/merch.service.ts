@@ -5,6 +5,7 @@ import type {
   CampaignDashboard,
   CampaignHistoryEntry,
   CloseCampaignResponse,
+  Order,
   SupplierOrderBatch,
 } from '../types/merch.types'
 
@@ -68,4 +69,13 @@ export async function getSupplierOrder(id: number): Promise<SupplierOrderBatch> 
     headers: authHeaders(),
   })
   return handleResponse<SupplierOrderBatch>(response)
+}
+
+
+export async function advanceOrderStatus(id: number): Promise<Order> {
+  const response = await fetch(`/api/admin/orders/${id}/advance-status`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  return handleResponse<Order>(response)
 }
