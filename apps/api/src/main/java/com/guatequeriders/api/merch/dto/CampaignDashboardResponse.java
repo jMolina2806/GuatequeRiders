@@ -11,6 +11,7 @@ public record CampaignDashboardResponse(
         CampaignStatsResponse stats,
         PreparationOrdersResponse provisionalPreparation,
         SupplierOrderBatchResponse supplierOrder,
+        List<OrderResponse> fulfillmentOrders,
         List<OrderResponse> excludedOrders,
         List<OrderResponse> latePaymentOrders
 ) {

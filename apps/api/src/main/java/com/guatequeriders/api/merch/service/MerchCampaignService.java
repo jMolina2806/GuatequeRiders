@@ -135,14 +135,25 @@ public class MerchCampaignService {
 
         PreparationOrdersResponse provisional = null;
         SupplierOrderBatchResponse supplierOrder = null;
+        List<OrderResponse> fulfillmentOrders;
         int paidUnits;
         if (campaign.getStatus() == CampaignStatus.OPEN) {
             provisional = PreparationOrdersResponse.from(paidOrders);
+            fulfillmentOrders = paidOrders.stream()
+                    .map(OrderResponse::from)
+                    .toList();
             paidUnits = provisional.totalUnits();
         } else {
             SupplierOrderBatch batch = batchRepository.findByCampaignId(campaignId)
                     .orElseThrow(() -> new IllegalStateException("Closed Merch campaign has no supplier order"));
             supplierOrder = SupplierOrderBatchResponse.from(batch);
+            var includedOrderIds = batch.getOrders().stream()
+                    .map(SupplierOrderBatchOrder::getOriginalOrderId)
+                    .collect(java.util.stream.Collectors.toSet());
+            fulfillmentOrders = allOrders.stream()
+                    .filter(order -> includedOrderIds.contains(order.getId()))
+                    .map(OrderResponse::from)
+                    .toList();
             paidUnits = supplierOrder.totalUnits();
         }
 
@@ -160,6 +171,7 @@ public class MerchCampaignService {
                 stats,
                 provisional,
                 supplierOrder,
+                fulfillmentOrders,
                 excludedOrders,
                 latePaymentOrders
         );

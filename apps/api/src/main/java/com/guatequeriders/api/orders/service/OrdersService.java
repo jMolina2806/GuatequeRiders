@@ -15,6 +15,7 @@ import com.guatequeriders.api.orders.model.OrderStatus;
 import com.guatequeriders.api.orders.model.PaymentStatus;
 import com.guatequeriders.api.orders.model.FulfillmentMethod;
 import com.guatequeriders.api.orders.repository.OrderRepository;
+import com.guatequeriders.api.orders.repository.SupplierOrderBatchRepository;
 import com.guatequeriders.api.payments.model.PaymentApplicationResult;
 import com.guatequeriders.api.payments.model.PaymentAttempt;
 import com.guatequeriders.api.payments.model.PaymentAttemptStatus;
@@ -42,15 +43,18 @@ public class OrdersService {
 
     private final OrderRepository orderRepository;
     private final MerchCampaignRepository campaignRepository;
+    private final SupplierOrderBatchRepository supplierOrderBatchRepository;
     private final PaymentAttemptRepository paymentAttemptRepository;
     private final ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider;
 
     public OrdersService(OrderRepository orderRepository,
                          MerchCampaignRepository campaignRepository,
+                         SupplierOrderBatchRepository supplierOrderBatchRepository,
                          PaymentAttemptRepository paymentAttemptRepository,
                          ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider) {
         this.orderRepository = orderRepository;
         this.campaignRepository = campaignRepository;
+        this.supplierOrderBatchRepository = supplierOrderBatchRepository;
         this.paymentAttemptRepository = paymentAttemptRepository;
         this.stripeCheckoutServiceProvider = stripeCheckoutServiceProvider;
     }
@@ -220,6 +224,42 @@ public class OrdersService {
         }
         log.warn("Development payment simulation for order {} requested by user {}", orderId, user.getUsername());
         return applyPaymentWebhook(orderId);
+    }
+
+    @Transactional
+    public Order advanceFulfillmentStatus(Long id) {
+        Order order = orderRepository.findWithDetailsByIdForUpdate(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", id));
+
+        if (order.getPaymentStatus() != PaymentStatus.PAID) {
+            throw new ConflictException("Only paid orders can advance in fulfillment");
+        }
+        if (order.isLatePayment()) {
+            throw new ConflictException("Late payments are not part of the frozen supplier order");
+        }
+        if (order.getCampaign().getStatus() != CampaignStatus.ORDERED) {
+            throw new ConflictException("The campaign must be marked as ordered before fulfillment can advance");
+        }
+
+        var supplierOrder = supplierOrderBatchRepository.findByCampaignId(order.getCampaign().getId())
+                .orElseThrow(() -> new ConflictException("This campaign has no supplier order"));
+        boolean included = supplierOrder.getOrders().stream()
+                .anyMatch(batchOrder -> id.equals(batchOrder.getOriginalOrderId()));
+        if (!included) {
+            throw new ConflictException("This order is not included in the supplier order");
+        }
+
+        OrderStatus nextStatus = switch (order.getStatus()) {
+            case CONFIRMED -> OrderStatus.IN_PRODUCTION;
+            case IN_PRODUCTION -> OrderStatus.READY;
+            case READY -> OrderStatus.DELIVERED;
+            case DELIVERED -> throw new ConflictException("This order is already delivered");
+            case PENDING -> throw new ConflictException("Pending orders cannot advance in fulfillment");
+            case CANCELLED -> throw new ConflictException("Cancelled orders cannot advance in fulfillment");
+        };
+
+        order.setStatus(nextStatus);
+        return order;
     }
 
     @Transactional
