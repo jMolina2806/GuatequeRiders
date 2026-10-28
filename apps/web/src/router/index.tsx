@@ -81,6 +81,10 @@ export const router = createBrowserRouter([
         element: <LegalInfoPage />,
       },
       {
+        path: 'cookies',
+        element: <LegalInfoPage />,
+      },
+      {
         path: 'checkout',
         element: <CheckoutPage />,
       },
