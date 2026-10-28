@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ['.devtunnels.ms'],
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
