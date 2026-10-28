@@ -15,6 +15,7 @@ import OrderPendingPage from '@/pages/OrderPendingPage'
 import CheckoutPaymentPage from '@/pages/CheckoutPaymentPage'
 import CheckoutResultPage from '@/pages/CheckoutResultPage'
 import PreparationSheetPage from '@/pages/PreparationSheetPage'
+import LegalInfoPage from '@/pages/LegalInfoPage'
 import AdminDashboardPage from '@/features/admin/pages/AdminDashboardPage'
 import AdminUsersPage from '@/features/admin/pages/AdminUsersPage'
 import AdminOrdersPage from '@/features/admin/pages/AdminOrdersPage'
@@ -61,6 +62,18 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <ProfilePage />,
+      },
+      {
+        path: 'legal',
+        element: <LegalInfoPage />,
+      },
+      {
+        path: 'privacy',
+        element: <LegalInfoPage />,
+      },
+      {
+        path: 'merch-terms',
+        element: <LegalInfoPage />,
       },
       {
         path: 'checkout',
