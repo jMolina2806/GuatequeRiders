@@ -201,6 +201,13 @@ class MerchOrdersIntegrationTest {
         mockMvc.perform(post("/api/orders")
                         .header("Authorization", bearer(token))
                         .contentType(APPLICATION_JSON)
+                        .content(orderJson(List.of(item("TSHIRT", "M", 1, "javi_molina16")))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.items[0].customName").value("javi_molina16"));
+
+        mockMvc.perform(post("/api/orders")
+                        .header("Authorization", bearer(token))
+                        .contentType(APPLICATION_JSON)
                         .content(orderJson(List.of(item("CROP_TOP", "S", 1, "123456789012345678901")))))
                 .andExpect(status().isBadRequest());
 
