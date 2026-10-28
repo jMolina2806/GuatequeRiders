@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useCart } from '@/features/merch/context/useCart'
 import { getOrder } from '@/features/merch/services/orders.service'
+import { consumeCartOrder } from '@/features/merch/utils/cartCheckout'
 import type { Order } from '@/features/merch/types/merch.types'
 import './CheckoutPage.css'
 
@@ -12,6 +14,7 @@ type CheckoutResultPageProps = {
 
 export default function CheckoutResultPage({ result }: CheckoutResultPageProps) {
   const { id } = useParams()
+  const { clear } = useCart()
   const [order, setOrder] = useState<Order | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isChecking, setIsChecking] = useState(result === 'success')
@@ -26,6 +29,9 @@ export default function CheckoutResultPage({ result }: CheckoutResultPageProps) 
       try {
         const loadedOrder = await getOrder(Number(id))
         if (cancelled) return
+        if (loadedOrder.paymentStatus === 'PAID' && consumeCartOrder(loadedOrder.id)) {
+          clear()
+        }
         setOrder(loadedOrder)
         if (result === 'success' && loadedOrder.paymentStatus === 'PENDING' && attempts < 7) {
           attempts += 1
@@ -46,7 +52,7 @@ export default function CheckoutResultPage({ result }: CheckoutResultPageProps) 
       cancelled = true
       if (timeout !== undefined) window.clearTimeout(timeout)
     }
-  }, [id, result])
+  }, [clear, id, result])
 
   if (error) {
     return <section className="checkout-page checkout-page--empty"><p role="alert">{error}</p><Link className="btn btn--ghost" to="/profile">Ir a mis pedidos</Link></section>
