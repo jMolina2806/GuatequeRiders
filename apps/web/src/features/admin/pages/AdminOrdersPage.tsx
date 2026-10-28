@@ -9,6 +9,7 @@ import type {
   CampaignHistoryEntry,
   CampaignStatus,
   Order,
+  OrderStatus,
   PreparationOrders,
   SupplierOrderBatch,
 } from '@/features/merch/types/merch.types'
@@ -24,6 +25,21 @@ const statusLabels: Record<CampaignStatus, string> = {
   OPEN: 'Abierta',
   CLOSED: 'Cerrada',
   ORDERED: 'Pedido al proveedor',
+}
+
+const orderStatusLabels: Record<OrderStatus, string> = {
+  PENDING: 'Pendiente',
+  CONFIRMED: 'Confirmado',
+  IN_PRODUCTION: 'En producción',
+  READY: 'Listo para entregar',
+  DELIVERED: 'Entregado',
+  CANCELLED: 'Cancelado',
+}
+
+const nextOrderActionLabels: Partial<Record<OrderStatus, string>> = {
+  CONFIRMED: 'Marcar en producción',
+  IN_PRODUCTION: 'Marcar como listo',
+  READY: 'Marcar como entregado',
 }
 
 function formatDate(value: string | null) {
@@ -61,7 +77,21 @@ function PreparationSummary({ preparation }: { preparation: PreparationOrders })
   )
 }
 
-function OrderCard({ order, excluded = false }: { order: Order; excluded?: boolean }) {
+function OrderCard({
+  order,
+  excluded = false,
+  canAdvance = false,
+  advancing = false,
+  onAdvance,
+}: {
+  order: Order
+  excluded?: boolean
+  canAdvance?: boolean
+  advancing?: boolean
+  onAdvance?: (order: Order) => void
+}) {
+  const nextActionLabel = nextOrderActionLabels[order.status]
+
   return (
     <article className={`admin-order-card${excluded ? ' admin-order-card--excluded' : ''}`}>
       <div className="admin-order-card__header">
@@ -73,13 +103,20 @@ function OrderCard({ order, excluded = false }: { order: Order; excluded?: boole
             {order.customerPhone && <a href={`tel:${order.customerPhone}`}>{order.customerPhone}</a>}
           </div>
         </div>
-        <span className={order.latePayment
-          ? 'admin-order-card__late-status'
-          : excluded
-            ? 'admin-order-card__excluded-status'
-            : 'admin-order-card__paid'}>
-          {order.latePayment ? 'PAGO POSTERIOR AL CIERRE' : excluded ? order.paymentStatus : 'PAID'}
-        </span>
+        <div className="admin-order-card__statuses">
+          <span className={order.latePayment
+            ? 'admin-order-card__late-status'
+            : excluded
+              ? 'admin-order-card__excluded-status'
+              : 'admin-order-card__paid'}>
+            {order.latePayment ? 'PAGO POSTERIOR AL CIERRE' : excluded ? order.paymentStatus : 'PAID'}
+          </span>
+          {!excluded && (
+            <span className={`admin-order-card__fulfillment admin-order-card__fulfillment--${order.status.toLowerCase().replace('_', '-')}`}>
+              {orderStatusLabels[order.status]}
+            </span>
+          )}
+        </div>
       </div>
       <div className="admin-order-card__items">
         {order.items.map((item) => (
@@ -99,7 +136,19 @@ function OrderCard({ order, excluded = false }: { order: Order; excluded?: boole
       {order.notes && <p className="admin-order-card__notes">Notas: {order.notes}</p>}
       <div className="admin-order-card__footer">
         <span>{formatDate(order.createdAt)}</span>
-        <strong>Total: {euro.format(order.total)}</strong>
+        <div className="admin-order-card__footer-actions">
+          <strong>Total: {euro.format(order.total)}</strong>
+          {canAdvance && nextActionLabel && onAdvance && (
+            <button
+              className="btn btn--secondary btn--sm"
+              type="button"
+              onClick={() => onAdvance(order)}
+              disabled={advancing}
+            >
+              {advancing ? 'Actualizando...' : nextActionLabel}
+            </button>
+          )}
+        </div>
       </div>
     </article>
   )
@@ -157,6 +206,7 @@ export default function AdminOrdersPage() {
   const [reloadToken, setReloadToken] = useState(0)
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false)
   const [action, setAction] = useState<'close' | 'ordered' | null>(null)
+  const [advancingOrderId, setAdvancingOrderId] = useState<number | null>(null)
   const [feedback, setFeedback] = useState<string | null>(null)
 
   useEffect(() => {
@@ -279,6 +329,25 @@ export default function AdminOrdersPage() {
       setFeedback(err instanceof Error ? err.message : 'No se pudo marcar la campaña como pedida')
     } finally {
       setAction(null)
+    }
+  }
+
+  const handleAdvanceOrder = async (order: Order) => {
+    setAdvancingOrderId(order.id)
+    setFeedback(null)
+    try {
+      const updatedOrder = await merchService.advanceOrderStatus(order.id)
+      setDashboard((current) => current ? {
+        ...current,
+        fulfillmentOrders: current.fulfillmentOrders.map((item) => (
+          item.id === updatedOrder.id ? updatedOrder : item
+        )),
+      } : current)
+      setFeedback(`Pedido #${updatedOrder.id}: ${orderStatusLabels[updatedOrder.status]}.`)
+    } catch (err) {
+      setFeedback(err instanceof Error ? err.message : 'No se pudo actualizar el estado del pedido')
+    } finally {
+      setAdvancingOrderId(null)
     }
   }
 
@@ -420,6 +489,34 @@ export default function AdminOrdersPage() {
 
                 {selectedDashboard.supplierOrder && selectedCampaign.status !== 'OPEN' && (
                   <SupplierOrderSummary supplierOrder={selectedDashboard.supplierOrder} />
+                )}
+
+                {selectedCampaign.status !== 'OPEN' && selectedDashboard.fulfillmentOrders.length > 0 && (
+                  <section className="admin-campaign-panel admin-campaign-panel--fulfillment" aria-labelledby="fulfillment-orders-title">
+                    <div className="admin-campaign-panel__heading">
+                      <div>
+                        <span className="admin-orders-page__eyebrow">Seguimiento</span>
+                        <h3 id="fulfillment-orders-title">Estado de los pedidos</h3>
+                      </div>
+                      <span className="admin-campaign-panel__label">{selectedDashboard.fulfillmentOrders.length} pedidos</span>
+                    </div>
+                    <p className="admin-campaign-section__note">
+                      {selectedCampaign.status === 'ORDERED'
+                        ? 'Actualiza cada pedido a medida que avance la fabricación y la entrega.'
+                        : 'Primero marca la campaña como pedido al proveedor para iniciar el seguimiento.'}
+                    </p>
+                    <div className="admin-orders-list admin-orders-list--fulfillment">
+                      {selectedDashboard.fulfillmentOrders.map((order) => (
+                        <OrderCard
+                          key={order.id}
+                          order={order}
+                          canAdvance={selectedCampaign.status === 'ORDERED'}
+                          advancing={advancingOrderId === order.id}
+                          onAdvance={handleAdvanceOrder}
+                        />
+                      ))}
+                    </div>
+                  </section>
                 )}
 
                 {selectedDashboard.excludedOrders.length > 0 && (
