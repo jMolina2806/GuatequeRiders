@@ -52,8 +52,10 @@ export default function Footer() {
             <a href={whatsappGroupUrl} target="_blank" rel="noopener noreferrer">
               WhatsApp miembros
             </a>
+          ) : isAuthenticated ? (
+            <span className="site-footer__unavailable">WhatsApp no configurado</span>
           ) : (
-            <Link to="/login">WhatsApp miembros</Link>
+            <Link to="/login">WhatsApp miembros · inicia sesión</Link>
           )}
         </div>
 
