@@ -6,10 +6,26 @@ import {
   getMyOrders,
   simulateDevelopmentPayment,
 } from '@/features/merch/services/orders.service'
-import type { Order } from '@/features/merch/types/merch.types'
+import type { Order, OrderStatus, PaymentStatus } from '@/features/merch/types/merch.types'
 import './MyOrders.css'
 
 const euro = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' })
+
+const orderStatusLabels: Record<OrderStatus, string> = {
+  PENDING: 'Pendiente',
+  CONFIRMED: 'Confirmado',
+  IN_PRODUCTION: 'En producción',
+  READY: 'Listo para entregar',
+  DELIVERED: 'Entregado',
+  CANCELLED: 'Cancelado',
+}
+
+const paymentStatusLabels: Record<PaymentStatus, string> = {
+  PENDING: 'Pago pendiente',
+  PAID: 'Pagado',
+  FAILED: 'Pago fallido',
+  CANCELLED: 'Pago cancelado',
+}
 
 export default function MyOrders() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -81,7 +97,7 @@ export default function MyOrders() {
                 <span>{new Date(order.createdAt).toLocaleDateString('es-ES')}</span>
               </div>
               <div>
-                <span>{order.paymentStatus} · {order.status}</span>
+                <span>{paymentStatusLabels[order.paymentStatus]} · {orderStatusLabels[order.status]}</span>
                 <strong>{euro.format(order.total)}</strong>
               </div>
               <ul>
