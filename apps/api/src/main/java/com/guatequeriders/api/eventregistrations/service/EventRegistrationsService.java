@@ -11,6 +11,7 @@ import com.guatequeriders.api.events.model.EventStatus;
 import com.guatequeriders.api.events.service.EventsService;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
+import com.guatequeriders.api.notifications.service.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +24,16 @@ public class EventRegistrationsService {
     private final EventRegistrationRepository registrationRepository;
     private final EventsService eventsService;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public EventRegistrationsService(EventRegistrationRepository registrationRepository,
                                      EventsService eventsService,
-                                     UserRepository userRepository) {
+                                     UserRepository userRepository,
+                                     NotificationService notificationService) {
         this.registrationRepository = registrationRepository;
         this.eventsService = eventsService;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -53,6 +57,7 @@ public class EventRegistrationsService {
         registration.setUser(user);
         registration.setRegisteredAt(LocalDateTime.now());
         registrationRepository.save(registration);
+        notificationService.notifyEventRegistration(event, user);
 
         return EventRegistrationResponse.from(registration);
     }
