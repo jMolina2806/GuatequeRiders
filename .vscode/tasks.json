@@ -15,6 +15,15 @@
       "problemMatcher": []
     },
     {
+      "label": "Run Demo Stripe",
+      "type": "shell",
+      "command": "bash scripts/run-stripe-demo.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Build Frontend",
       "type": "shell",
       "command": "npm run build",
