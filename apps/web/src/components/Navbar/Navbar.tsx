@@ -3,10 +3,10 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '@/features/auth/context/useAuth'
 import CartDrawer from '@/features/merch/components/CartDrawer'
 import { useCart } from '@/features/merch/context/useCart'
+import { getCommunityLinks } from '@/features/community/services/community.service'
 import './Navbar.css'
 
 const INSTAGRAM_URL = 'https://www.instagram.com/guateque_riders/'
-const WHATSAPP_GROUP_URL = import.meta.env.VITE_WHATSAPP_GROUP_URL?.trim()
 
 export default function Navbar() {
   const { user, isAuthenticated, isLoading, isAdmin, logout } = useAuth()
@@ -15,6 +15,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cartLocationKey, setCartLocationKey] = useState<string | null>(null)
+  const [whatsappGroupUrl, setWhatsappGroupUrl] = useState<string | null>(null)
 
   const closeMenu = () => setIsMenuOpen(false)
   const openCart = () => {
@@ -26,6 +27,31 @@ export default function Navbar() {
     setIsCartOpen(false)
   }, [])
   const cartIsOpen = isCartOpen && cartLocationKey === locationKey
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (!isAuthenticated) {
+      setWhatsappGroupUrl(null)
+      return
+    }
+
+    getCommunityLinks()
+      .then((links) => {
+        if (!cancelled) {
+          setWhatsappGroupUrl(links.whatsappGroupUrl)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setWhatsappGroupUrl(null)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -81,10 +107,10 @@ export default function Navbar() {
 
         <div className="navbar__actions">
           <div className="navbar__socials" aria-label="Redes sociales">
-            {WHATSAPP_GROUP_URL && (
+            {isAuthenticated && whatsappGroupUrl && (
               <a
                 className="navbar__social navbar__social--whatsapp"
-                href={WHATSAPP_GROUP_URL}
+                href={whatsappGroupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Entrar al grupo de WhatsApp de Guateque Riders"

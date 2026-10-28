@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import './MainLayout.css'
 
 const PAGE_TITLES: Record<string, string> = {
@@ -18,6 +19,9 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/users': 'Administración',
   '/login': 'Iniciar sesión',
   '/register': 'Registro',
+  '/legal': 'Aviso legal',
+  '/privacy': 'Privacidad',
+  '/merch-terms': 'Condiciones Merch',
 }
 
 function PageTitle() {
@@ -39,13 +43,15 @@ function PageTitle() {
 
 export default function MainLayout() {
   return (
-    <div>
+    <div className="main-layout">
       <PageTitle />
       <Navbar />
 
       <main className="main-layout__content">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   )
 }

@@ -44,7 +44,7 @@
     {
       "label": "Run Backend",
       "type": "shell",
-      "command": "./mvnw spring-boot:run",
+      "command": "set -a; [ ! -f ../../.env ] || source ../../.env; set +a; ./mvnw spring-boot:run",
       "dependsOn": "Start Database",
       "dependsOrder": "sequence",
       "options": {
