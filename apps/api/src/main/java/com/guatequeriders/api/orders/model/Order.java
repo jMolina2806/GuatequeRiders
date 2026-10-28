@@ -90,6 +90,12 @@ public class Order {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "merch_terms_accepted_at")
+    private LocalDateTime merchTermsAcceptedAt;
+
+    @Column(name = "merch_terms_version", length = 40)
+    private String merchTermsVersion;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<OrderItem> items = new ArrayList<>();
@@ -180,6 +186,12 @@ public class Order {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public LocalDateTime getMerchTermsAcceptedAt() { return merchTermsAcceptedAt; }
+    public void setMerchTermsAcceptedAt(LocalDateTime merchTermsAcceptedAt) { this.merchTermsAcceptedAt = merchTermsAcceptedAt; }
+
+    public String getMerchTermsVersion() { return merchTermsVersion; }
+    public void setMerchTermsVersion(String merchTermsVersion) { this.merchTermsVersion = merchTermsVersion; }
 
     public List<OrderItem> getItems() { return items; }
     public void setItems(List<OrderItem> items) { this.items = items; }
