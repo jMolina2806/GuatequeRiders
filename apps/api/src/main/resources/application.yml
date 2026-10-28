@@ -13,6 +13,8 @@ app:
     checkout-session-per-minute: ${RATE_LIMIT_CHECKOUT_SESSION_PER_MINUTE:20}
   merch:
     test-payments-enabled: ${MERCH_TEST_PAYMENTS_ENABLED:false}
+  community:
+    whatsapp-group-url: ${APP_WHATSAPP_GROUP_URL:}
 
 spring:
   application:
