@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,6 +56,7 @@ class StripeCheckoutServiceTest {
         stripeSession.setAmountTotal(2000L);
         stripeSession.setCurrency("eur");
         stripeSession.setPaymentIntent("pi_test_123");
+        stripeSession.setClientReferenceId("11");
         stripeSession.setMetadata(Map.of(
                 "order_id", "11",
                 "campaign_id", "22",
@@ -105,6 +107,26 @@ class StripeCheckoutServiceTest {
         verify(stripeClient.v1().checkout().sessions(), times(1))
                 .create(any(SessionCreateParams.class), any(RequestOptions.class));
         verify(paymentAttemptService, times(1)).markSessionCreated(33L, stripeSession);
+    }
+
+    @Test
+    void completedSessionReturnsToVerificationWithoutCreatingAnotherPayment() throws Exception {
+        stripeSession.setStatus("complete");
+        stripeSession.setPaymentStatus("paid");
+        stripeSession.setUrl(null);
+        CheckoutPreparation reusable = preparation(
+                "cs_test_123",
+                "https://checkout.stripe.test/cs_test_123"
+        );
+        when(paymentAttemptService.prepareCheckout(11L, null)).thenReturn(reusable);
+
+        CheckoutSessionResponse response = service.createCheckoutSession(11L, null);
+
+        assertThat(response.sessionId()).isEqualTo("cs_test_123");
+        assertThat(response.checkoutUrl()).isEqualTo("http://localhost:5173/checkout/success/11");
+        verify(stripeClient.v1().checkout().sessions(), never())
+                .create(any(SessionCreateParams.class), any(RequestOptions.class));
+        verify(paymentAttemptService, never()).markSessionCreated(anyLong(), any(Session.class));
     }
 
     private CheckoutPreparation preparation(String sessionId, String checkoutUrl) {
