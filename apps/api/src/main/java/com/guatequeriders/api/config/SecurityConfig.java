@@ -71,6 +71,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/payments/stripe/webhook").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/notifications/unsubscribe").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/routes", "/api/routes/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/{id}").permitAll()
                          .requestMatchers(HttpMethod.GET, "/api/circuits", "/api/circuits/{id}").permitAll()
