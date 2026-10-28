@@ -70,7 +70,7 @@ export default function UnsubscribePage() {
             <Link to="/profile#notifications" className="btn btn--secondary">
               Gestionar preferencias
             </Link>
-            <Link to="/" className="btn btn--ghost">Volver al inicio</Link>
+            <Link to="/" className="btn btn--secondary">Volver al inicio</Link>
           </div>
         </div>
       </section>
@@ -98,7 +98,7 @@ export default function UnsubscribePage() {
           >
             {isSubmitting ? 'Desactivando...' : 'Darme de baja de estos avisos'}
           </button>
-          <Link to="/" className="btn btn--ghost">Cancelar</Link>
+          <Link to="/" className="btn btn--secondary">Cancelar</Link>
         </div>
       </div>
     </section>
