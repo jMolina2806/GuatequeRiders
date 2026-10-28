@@ -28,7 +28,10 @@
       "type": "shell",
       "command": "./mvnw spring-boot:run",
       "options": {
-        "cwd": "${workspaceFolder}/apps/api"
+        "cwd": "${workspaceFolder}/apps/api",
+        "env": {
+          "SPRING_PROFILES_ACTIVE": "dev"
+        }
       },
       "problemMatcher": []
     },
