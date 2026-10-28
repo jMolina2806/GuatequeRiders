@@ -67,6 +67,11 @@
   text-shadow: 0 0 10px rgba(0, 240, 255, 0.28);
 }
 
+.site-footer__unavailable {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
 .site-footer__bottom {
   display: flex;
   justify-content: space-between;
