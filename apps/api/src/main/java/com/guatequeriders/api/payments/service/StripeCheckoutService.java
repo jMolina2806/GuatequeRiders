@@ -49,6 +49,10 @@ public class StripeCheckoutService {
 
         Session session = createStripeSession(preparation);
         validateSession(session, preparation);
+        if (!"open".equalsIgnoreCase(session.getStatus())
+                || session.getUrl() == null || session.getUrl().isBlank()) {
+            throw new PaymentProviderException("Stripe returned an unusable Checkout Session", null);
+        }
         paymentAttemptService.markSessionCreated(preparation.paymentAttemptId(), session);
         log.info("Stripe Checkout Session created: orderId={}, paymentAttemptId={}, stripeSessionId={}",
                 preparation.orderId(), preparation.paymentAttemptId(), session.getId());
@@ -59,12 +63,21 @@ public class StripeCheckoutService {
         try {
             Session session = stripeClient.v1().checkout().sessions()
                     .retrieve(preparation.sessionId());
-            validateLivemode(session);
+            validateSession(session, preparation);
+
             if ("expired".equalsIgnoreCase(session.getStatus())) {
                 paymentAttemptService.markExpired(preparation.paymentAttemptId());
                 return null;
             }
-            validateSession(session, preparation);
+            if ("complete".equalsIgnoreCase(session.getStatus())) {
+                return new CheckoutSessionResponse(
+                        completedReturnUrl(preparation.orderId()),
+                        session.getId()
+                );
+            }
+            if (!"open".equalsIgnoreCase(session.getStatus())) {
+                throw new PaymentProviderException("Stripe returned an unexpected Checkout status", null);
+            }
             if (session.getUrl() != null && !session.getUrl().isBlank()) {
                 paymentAttemptService.updateCheckoutUrl(preparation.paymentAttemptId(), session.getUrl());
                 return new CheckoutSessionResponse(session.getUrl(), session.getId());
@@ -120,7 +133,7 @@ public class StripeCheckoutService {
 
     private void validateSession(Session session, CheckoutPreparation preparation) {
         validateLivemode(session);
-        if (session.getId() == null || session.getUrl() == null || session.getUrl().isBlank()) {
+        if (session.getId() == null || session.getId().isBlank()) {
             throw new PaymentProviderException("Stripe returned an incomplete Checkout Session", null);
         }
         if (!"payment".equalsIgnoreCase(session.getMode())) {
@@ -131,6 +144,9 @@ public class StripeCheckoutService {
         }
         if (!CURRENCY.equalsIgnoreCase(session.getCurrency())) {
             throw new PaymentProviderException("Stripe returned an unexpected Checkout currency", null);
+        }
+        if (!String.valueOf(preparation.orderId()).equals(session.getClientReferenceId())) {
+            throw new PaymentProviderException("Stripe returned an unexpected client reference", null);
         }
         Map<String, String> metadata = session.getMetadata();
         if (!String.valueOf(preparation.orderId()).equals(metadata == null ? null : metadata.get("order_id"))
@@ -160,5 +176,9 @@ public class StripeCheckoutService {
 
     private String cancelUrl(Long orderId) {
         return stripeProperties.getPublicUrl() + "/checkout/cancel/" + orderId;
+    }
+
+    private String completedReturnUrl(Long orderId) {
+        return stripeProperties.getPublicUrl() + "/checkout/success/" + orderId;
     }
 }
