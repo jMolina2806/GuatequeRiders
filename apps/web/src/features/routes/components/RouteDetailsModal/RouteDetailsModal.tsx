@@ -1,6 +1,8 @@
 import Modal from '@/components/Modal'
+import StatusBadge from '@/components/StatusBadge'
 import { getGoogleMapsSearchUrl } from '@/utils/googleMaps'
 import type { Route } from '../../types/route.types'
+import RoutePhotoGallery from '../RoutePhotoGallery'
 import './RouteDetailsModal.css'
 
 type RouteDetailsModalProps = {
@@ -8,6 +10,7 @@ type RouteDetailsModalProps = {
   isAdmin?: boolean
   isAuthenticated?: boolean
   isRegistered?: boolean
+  currentUserId?: number
   isProcessing?: boolean
   onClose: () => void
   onEnroll?: (route: Route) => void
@@ -32,27 +35,12 @@ const DIFFICULTY_CLASS: Record<string, string> = {
   EXTREME: 'route-details__badge--extreme',
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Abierta',
-  IN_PROGRESS: 'En curso',
-  COMPLETED: 'Completada',
-  CANCELLED: 'Cancelada',
-}
-
-const STATUS_CLASS: Record<string, string> = {
-  DRAFT: 'route-details__status--draft',
-  PUBLISHED: 'route-details__status--open',
-  IN_PROGRESS: 'route-details__status--in-progress',
-  COMPLETED: 'route-details__status--completed',
-  CANCELLED: 'route-details__status--cancelled',
-}
-
 export default function RouteDetailsModal({
   route,
   isAdmin = false,
   isAuthenticated = false,
   isRegistered = false,
+  currentUserId,
   isProcessing = false,
   onClose,
   onEnroll,
@@ -139,9 +127,7 @@ export default function RouteDetailsModal({
     <Modal isOpen={route !== null} onClose={onClose} title={route.title}>
       <div className="route-details">
         <div className="route-details__header">
-          <span className={`route-details__status ${STATUS_CLASS[route.status] ?? ''}`}>
-            {STATUS_LABELS[route.status] ?? route.status}
-          </span>
+          <StatusBadge status={route.status} />
           <p className="route-details__desc">{route.description}</p>
         </div>
 
@@ -220,6 +206,14 @@ export default function RouteDetailsModal({
             </ul>
           </div>
         )}
+
+        <RoutePhotoGallery
+          route={route}
+          isAdmin={isAdmin}
+          isAuthenticated={isAuthenticated}
+          isRegistered={isRegistered}
+          currentUserId={currentUserId}
+        />
 
         <div className="route-details__actions">{renderActions()}</div>
       </div>

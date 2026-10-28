@@ -2,6 +2,7 @@ import type {
   Route,
   CreateRouteRequest,
   RegistrationStatus,
+  RoutePhoto,
   UpdateRouteRequest,
 } from '@/features/routes/types/route.types'
 import { getToken } from '@/features/auth/services/session'
@@ -28,6 +29,11 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 export async function getRoutes(): Promise<Route[]> {
   const response = await fetch(API_BASE, { headers: authHeaders() })
+  return handleResponse<Route[]>(response)
+}
+
+export async function getPublicRoutes(): Promise<Route[]> {
+  const response = await fetch(API_BASE)
   return handleResponse<Route[]>(response)
 }
 
@@ -91,4 +97,28 @@ export async function getMyRegistration(routeId: number): Promise<RegistrationSt
     headers: authHeaders(),
   })
   return handleResponse<RegistrationStatus>(response)
+}
+
+export async function getRoutePhotos(routeId: number): Promise<RoutePhoto[]> {
+  const response = await fetch(`${API_BASE}/${routeId}/photos`, { headers: authHeaders() })
+  return handleResponse<RoutePhoto[]>(response)
+}
+
+export async function uploadRoutePhoto(routeId: number, file: File): Promise<RoutePhoto> {
+  const formData = new FormData()
+  formData.append('file', file)
+  const response = await fetch(`${API_BASE}/${routeId}/photos`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: formData,
+  })
+  return handleResponse<RoutePhoto>(response)
+}
+
+export async function deleteRoutePhoto(routeId: number, photoId: number): Promise<void> {
+  const response = await fetch(`${API_BASE}/${routeId}/photos/${photoId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  return handleResponse<void>(response)
 }

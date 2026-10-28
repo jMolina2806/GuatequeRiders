@@ -1,5 +1,6 @@
 package com.guatequeriders.api.routes.service;
 
+import com.guatequeriders.api.circuits.service.CircuitActivitiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -13,9 +14,11 @@ public class RouteScheduler {
     private static final Logger log = LoggerFactory.getLogger(RouteScheduler.class);
 
     private final RoutesService routesService;
+    private final CircuitActivitiesService circuitActivitiesService;
 
-    public RouteScheduler(RoutesService routesService) {
+    public RouteScheduler(RoutesService routesService, CircuitActivitiesService circuitActivitiesService) {
         this.routesService = routesService;
+        this.circuitActivitiesService = circuitActivitiesService;
     }
 
     @Scheduled(fixedDelay = 3_600_000)
@@ -29,9 +32,14 @@ public class RouteScheduler {
     }
 
     private void completePastRoutes(String trigger) {
-        int updated = routesService.completePastRoutes();
-        if (updated > 0) {
-            log.info("Auto-completed {} past routes on {}", updated, trigger);
+        int completedRoutes = routesService.completePastRoutes();
+        if (completedRoutes > 0) {
+            log.info("Auto-completed {} past routes on {}", completedRoutes, trigger);
+        }
+
+        int completedCircuitActivities = circuitActivitiesService.completePastCircuitActivities();
+        if (completedCircuitActivities > 0) {
+            log.info("Auto-completed {} past circuit activities on {}", completedCircuitActivities, trigger);
         }
     }
 }

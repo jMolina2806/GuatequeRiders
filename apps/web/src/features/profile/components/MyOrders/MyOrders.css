@@ -1,0 +1,113 @@
+.my-orders {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.my-orders__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.my-orders__header h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 18px;
+}
+
+.my-orders__header a {
+  color: var(--color-primary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.my-orders__list {
+  display: grid;
+  gap: 10px;
+}
+
+.my-orders__card {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.my-orders__card > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.my-orders__card > div:first-child strong {
+  color: var(--color-text);
+}
+
+.my-orders__card > div:last-of-type strong {
+  color: var(--color-primary);
+}
+
+.my-orders__card ul {
+  display: grid;
+  gap: 4px;
+  padding-left: 18px;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.my-orders__empty,
+.my-orders__error {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.my-orders__error {
+  border-style: solid;
+  border-color: rgba(255, 51, 85, 0.3);
+  color: var(--color-danger);
+}
+
+.my-orders__feedback {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
+  font-size: 12px;
+}
+
+.my-orders__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.my-orders__dev-payment {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(124, 58, 237, 0.45);
+  border-radius: var(--radius-md);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.my-orders__dev-badge {
+  color: #c8b8ff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+}

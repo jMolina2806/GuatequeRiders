@@ -65,19 +65,22 @@ export default function EventsPage() {
 
   return (
     <section>
-      <div className="events-page__header">
-        <div className="events-page__header-text">
-          <h1>Eventos</h1>
-          <p>Descubre los próximos eventos y quedadas del club.</p>
+      <div className="events-page__header feature-page-header feature-page-header--events">
+        <div className="events-page__header-text feature-page-header__copy">
+          <span className="feature-page-header__eyebrow">Guateque Riders / Community Events</span>
+          <h1 className="feature-page-header__title">Eventos</h1>
+          <p className="feature-page-header__subtitle">
+            Quedadas, planes y experiencias para salir de la rutina.
+          </p>
         </div>
 
         {isAdmin && (
           <button
-            className="btn btn--primary"
+            className="btn btn--primary feature-page-header__action"
             onClick={handleCreateEvent}
             type="button"
           >
-            Crear evento
+            + Crear evento
           </button>
         )}
       </div>

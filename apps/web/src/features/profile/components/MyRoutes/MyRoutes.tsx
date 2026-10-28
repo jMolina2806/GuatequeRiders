@@ -1,25 +1,10 @@
 import { Link } from 'react-router-dom'
+import StatusBadge from '@/components/StatusBadge'
 import type { Route } from '@/features/routes/types/route.types'
 import './MyRoutes.css'
 
 type MyRoutesProps = {
   routes: Route[]
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Abierta',
-  IN_PROGRESS: 'En curso',
-  COMPLETED: 'Completada',
-  CANCELLED: 'Cancelada',
-}
-
-const STATUS_CLASS: Record<string, string> = {
-  DRAFT: 'my-routes__status--draft',
-  PUBLISHED: 'my-routes__status--open',
-  IN_PROGRESS: 'my-routes__status--in-progress',
-  COMPLETED: 'my-routes__status--completed',
-  CANCELLED: 'my-routes__status--cancelled',
 }
 
 export default function MyRoutes({ routes }: MyRoutesProps) {
@@ -49,9 +34,7 @@ export default function MyRoutes({ routes }: MyRoutesProps) {
                   📅 {route.date} · 📍 {route.origin} → {route.destination}
                 </span>
               </div>
-              <span className={`my-routes__status ${STATUS_CLASS[route.status] ?? ''}`}>
-                {STATUS_LABELS[route.status] ?? route.status}
-              </span>
+              <StatusBadge status={route.status} />
             </li>
           ))}
         </ul>

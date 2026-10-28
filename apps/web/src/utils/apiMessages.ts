@@ -3,8 +3,13 @@ const MESSAGES: Record<string, string> = {
   'Unauthorized': 'No autorizado',
   'Invalid request body': 'Solicitud no válida',
   'Internal server error': 'Error interno del servidor',
+  'Validation failed': 'Datos no válidos',
+  'Image file must not exceed 5 MB': 'La imagen no puede superar los 5 MB',
+  'Image MIME type does not match its content': 'El tipo MIME no coincide con el contenido de la imagen',
+  'Image file is required': 'Debes seleccionar una imagen',
   'Invalid username or password': 'Usuario o contraseña incorrectos',
   'Invalid credentials': 'Credenciales inválidas',
+  'Merch store is currently closed': 'La tienda Merch está temporalmente cerrada',
 
   'Route is full': 'La ruta está completa',
   'Route is not open for registration': 'La ruta está cerrada para inscripción',
