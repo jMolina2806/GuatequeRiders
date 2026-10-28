@@ -1,4 +1,4 @@
-const ALLOWED_CUSTOM_NAME = /^[\p{L}\p{N}](?:[\p{L}\p{N} '-]*[\p{L}\p{N}])?$/u
+const ALLOWED_CUSTOM_NAME = /^[\p{L}\p{N}](?:[\p{L}\p{N} '_-]*[\p{L}\p{N}])?$/u
 const CONTROL_CHARACTER = /\p{Cc}/u
 
 export function normalizeCustomName(value: string | null | undefined): string | null {
@@ -15,7 +15,7 @@ export function validateCustomName(value: string | null | undefined): string | n
   if (!normalized) return null
   if ([...normalized].length > 20) return 'El nombre personalizado no puede superar 20 caracteres.'
   if (!ALLOWED_CUSTOM_NAME.test(normalized)) {
-    return 'Usa solo letras, números, espacios, guiones y apóstrofes.'
+    return 'Usa solo letras, números, espacios, guiones, guiones bajos y apóstrofes.'
   }
   return null
 }
