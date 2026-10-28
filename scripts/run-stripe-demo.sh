@@ -4,7 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 EVENTS="checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.async_payment_failed,checkout.session.expired"
 WEBHOOK_URL="http://localhost:8080/api/payments/stripe/webhook"
-LOCAL_ENV="$ROOT_DIR/.env.stripe.local"
+DEFAULT_ENV="$ROOT_DIR/.env"
+STRIPE_ENV="$ROOT_DIR/.env.stripe.local"
 
 if ! command -v stripe >/dev/null 2>&1; then
   echo "Stripe CLI no está instalado."
@@ -16,15 +17,21 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
-if [[ -f "$LOCAL_ENV" ]]; then
+if [[ -f "$DEFAULT_ENV" ]]; then
   set -a
-  source "$LOCAL_ENV"
+  source "$DEFAULT_ENV"
+  set +a
+fi
+
+if [[ -f "$STRIPE_ENV" ]]; then
+  set -a
+  source "$STRIPE_ENV"
   set +a
 fi
 
 if [[ -z "${STRIPE_SECRET_KEY:-}" ]]; then
   echo "Falta STRIPE_SECRET_KEY."
-  echo "Crea $LOCAL_ENV con:"
+  echo "Añádela a $DEFAULT_ENV o $STRIPE_ENV:"
   echo "STRIPE_SECRET_KEY=sk_test_..."
   exit 1
 fi
