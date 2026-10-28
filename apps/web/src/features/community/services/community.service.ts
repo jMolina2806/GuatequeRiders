@@ -4,22 +4,36 @@ export type CommunityLinks = {
   whatsappGroupUrl: string | null
 }
 
-export async function getCommunityLinks(): Promise<CommunityLinks> {
+let cachedToken: string | null = null
+let cachedRequest: Promise<CommunityLinks> | null = null
+
+export function getCommunityLinks(): Promise<CommunityLinks> {
   const token = getToken()
 
   if (!token) {
-    return { whatsappGroupUrl: null }
+    cachedToken = null
+    cachedRequest = null
+    return Promise.resolve({ whatsappGroupUrl: null })
   }
 
-  const response = await fetch('/api/community/links', {
+  if (cachedToken === token && cachedRequest) {
+    return cachedRequest
+  }
+
+  cachedToken = token
+  cachedRequest = fetch('/api/community/links', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   })
+    .then((response) => {
+      if (!response.ok) {
+        return { whatsappGroupUrl: null }
+      }
 
-  if (!response.ok) {
-    return { whatsappGroupUrl: null }
-  }
+      return response.json() as Promise<CommunityLinks>
+    })
+    .catch(() => ({ whatsappGroupUrl: null }))
 
-  return response.json() as Promise<CommunityLinks>
+  return cachedRequest
 }
