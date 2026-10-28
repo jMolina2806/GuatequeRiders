@@ -35,6 +35,12 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "privacy_acknowledged_at")
+    private LocalDateTime privacyAcknowledgedAt;
+
+    @Column(name = "privacy_policy_version", length = 40)
+    private String privacyPolicyVersion;
+
     public User() {
     }
 
@@ -64,4 +70,10 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getPrivacyAcknowledgedAt() { return privacyAcknowledgedAt; }
+    public void setPrivacyAcknowledgedAt(LocalDateTime privacyAcknowledgedAt) { this.privacyAcknowledgedAt = privacyAcknowledgedAt; }
+
+    public String getPrivacyPolicyVersion() { return privacyPolicyVersion; }
+    public void setPrivacyPolicyVersion(String privacyPolicyVersion) { this.privacyPolicyVersion = privacyPolicyVersion; }
 }
