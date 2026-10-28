@@ -1,5 +1,6 @@
 @import './variables.css';
 @import './components.css';
+@import './feature-pages.css';
 
 *,
 *::before,
@@ -11,9 +12,25 @@
 
 body {
   font-family: var(--font-family);
-  background: var(--color-background);
+  background:
+    radial-gradient(circle at 8% -10%, rgba(0, 240, 255, 0.07), transparent 30%),
+    radial-gradient(circle at 92% 8%, rgba(255, 0, 229, 0.045), transparent 28%),
+    var(--color-background);
   color: var(--color-text);
   line-height: 1.5;
+  min-width: 320px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
 }

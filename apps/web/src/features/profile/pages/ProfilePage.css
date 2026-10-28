@@ -1,21 +1,22 @@
 .profile-page {
   max-width: var(--max-width);
+  padding: 22px 0 40px;
 }
 
 .profile-page__loading {
   display: flex;
+  min-height: 260px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 64px 24px;
-  gap: 16px;
+  gap: 14px;
   color: var(--color-text-secondary);
 }
 
 .profile-page__spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid var(--color-border);
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--color-border);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: profile-page-spin 0.8s linear infinite;
@@ -30,34 +31,32 @@
 .profile-page__error {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
-  padding: 16px 20px;
   margin-bottom: 16px;
-  background: var(--color-danger-soft);
+  padding: 12px 16px;
   border: 1px solid rgba(255, 51, 85, 0.3);
   border-radius: var(--radius-md);
   color: var(--color-danger);
-  font-size: 14px;
+  background: var(--color-danger-soft);
+  font-size: 13px;
 }
 
 .profile-page__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  min-height: 330px;
+  place-items: center;
+  align-content: center;
   gap: 12px;
-  padding: 64px 24px;
+  border: 1px dashed var(--color-border-light);
+  border-radius: var(--radius-lg);
   text-align: center;
 }
 
 .profile-page__empty h1 {
-  font-size: 28px;
-  font-weight: 800;
   margin: 0;
-  background: var(--gradient-neon);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--color-text);
+  font-size: 32px;
 }
 
 .profile-page__empty p {
@@ -67,20 +66,22 @@
 }
 
 .profile-page__login-link {
+  display: inline-flex;
   padding: 10px 20px;
   border-radius: var(--radius-md);
+  color: var(--color-text-on-gradient);
   background: var(--gradient-neon);
-  color: #fff;
-  font-weight: 700;
+  box-shadow: var(--shadow-neon-cyan);
   font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: var(--shadow-neon-cyan);
-  transition: all 0.2s ease;
 }
 
-.profile-page__login-link:hover {
-  opacity: 0.9;
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+@media (max-width: 640px) {
+  .profile-page__error {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
 }

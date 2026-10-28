@@ -1,4 +1,5 @@
 import type { Event } from '@/features/events/types/event.types'
+import StatusBadge from '@/components/StatusBadge'
 import './EventCard.css'
 
 type EventCardProps = {
@@ -15,20 +16,6 @@ type EventCardProps = {
   onCancel?: (event: Event) => void
   onEnroll?: (event: Event) => void
   onUnregister?: (event: Event) => void
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Publicado',
-  CLOSED: 'Cerrado',
-  CANCELLED: 'Cancelado',
-}
-
-const STATUS_CLASS: Record<string, string> = {
-  DRAFT: 'event-card__status--draft',
-  PUBLISHED: 'event-card__status--published',
-  CLOSED: 'event-card__status--closed',
-  CANCELLED: 'event-card__status--cancelled',
 }
 
 export default function EventCard({
@@ -91,12 +78,16 @@ export default function EventCard({
 
   return (
     <article className="event-card" onClick={handleDetails}>
+      <div className="event-card__visual" aria-hidden="true">
+        <span className="event-card__visual-label">EVENT / SOCIAL</span>
+        <strong>{String(event.id).padStart(2, '0')}</strong>
+        <span className="event-card__visual-line" />
+        <span className="event-card__visual-signal">OPEN PLAN</span>
+      </div>
       <div className="event-card__body">
         <div className="event-card__top">
           <h3 className="event-card__title">{event.title}</h3>
-          <span className={`event-card__status ${STATUS_CLASS[event.status] ?? ''}`}>
-            {STATUS_LABELS[event.status] ?? event.status}
-          </span>
+          <StatusBadge status={event.status} />
         </div>
 
         <div className="event-card__meta">

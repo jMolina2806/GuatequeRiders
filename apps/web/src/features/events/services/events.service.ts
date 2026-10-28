@@ -31,6 +31,11 @@ export async function getEvents(): Promise<Event[]> {
   return handleResponse<Event[]>(response)
 }
 
+export async function getPublicEvents(): Promise<Event[]> {
+  const response = await fetch(API_BASE)
+  return handleResponse<Event[]>(response)
+}
+
 export async function getEventById(id: number): Promise<Event> {
   const response = await fetch(`${API_BASE}/${id}`)
   return handleResponse<Event>(response)

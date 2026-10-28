@@ -1,0 +1,8 @@
+app:
+  environment: test
+  rate-limit:
+    enabled: false
+
+jwt:
+  secret: test-only-jwt-secret-for-spring-tests-2026
+  expiration-ms: 86400000

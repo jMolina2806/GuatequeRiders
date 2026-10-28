@@ -1,23 +1,10 @@
 import { Link } from 'react-router-dom'
+import StatusBadge from '@/components/StatusBadge'
 import type { Event } from '@/features/events/types/event.types'
 import './MyEvents.css'
 
 type MyEventsProps = {
   events: Event[]
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Publicado',
-  CLOSED: 'Cerrado',
-  CANCELLED: 'Cancelado',
-}
-
-const STATUS_CLASS: Record<string, string> = {
-  DRAFT: 'my-events__status--draft',
-  PUBLISHED: 'my-events__status--published',
-  CLOSED: 'my-events__status--closed',
-  CANCELLED: 'my-events__status--cancelled',
 }
 
 export default function MyEvents({ events }: MyEventsProps) {
@@ -50,9 +37,7 @@ export default function MyEvents({ events }: MyEventsProps) {
                     📅 {event.date} · 🕖 {timeRange} · 📍 {event.location}
                   </span>
                 </div>
-                <span className={`my-events__status ${STATUS_CLASS[event.status] ?? ''}`}>
-                  {STATUS_LABELS[event.status] ?? event.status}
-                </span>
+                <StatusBadge status={event.status} />
               </li>
             )
           })}

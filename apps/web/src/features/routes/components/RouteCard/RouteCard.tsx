@@ -1,4 +1,5 @@
 import type { Route } from '@/features/routes/types/route.types'
+import StatusBadge from '@/components/StatusBadge'
 import './RouteCard.css'
 
 type RouteCardProps = {
@@ -28,22 +29,6 @@ const DIFFICULTY_CLASS: Record<string, string> = {
   MODERATE: 'route-card__difficulty--moderate',
   HARD: 'route-card__difficulty--hard',
   EXTREME: 'route-card__difficulty--extreme',
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Abierta',
-  IN_PROGRESS: 'En curso',
-  COMPLETED: 'Completada',
-  CANCELLED: 'Cancelada',
-}
-
-const STATUS_CLASS: Record<string, string> = {
-  DRAFT: 'route-card__status--draft',
-  PUBLISHED: 'route-card__status--open',
-  IN_PROGRESS: 'route-card__status--in-progress',
-  COMPLETED: 'route-card__status--completed',
-  CANCELLED: 'route-card__status--cancelled',
 }
 
 export default function RouteCard({
@@ -110,14 +95,16 @@ export default function RouteCard({
 
   return (
     <article className="route-card" onClick={handleDetails}>
+      <div className="route-card__visual" aria-hidden="true">
+        <span className="route-card__visual-label">ROUTE / TRACK</span>
+        <strong>{String(route.id).padStart(2, '0')}</strong>
+        <span className="route-card__visual-line" />
+        <span className="route-card__visual-signal">LIVE DATA</span>
+      </div>
       <div className="route-card__body">
         <div className="route-card__top">
           <h3 className="route-card__title">{route.title}</h3>
-          <span
-            className={`route-card__status ${STATUS_CLASS[route.status] ?? ''}`}
-          >
-            {STATUS_LABELS[route.status] ?? route.status}
-          </span>
+          <StatusBadge status={route.status} />
         </div>
 
         <div className="route-card__meta">

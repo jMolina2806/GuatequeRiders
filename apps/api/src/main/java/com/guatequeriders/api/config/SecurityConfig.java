@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,13 +55,33 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'none'; base-uri 'none'; frame-ancestors 'none'"))
+                        .contentTypeOptions(Customizer.withDefaults())
+                        .frameOptions(frame -> frame.deny())
+                        .referrerPolicy(referrer -> referrer
+                                .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
+                        .httpStrictTransportSecurity(hsts -> hsts
+                                .includeSubDomains(true)
+                                .preload(true)
+                                .maxAgeInSeconds(31_536_000)))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/payments/stripe/webhook").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/routes", "/api/routes/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/{id}").permitAll()
-                        .requestMatchers("/api/health").permitAll()
+                         .requestMatchers(HttpMethod.GET, "/api/circuits", "/api/circuits/{id}").permitAll()
+                         .requestMatchers(HttpMethod.GET, "/api/collaborators", "/api/collaborators/{id}").permitAll()
+                         .requestMatchers(HttpMethod.GET, "/api/uploads/collaborators/**").permitAll()
+                         .requestMatchers(HttpMethod.GET,
+                                  "/api/routes/{routeId}/photos",
+                                  "/api/routes/{routeId}/photos/{photoId}/file",
+                                  "/api/routes/{routeId}/photos/{photoId}/download").permitAll()
+                          .requestMatchers(HttpMethod.GET, "/api/merch/campaign/current").permitAll()
+                          .requestMatchers("/api/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

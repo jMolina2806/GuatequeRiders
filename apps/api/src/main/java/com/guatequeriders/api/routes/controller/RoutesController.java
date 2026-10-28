@@ -8,6 +8,7 @@ import com.guatequeriders.api.routes.dto.UpdateRouteRequest;
 import com.guatequeriders.api.routes.model.Route;
 import com.guatequeriders.api.routes.model.RouteOrganizer;
 import com.guatequeriders.api.routes.model.RouteStatus;
+import com.guatequeriders.api.routes.photos.service.RoutePhotosService;
 import com.guatequeriders.api.routes.service.RoutesService;
 import com.guatequeriders.api.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
@@ -36,10 +37,14 @@ public class RoutesController {
 
     private final RoutesService routesService;
     private final RegistrationsService registrationsService;
+    private final RoutePhotosService routePhotosService;
 
-    public RoutesController(RoutesService routesService, RegistrationsService registrationsService) {
+    public RoutesController(RoutesService routesService,
+                            RegistrationsService registrationsService,
+                            RoutePhotosService routePhotosService) {
         this.routesService = routesService;
         this.registrationsService = registrationsService;
+        this.routePhotosService = routePhotosService;
     }
 
     @GetMapping
@@ -111,6 +116,7 @@ public class RoutesController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         registrationsService.deleteByRouteId(id);
         routesService.delete(id);
+        routePhotosService.cleanupRouteStorage(id);
         return ResponseEntity.noContent().build();
     }
 

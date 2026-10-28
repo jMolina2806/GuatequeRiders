@@ -99,3 +99,8 @@ target/
 # Misc
 .tern-port
 .node_repl_history
+# Runtime uploads
+apps/api/uploads/
+
+# Windows download metadata
+*:Zone.Identifier

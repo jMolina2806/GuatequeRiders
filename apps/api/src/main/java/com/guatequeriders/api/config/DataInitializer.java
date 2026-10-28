@@ -5,6 +5,8 @@ import com.guatequeriders.api.eventregistrations.repository.EventRegistrationRep
 import com.guatequeriders.api.events.model.Event;
 import com.guatequeriders.api.events.model.EventStatus;
 import com.guatequeriders.api.events.repository.EventRepository;
+import com.guatequeriders.api.merch.model.MerchCampaign;
+import com.guatequeriders.api.merch.repository.MerchCampaignRepository;
 import com.guatequeriders.api.registrations.model.RouteRegistration;
 import com.guatequeriders.api.registrations.repository.RouteRegistrationRepository;
 import com.guatequeriders.api.routes.model.Difficulty;
@@ -17,6 +19,7 @@ import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Component
+@Profile("dev")
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -34,6 +38,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RouteRegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
     private final EventRegistrationRepository eventRegistrationRepository;
+    private final MerchCampaignRepository merchCampaignRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserRepository userRepository,
@@ -42,6 +47,7 @@ public class DataInitializer implements CommandLineRunner {
                            RouteRegistrationRepository registrationRepository,
                            EventRepository eventRepository,
                            EventRegistrationRepository eventRegistrationRepository,
+                           MerchCampaignRepository merchCampaignRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.routeRepository = routeRepository;
@@ -49,6 +55,7 @@ public class DataInitializer implements CommandLineRunner {
         this.registrationRepository = registrationRepository;
         this.eventRepository = eventRepository;
         this.eventRegistrationRepository = eventRegistrationRepository;
+        this.merchCampaignRepository = merchCampaignRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -58,6 +65,7 @@ public class DataInitializer implements CommandLineRunner {
         seedUsers();
         seedRoutes();
         seedEvents();
+        seedMerchCampaign();
     }
 
     private void seedUsers() {
@@ -202,5 +210,11 @@ public class DataInitializer implements CommandLineRunner {
             registration.setRegisteredAt(LocalDateTime.now());
             eventRegistrationRepository.save(registration);
         });
+    }
+
+    private void seedMerchCampaign() {
+        if (merchCampaignRepository.count() == 0) {
+            merchCampaignRepository.save(new MerchCampaign());
+        }
     }
 }

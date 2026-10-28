@@ -1,0 +1,10 @@
+{
+  "name": "Guateque Riders",
+  "short_name": "Guateque Riders",
+  "description": "Guateque Riders — rutas, eventos, circuitos y comunidad motera.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#070b12",
+  "background_color": "#070b12"
+}

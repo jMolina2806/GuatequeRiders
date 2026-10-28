@@ -33,7 +33,7 @@ export default function RoutesPage() {
     cancelEdit,
   } = useRoutes()
 
-  const { isAdmin, isAuthenticated } = useAuth()
+  const { isAdmin, isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -86,19 +86,22 @@ export default function RoutesPage() {
 
   return (
     <section>
-      <div className="routes-page__header">
-        <div className="routes-page__header-text">
-          <h1>Rutas</h1>
-          <p>Descubre las próximas rutas del club y apúntate.</p>
+      <div className="routes-page__header feature-page-header feature-page-header--routes">
+        <div className="routes-page__header-text feature-page-header__copy">
+          <span className="feature-page-header__eyebrow">Guateque Riders / Route Control</span>
+          <h1 className="feature-page-header__title">Rutas</h1>
+          <p className="feature-page-header__subtitle">
+            Descubre rutas, apúntate y disfruta de la carretera en grupo.
+          </p>
         </div>
 
         {isAdmin && (
           <button
-            className="btn btn--primary"
+            className="btn btn--primary feature-page-header__action"
             onClick={handleCreateRoute}
             type="button"
           >
-            Crear ruta
+            + Crear ruta
           </button>
         )}
       </div>
@@ -164,6 +167,7 @@ export default function RoutesPage() {
         isAdmin={isAdmin}
         isAuthenticated={isAuthenticated}
         isRegistered={detailsRoute ? !!registrations[detailsRoute.id] : false}
+        currentUserId={user?.id}
         isProcessing={detailsRoute ? !!registrationLoading[detailsRoute.id] : false}
         onClose={() => setDetailsRoute(null)}
         onEnroll={handleEnroll}

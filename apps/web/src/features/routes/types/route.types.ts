@@ -44,3 +44,14 @@ export type UpdateRouteRequest = CreateRouteRequest & {
 export type RegistrationStatus = {
   registered: boolean
 }
+
+export type RoutePhoto = {
+  id: number
+  imageUrl: string
+  downloadUrl: string
+  uploadedBy: {
+    id: number
+    username: string
+  }
+  createdAt: string
+}

@@ -3,6 +3,7 @@ import ProfileHeader from '../components/ProfileHeader'
 import ProfileStats from '../components/ProfileStats'
 import MyRoutes from '../components/MyRoutes'
 import MyEvents from '../components/MyEvents'
+import MyOrders from '../components/MyOrders'
 import { useProfile } from '../hooks/useProfile'
 import { useAuth } from '@/features/auth/context/useAuth'
 import './ProfilePage.css'
@@ -63,6 +64,7 @@ export default function ProfilePage() {
           <ProfileStats stats={stats} />
           <MyRoutes routes={routes} />
           <MyEvents events={events} />
+          <MyOrders />
         </>
       )}
     </section>
