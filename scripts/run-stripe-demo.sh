@@ -65,7 +65,7 @@ export STRIPE_WEBHOOK_SECRET
 export SPRING_PROFILES_ACTIVE=dev
 export STRIPE_ENABLED=true
 export STRIPE_MODE=test
-export APP_PUBLIC_URL=http://localhost:5173
+export APP_PUBLIC_URL="${APP_PUBLIC_URL:-http://localhost:5173}"
 
 cleanup() {
   echo
@@ -102,7 +102,7 @@ FRONTEND_PID=$!
 
 echo
 echo "Demo iniciada:"
-echo "  Frontend: http://localhost:5173"
+echo "  Frontend: $APP_PUBLIC_URL"
 echo "  Backend:  http://localhost:8080"
 echo "  Stripe:   TEST + webhooks locales"
 echo
