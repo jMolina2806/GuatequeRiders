@@ -278,6 +278,13 @@
   background: rgba(255, 51, 85, 0.04);
 }
 
+.admin-campaign-panel--fulfillment {
+  border-color: rgba(0, 240, 255, 0.28);
+  background:
+    linear-gradient(120deg, rgba(0, 240, 255, 0.045), transparent 45%),
+    var(--color-surface);
+}
+
 .admin-campaign-panel__heading {
   align-items: flex-start;
   margin-bottom: 18px;
@@ -434,9 +441,17 @@
   color: var(--color-success);
 }
 
+.admin-order-card__statuses {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 7px;
+}
+
 .admin-order-card__paid,
 .admin-order-card__excluded-status,
-.admin-order-card__late-status {
+.admin-order-card__late-status,
+.admin-order-card__fulfillment {
   padding: 5px 8px;
   border: 1px solid rgba(72, 220, 143, 0.35);
   border-radius: var(--radius-sm);
@@ -455,6 +470,26 @@
   border-color: rgba(255, 51, 85, 0.4);
   color: var(--color-danger);
   text-align: right;
+}
+
+.admin-order-card__fulfillment {
+  border-color: rgba(0, 240, 255, 0.32);
+  color: var(--color-primary);
+}
+
+.admin-order-card__fulfillment--in-production {
+  border-color: rgba(124, 58, 237, 0.4);
+  color: #bda7ff;
+}
+
+.admin-order-card__fulfillment--ready {
+  border-color: rgba(255, 176, 32, 0.4);
+  color: var(--color-warning);
+}
+
+.admin-order-card__fulfillment--delivered {
+  border-color: rgba(0, 255, 136, 0.4);
+  color: var(--color-success);
 }
 
 .admin-order-card__items {
@@ -517,6 +552,17 @@
 .admin-order-card__footer span {
   color: var(--color-muted);
   font-size: 11px;
+}
+
+.admin-order-card__footer-actions {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.admin-orders-list--fulfillment {
+  margin-top: 16px;
 }
 
 .admin-campaign-final-summary {
@@ -678,6 +724,17 @@
   .admin-order-card__item-prices {
     align-items: flex-start;
     text-align: left;
+  }
+
+  .admin-order-card__header,
+  .admin-order-card__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-order-card__statuses,
+  .admin-order-card__footer-actions {
+    align-items: flex-start;
   }
 
   .admin-close-confirmation__stats {
