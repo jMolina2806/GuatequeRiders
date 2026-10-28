@@ -6,7 +6,7 @@ public final class CustomNameNormalizer {
 
     private static final int MAX_LENGTH = 20;
     private static final Pattern ALLOWED_CHARACTERS = Pattern.compile(
-            "^[\\p{L}\\p{N}](?:[\\p{L}\\p{N} '\\-]*[\\p{L}\\p{N}])?$"
+            "^[\\p{L}\\p{N}](?:[\\p{L}\\p{N} '_\\-]*[\\p{L}\\p{N}])?$"
     );
 
     private CustomNameNormalizer() {
@@ -29,7 +29,7 @@ public final class CustomNameNormalizer {
         }
         if (!ALLOWED_CHARACTERS.matcher(normalized).matches()) {
             throw new IllegalArgumentException(
-                    "Custom name may contain only letters, numbers, spaces, hyphens and apostrophes"
+                    "Custom name may contain only letters, numbers, spaces, hyphens, underscores and apostrophes"
             );
         }
         return normalized;
