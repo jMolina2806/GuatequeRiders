@@ -53,10 +53,10 @@ class NotificationPreferencesIntegrationTest {
         mockMvc.perform(get("/api/notifications/preferences")
                         .header("Authorization", "Bearer " + authToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.merchNotifications").value(true))
-                .andExpect(jsonPath("$.routeNotifications").value(true))
-                .andExpect(jsonPath("$.eventNotifications").value(true))
-                .andExpect(jsonPath("$.circuitNotifications").value(true));
+                .andExpect(jsonPath("$.merchNotifications").value(false))
+                .andExpect(jsonPath("$.routeNotifications").value(false))
+                .andExpect(jsonPath("$.eventNotifications").value(false))
+                .andExpect(jsonPath("$.circuitNotifications").value(false));
 
         mockMvc.perform(put("/api/notifications/preferences")
                         .header("Authorization", "Bearer " + authToken)
@@ -70,7 +70,10 @@ class NotificationPreferencesIntegrationTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.eventNotifications").value(false));
+                .andExpect(jsonPath("$.merchNotifications").value(true))
+                .andExpect(jsonPath("$.routeNotifications").value(true))
+                .andExpect(jsonPath("$.eventNotifications").value(false))
+                .andExpect(jsonPath("$.circuitNotifications").value(true));
 
         User user = userRepository.findByUsername("demo").orElseThrow();
         String unsubscribeToken = unsubscribeTokenService.create(
