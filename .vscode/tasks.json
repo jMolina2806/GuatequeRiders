@@ -24,9 +24,20 @@
       "problemMatcher": []
     },
     {
+      "label": "Start Database",
+      "type": "shell",
+      "command": "docker compose up -d postgres && until docker compose exec -T postgres pg_isready -U postgres -d guatequeriders >/dev/null 2>&1; do sleep 1; done",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Run Backend",
       "type": "shell",
       "command": "./mvnw spring-boot:run",
+      "dependsOn": "Start Database",
+      "dependsOrder": "sequence",
       "options": {
         "cwd": "${workspaceFolder}/apps/api",
         "env": {
