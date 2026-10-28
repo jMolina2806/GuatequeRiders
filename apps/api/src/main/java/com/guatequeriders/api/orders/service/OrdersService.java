@@ -19,11 +19,13 @@ import com.guatequeriders.api.payments.model.PaymentApplicationResult;
 import com.guatequeriders.api.payments.model.PaymentAttempt;
 import com.guatequeriders.api.payments.model.PaymentAttemptStatus;
 import com.guatequeriders.api.payments.repository.PaymentAttemptRepository;
+import com.guatequeriders.api.payments.service.StripeCheckoutService;
 import com.guatequeriders.api.orders.validation.CustomNameNormalizer;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,13 +43,16 @@ public class OrdersService {
     private final OrderRepository orderRepository;
     private final MerchCampaignRepository campaignRepository;
     private final PaymentAttemptRepository paymentAttemptRepository;
+    private final ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider;
 
     public OrdersService(OrderRepository orderRepository,
-                          MerchCampaignRepository campaignRepository,
-                          PaymentAttemptRepository paymentAttemptRepository) {
+                         MerchCampaignRepository campaignRepository,
+                         PaymentAttemptRepository paymentAttemptRepository,
+                         ObjectProvider<StripeCheckoutService> stripeCheckoutServiceProvider) {
         this.orderRepository = orderRepository;
         this.campaignRepository = campaignRepository;
         this.paymentAttemptRepository = paymentAttemptRepository;
+        this.stripeCheckoutServiceProvider = stripeCheckoutServiceProvider;
     }
 
     @Transactional
@@ -236,7 +241,13 @@ public class OrdersService {
                 activeAttempt.setStatus(PaymentAttemptStatus.EXPIRED);
                 paymentAttemptRepository.save(activeAttempt);
             } else {
-                throw new ConflictException("The order has an active Stripe Checkout Session");
+                StripeCheckoutService stripeCheckoutService = stripeCheckoutServiceProvider.getIfAvailable();
+                if (stripeCheckoutService == null) {
+                    throw new ConflictException("No se puede cancelar el pedido mientras la sesión de pago está activa");
+                }
+                stripeCheckoutService.expireCheckoutSession(activeAttempt.getStripeCheckoutSessionId());
+                activeAttempt.setStatus(PaymentAttemptStatus.EXPIRED);
+                paymentAttemptRepository.save(activeAttempt);
             }
         }
         order.setStatus(OrderStatus.CANCELLED);
