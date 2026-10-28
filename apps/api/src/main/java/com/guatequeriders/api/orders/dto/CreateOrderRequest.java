@@ -2,6 +2,7 @@ package com.guatequeriders.api.orders.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,6 +45,9 @@ public record CreateOrderRequest(
         String postalCode,
 
         @Size(max = 120, message = "Province is too long")
-        String province
+        String province,
+
+        @AssertTrue(message = "Merch terms acceptance is required")
+        boolean merchTermsAccepted
 ) {
 }
