@@ -16,6 +16,7 @@ export type CreateOrderRequest = {
   city?: string
   postalCode?: string
   province?: string
+  merchTermsAccepted: boolean
 }
 
 export type CheckoutSessionResponse = {
