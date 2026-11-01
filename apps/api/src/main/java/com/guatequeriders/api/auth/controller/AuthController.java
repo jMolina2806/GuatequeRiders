@@ -5,11 +5,13 @@ import com.guatequeriders.api.auth.dto.LoginRequest;
 import com.guatequeriders.api.auth.dto.RegisterRequest;
 import com.guatequeriders.api.auth.dto.UserResponse;
 import com.guatequeriders.api.auth.security.JwtService;
+import com.guatequeriders.api.auth.security.LoginAttemptService;
 import com.guatequeriders.api.common.exception.InvalidCredentialsException;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
 import com.guatequeriders.api.users.service.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +31,18 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final LoginAttemptService loginAttemptService;
 
     public AuthController(UsersService usersService,
                           UserRepository userRepository,
                           PasswordEncoder passwordEncoder,
-                          JwtService jwtService) {
+                          JwtService jwtService,
+                          LoginAttemptService loginAttemptService) {
         this.usersService = usersService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @PostMapping("/register")
@@ -48,10 +53,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request,
+                                              HttpServletRequest httpRequest) {
+        String clientIp = httpRequest.getRemoteAddr();
+        loginAttemptService.assertAllowed(request.username(), clientIp);
+
         User user = userRepository.findByUsername(request.username())
                 .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
-                .orElseThrow(InvalidCredentialsException::new);
+                .orElse(null);
+
+        if (user == null) {
+            loginAttemptService.recordFailure(request.username(), clientIp);
+            throw new InvalidCredentialsException();
+        }
+
+        loginAttemptService.reset(request.username(), clientIp);
         return ResponseEntity.ok(toAuthResponse(user));
     }
 
