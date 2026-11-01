@@ -37,7 +37,9 @@ PostgreSQL no publica ningún puerto hacia Internet en `docker-compose.prod.yml`
 - Login devuelve un mensaje genérico para credenciales incorrectas.
 - Nuevas contraseñas: entre 12 y 64 caracteres.
 - BCrypt con factor de trabajo 12.
-- Login limitado por IP/cliente.
+- Flood general del endpoint de login limitado por IP/cliente.
+- Un mismo usuario/IP queda temporalmente bloqueado tras 10 credenciales fallidas en 15 minutos.
+- Un login correcto reinicia el contador de fallos para esa combinación usuario/IP.
 
 ### Autorización
 
