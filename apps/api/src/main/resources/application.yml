@@ -1,5 +1,6 @@
 server:
   port: 8080
+  forward-headers-strategy: framework
   tomcat:
     connection-timeout: 5s
 
@@ -9,8 +10,11 @@ app:
   allowed-origins: ${APP_ALLOWED_ORIGINS:http://localhost:5173}
   rate-limit:
     enabled: ${RATE_LIMIT_ENABLED:true}
-    login-per-minute: ${RATE_LIMIT_LOGIN_PER_MINUTE:60}
-    checkout-session-per-minute: ${RATE_LIMIT_CHECKOUT_SESSION_PER_MINUTE:20}
+    login-per-minute: ${RATE_LIMIT_LOGIN_PER_MINUTE:10}
+    register-per-minute: ${RATE_LIMIT_REGISTER_PER_MINUTE:5}
+    checkout-session-per-minute: ${RATE_LIMIT_CHECKOUT_SESSION_PER_MINUTE:10}
+    upload-per-minute: ${RATE_LIMIT_UPLOAD_PER_MINUTE:30}
+    unsubscribe-per-minute: ${RATE_LIMIT_UNSUBSCRIBE_PER_MINUTE:10}
   merch:
     test-payments-enabled: ${MERCH_TEST_PAYMENTS_ENABLED:false}
   community:
