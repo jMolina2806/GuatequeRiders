@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RateLimitProperties {
 
     private boolean enabled = true;
-    private int loginPerMinute = 10;
+    private int loginPerMinute = 60;
     private int registerPerMinute = 5;
     private int checkoutSessionPerMinute = 10;
     private int uploadPerMinute = 30;
