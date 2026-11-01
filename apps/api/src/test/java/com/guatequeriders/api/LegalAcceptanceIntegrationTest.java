@@ -58,7 +58,7 @@ class LegalAcceptanceIntegrationTest {
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "username", username,
                                 "email", email,
-                                "password", "password123",
+                                "password", "password12345",
                                 "privacyAccepted", false
                         ))))
                 .andExpect(status().isBadRequest());
@@ -68,7 +68,7 @@ class LegalAcceptanceIntegrationTest {
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "username", username,
                                 "email", email,
-                                "password", "password123",
+                                "password", "password12345",
                                 "privacyAccepted", true
                         ))))
                 .andExpect(status().isCreated());
