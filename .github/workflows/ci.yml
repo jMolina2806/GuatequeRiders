@@ -77,8 +77,12 @@ jobs:
 
   production-images:
     name: Production images
-    if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
     runs-on: ubuntu-latest
+    env:
+      APP_DOMAIN: ci.guatequeriders.example
+      POSTGRES_PASSWORD: ci-only-postgres-password
+      JWT_SECRET: ci-only-jwt-secret-key-2026-at-least-32-characters
+      UNSUBSCRIBE_SECRET: ci-only-unsubscribe-secret-key-2026-at-least-32-characters
 
     steps:
       - name: Checkout
@@ -91,3 +95,9 @@ jobs:
 
       - name: Build frontend image
         run: docker build -t guatequeriders-web:ci apps/web
+
+      - name: Validate Caddy configuration
+        run: docker run --rm -e APP_DOMAIN=localhost guatequeriders-web:ci caddy validate --config /etc/caddy/Caddyfile
+
+      - name: Validate production Compose configuration
+        run: docker compose --env-file /dev/null -f docker-compose.prod.yml config -q
