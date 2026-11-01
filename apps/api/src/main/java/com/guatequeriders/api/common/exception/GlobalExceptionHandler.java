@@ -52,6 +52,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<ErrorResponse> handleTooManyRequests(TooManyRequestsException ex) {
+        var body = new ErrorResponse(HttpStatus.TOO_MANY_REQUESTS.value(), "Too many requests");
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header("Retry-After", String.valueOf(ex.getRetryAfterSeconds()))
+                .body(body);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
         var body = new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Access denied");
