@@ -16,5 +16,6 @@ Consulta:
 
 - `docs/production.md`
 - `docs/legal-review.md`
+- `docs/security.md`
 
 El despliegue de producción está preparado en `docker-compose.prod.yml`.

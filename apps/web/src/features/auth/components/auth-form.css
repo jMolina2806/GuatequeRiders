@@ -121,3 +121,10 @@
   color: var(--color-primary);
   font-weight: 600;
 }
+
+
+.auth-form__field small {
+  color: var(--color-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}

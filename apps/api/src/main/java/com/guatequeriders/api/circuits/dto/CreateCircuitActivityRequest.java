@@ -13,15 +13,19 @@ import java.time.LocalTime;
 public class CreateCircuitActivityRequest {
 
     @NotBlank(message = "Title is required")
+    @Size(max = 160, message = "Title is too long")
     private String title;
 
     @NotBlank(message = "Circuit name is required")
+    @Size(max = 255, message = "Circuit name is too long")
     private String circuitName;
 
     @NotBlank(message = "Description is required")
+    @Size(max = 4000, message = "Description is too long")
     private String description;
 
     @NotBlank(message = "Location is required")
+    @Size(max = 255, message = "Location is too long")
     private String location;
 
     @NotNull(message = "Date is required")
@@ -42,13 +46,16 @@ public class CreateCircuitActivityRequest {
     private String benefit;
 
     @NotBlank(message = "Registration URL is required")
+    @Size(max = 1000, message = "Registration URL is too long")
     @Pattern(regexp = "^https://\\S+$", message = "Registration URL must be a valid HTTPS URL")
     private String registrationUrl;
 
     @Pattern(regexp = "^https://\\S+$", message = "Information URL must be a valid HTTPS URL")
+    @Size(max = 1000, message = "Information URL is too long")
     private String informationUrl;
 
     @Pattern(regexp = "^https://\\S+$", message = "Image URL must be a valid HTTPS URL")
+    @Size(max = 1000, message = "Image URL is too long")
     private String imageUrl;
 
     public String getTitle() { return title; }

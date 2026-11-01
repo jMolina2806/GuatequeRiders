@@ -71,8 +71,18 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         if ("/api/auth/login".equals(path)) {
             return properties.getLoginPerMinute();
         }
+        if ("/api/auth/register".equals(path)) {
+            return properties.getRegisterPerMinute();
+        }
+        if ("/api/notifications/unsubscribe".equals(path)) {
+            return properties.getUnsubscribePerMinute();
+        }
         if (path.matches("/api/orders/\\d+/checkout-session")) {
             return properties.getCheckoutSessionPerMinute();
+        }
+        if (path.matches("/api/routes/\\d+/photos")
+                || path.matches("/api/collaborators/\\d+/image")) {
+            return properties.getUploadPerMinute();
         }
         return -1;
     }

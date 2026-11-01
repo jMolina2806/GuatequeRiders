@@ -22,6 +22,12 @@ public class JwtService {
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration-ms}") long expirationMs
     ) {
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalStateException("JWT_SECRET must contain at least 32 characters");
+        }
+        if (expirationMs < 300_000 || expirationMs > 604_800_000) {
+            throw new IllegalStateException("JWT_EXPIRATION_MS must be between 5 minutes and 7 days");
+        }
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMs = expirationMs;
     }
