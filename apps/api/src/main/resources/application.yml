@@ -10,7 +10,7 @@ app:
   allowed-origins: ${APP_ALLOWED_ORIGINS:http://localhost:5173}
   rate-limit:
     enabled: ${RATE_LIMIT_ENABLED:true}
-    login-per-minute: ${RATE_LIMIT_LOGIN_PER_MINUTE:10}
+    login-per-minute: ${RATE_LIMIT_LOGIN_PER_MINUTE:60}
     register-per-minute: ${RATE_LIMIT_REGISTER_PER_MINUTE:5}
     checkout-session-per-minute: ${RATE_LIMIT_CHECKOUT_SESSION_PER_MINUTE:10}
     upload-per-minute: ${RATE_LIMIT_UPLOAD_PER_MINUTE:30}
