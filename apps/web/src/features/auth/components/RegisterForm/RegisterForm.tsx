@@ -73,9 +73,11 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="new-password"
-            minLength={6}
+            minLength={12}
+            maxLength={64}
             required
           />
+          <small>Usa al menos 12 caracteres. Puedes usar una frase larga y fácil de recordar.</small>
         </div>
 
         <label className="auth-form__consent">
