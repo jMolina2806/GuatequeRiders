@@ -9,7 +9,7 @@
 .user-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 640px;
+  min-width: 980px;
 }
 
 .user-table th,
@@ -114,4 +114,12 @@
     letter-spacing: 0.5px;
     color: var(--color-muted);
   }
+}
+
+
+.user-table__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
 }
