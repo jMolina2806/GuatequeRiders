@@ -29,11 +29,11 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
-        if (!properties.isEnabled() || !"POST".equalsIgnoreCase(request.getMethod())) {
+        if (!properties.isEnabled()) {
             return true;
         }
 
-        int limit = limitFor(request.getRequestURI());
+        int limit = limitFor(request.getMethod(), request.getRequestURI());
         if (limit < 0) {
             return true;
         }
@@ -67,12 +67,15 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private int limitFor(String path) {
-        if ("/api/auth/login".equals(path)) {
+    private int limitFor(String method, String path) {
+        if ("POST".equalsIgnoreCase(method) && "/api/auth/login".equals(path)) {
             return properties.getLoginPerMinute();
         }
-        if (path.matches("/api/orders/\\d+/checkout-session")) {
+        if ("POST".equalsIgnoreCase(method) && path.matches("/api/orders/\\d+/checkout-session")) {
             return properties.getCheckoutSessionPerMinute();
+        }
+        if ("GET".equalsIgnoreCase(method) && path.startsWith("/api/membership/verify/")) {
+            return properties.getMembershipVerificationPerMinute();
         }
         return -1;
     }
