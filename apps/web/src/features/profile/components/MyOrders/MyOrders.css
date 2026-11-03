@@ -27,6 +27,29 @@
 .my-orders__list {
   display: grid;
   gap: 10px;
+  max-height: 560px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
+
+.my-orders__list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.my-orders__list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+}
+
+.my-orders__list::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.25);
+  border-radius: 999px;
+}
+
+.my-orders__list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.4);
 }
 
 .my-orders__card {
@@ -110,4 +133,11 @@
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.7px;
+}
+
+@media (max-width: 640px) {
+  .my-orders__list {
+    max-height: 480px;
+    padding-right: 4px;
+  }
 }
