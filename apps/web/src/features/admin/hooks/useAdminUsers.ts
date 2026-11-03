@@ -12,6 +12,7 @@ export function useAdminUsers() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [roleUpdatingId, setRoleUpdatingId] = useState<number | null>(null)
+  const [membershipUpdatingId, setMembershipUpdatingId] = useState<number | null>(null)
   const [feedback, setFeedback] = useState<AdminFeedback | null>(null)
 
   const fetchUsers = useCallback(async () => {
@@ -53,6 +54,28 @@ export function useAdminUsers() {
     }
   }
 
+  const changeMembership = async (userId: number, active: boolean): Promise<User> => {
+    setMembershipUpdatingId(userId)
+    setFeedback(null)
+    try {
+      const updated = await adminService.updateUserMembership(userId, active)
+      setUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)))
+      setFeedback({
+        message: active ? 'Socio activado correctamente' : 'Membresía desactivada',
+        type: 'success',
+      })
+      return updated
+    } catch (err) {
+      setFeedback({
+        message: err instanceof Error ? err.message : 'Error al actualizar la membresía',
+        type: 'error',
+      })
+      throw err
+    } finally {
+      setMembershipUpdatingId(null)
+    }
+  }
+
   const clearFeedback = () => {
     setFeedback(null)
   }
@@ -62,9 +85,11 @@ export function useAdminUsers() {
     isLoading,
     error,
     roleUpdatingId,
+    membershipUpdatingId,
     feedback,
     retry: fetchUsers,
     changeRole,
+    changeMembership,
     clearFeedback,
   }
 }
