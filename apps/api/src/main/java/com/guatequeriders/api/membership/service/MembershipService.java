@@ -51,7 +51,7 @@ public class MembershipService {
         MembershipTokenService.IssuedVerification verification =
                 tokenService.issue(current.getId(), current.getMembershipVersion());
 
-        String verificationUrl = publicUrl + "/verify-member/"
+        String verificationUrl = publicUrl + "/verify-member#"
                 + URLEncoder.encode(verification.token(), StandardCharsets.UTF_8);
 
         return new MemberCardResponse(
