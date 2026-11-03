@@ -85,3 +85,34 @@
     flex-wrap: wrap;
   }
 }
+
+
+.profile-page__member-card {
+  margin: 18px 0 22px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(120deg, rgba(255, 0, 128, 0.05), rgba(0, 240, 255, 0.05));
+}
+
+.profile-page__member-card div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-page__member-card span {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 560px) {
+  .profile-page__member-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
