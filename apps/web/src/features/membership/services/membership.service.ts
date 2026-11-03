@@ -7,7 +7,6 @@ export type MemberCard = {
   validUntil: string
   verificationCode: string
   verificationExpiresAt: string
-  qrDataUrl: string
 }
 
 export type MembershipVerification = {
