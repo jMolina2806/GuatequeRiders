@@ -140,31 +140,19 @@
 
 .member-card__verification {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 20px;
+  gap: 9px;
+  padding: 24px;
+  text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.035);
 }
 
-.member-card__verification img {
-  width: min(210px, 44vw);
-  aspect-ratio: 1;
-  padding: 10px;
-  border-radius: 16px;
-  background: white;
-}
-
-.member-card__verification-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .member-card__code {
-  font-size: clamp(34px, 7vw, 56px);
-  letter-spacing: 0.12em;
+  font-size: clamp(38px, 8vw, 62px);
+  letter-spacing: 0.14em;
 }
 
 .member-card__timer {
@@ -173,11 +161,44 @@
   font-weight: 700;
 }
 
+.member-card__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  color: #7dffac;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.member-card__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #61ff9a;
+  box-shadow: 0 0 12px #61ff9a;
+  animation: member-card-live 1.2s ease-in-out infinite;
+}
+
 .member-card__security {
   margin: 20px 0 0;
   color: var(--color-muted);
   font-size: 12px;
   text-align: center;
+}
+
+@keyframes member-card-live {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.82);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 640px) {
@@ -193,10 +214,5 @@
 
   .member-card__identity strong {
     margin-bottom: 9px;
-  }
-
-  .member-card__verification {
-    flex-direction: column;
-    text-align: center;
   }
 }

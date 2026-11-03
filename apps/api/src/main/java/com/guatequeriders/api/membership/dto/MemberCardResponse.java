@@ -8,7 +8,6 @@ public record MemberCardResponse(
         String username,
         LocalDate validUntil,
         String verificationCode,
-        Instant verificationExpiresAt,
-        String qrDataUrl
+        Instant verificationExpiresAt
 ) {
 }

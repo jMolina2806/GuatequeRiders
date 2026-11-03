@@ -106,16 +106,17 @@ export default function MemberCardPage() {
         </div>
 
         <div className="member-card__verification">
-          <img src={card.qrDataUrl} alt="QR temporal de verificación del carnet" />
-          <div className="member-card__verification-copy">
-            <span className="member-card__label">Código temporal</span>
-            <strong className="member-card__code">{card.verificationCode}</strong>
-            <span className="member-card__timer">Cambia en {secondsLeft}s</span>
-          </div>
+          <span className="member-card__label">Código de seguridad temporal</span>
+          <strong className="member-card__code">{card.verificationCode}</strong>
+          <span className="member-card__timer">Se renueva en {secondsLeft}s</span>
+          <span className="member-card__live">
+            <span className="member-card__live-dot" />
+            CARNET EN DIRECTO
+          </span>
         </div>
 
         <p className="member-card__security">
-          QR temporal. Una captura antigua deja de ser válida automáticamente.
+          El código y el contador cambian automáticamente. Muestra siempre el carnet abierto desde la web.
         </p>
       </article>
     </section>
