@@ -10,7 +10,7 @@ import { useAuth } from '@/features/auth/context/useAuth'
 import './ProfilePage.css'
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth()
+  const { user, isAuthenticated, isMember, isLoading: isAuthLoading } = useAuth()
   const { routes, events, stats, isLoading, error, retry } = useProfile()
 
   if (isAuthLoading) {
@@ -41,6 +41,18 @@ export default function ProfilePage() {
   return (
     <section className="profile-page">
       <ProfileHeader user={user} />
+
+      {isMember && (
+        <div className="profile-page__member-card">
+          <div>
+            <strong>Carnet digital de socio</strong>
+            <span>{user.memberNumber}</span>
+          </div>
+          <Link to="/member-card" className="btn btn--ghost">
+            Abrir carnet
+          </Link>
+        </div>
+      )}
 
       {error && (
         <div className="profile-page__error" role="alert">
