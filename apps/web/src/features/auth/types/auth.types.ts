@@ -6,6 +6,9 @@ export type User = {
   email: string
   role: UserRole
   createdAt: string
+  memberActive: boolean
+  memberNumber: string | null
+  membershipValidUntil: string | null
 }
 
 export type LoginRequest = {
