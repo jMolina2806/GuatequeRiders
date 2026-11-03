@@ -8,6 +8,7 @@ public class RateLimitProperties {
     private boolean enabled = true;
     private int loginPerMinute = 60;
     private int checkoutSessionPerMinute = 20;
+    private int membershipVerificationPerMinute = 60;
 
     public boolean isEnabled() {
         return enabled;
@@ -31,5 +32,13 @@ public class RateLimitProperties {
 
     public void setCheckoutSessionPerMinute(int checkoutSessionPerMinute) {
         this.checkoutSessionPerMinute = checkoutSessionPerMinute;
+    }
+
+    public int getMembershipVerificationPerMinute() {
+        return membershipVerificationPerMinute;
+    }
+
+    public void setMembershipVerificationPerMinute(int membershipVerificationPerMinute) {
+        this.membershipVerificationPerMinute = membershipVerificationPerMinute;
     }
 }
