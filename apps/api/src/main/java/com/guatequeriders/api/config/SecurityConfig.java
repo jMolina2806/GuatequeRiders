@@ -82,7 +82,7 @@ public class SecurityConfig {
                                 "/api/routes/{routeId}/photos/{photoId}/file",
                                 "/api/routes/{routeId}/photos/{photoId}/download").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/merch/campaign/current").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/membership/verify/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/membership/verify").permitAll()
                         .requestMatchers("/api/health").permitAll()
                         .anyRequest().authenticated()
                 )
