@@ -17,10 +17,14 @@ import com.guatequeriders.api.users.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class AdminService {
+
+    private static final char[] MEMBER_NUMBER_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".toCharArray();
 
     private final UserRepository userRepository;
     private final RouteRepository routeRepository;
@@ -28,6 +32,7 @@ public class AdminService {
     private final EventRepository eventRepository;
     private final RouteRegistrationRepository routeRegistrationRepository;
     private final EventRegistrationRepository eventRegistrationRepository;
+    private final SecureRandom secureRandom = new SecureRandom();
 
     public AdminService(UserRepository userRepository,
                         RouteRepository routeRepository,
@@ -80,5 +85,42 @@ public class AdminService {
 
         user.setRole(newRole);
         return UserResponse.from(user);
+    }
+
+    @Transactional
+    public UserResponse updateMembership(Long userId, boolean active, LocalDate validUntil) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        if (active) {
+            if (user.getMemberNumber() == null) {
+                user.setMemberNumber(generateMemberNumber());
+            }
+            user.setMembershipActive(true);
+            LocalDate effectiveValidUntil = validUntil;
+            if (effectiveValidUntil == null || effectiveValidUntil.isBefore(LocalDate.now())) {
+                effectiveValidUntil = LocalDate.now().plusYears(1);
+            }
+            user.setMembershipValidUntil(effectiveValidUntil);
+        } else {
+            user.setMembershipActive(false);
+        }
+
+        user.setMembershipVersion(user.getMembershipVersion() + 1);
+        return UserResponse.from(user);
+    }
+
+    private String generateMemberNumber() {
+        for (int attempt = 0; attempt < 20; attempt++) {
+            StringBuilder value = new StringBuilder("GR-");
+            for (int i = 0; i < 8; i++) {
+                value.append(MEMBER_NUMBER_ALPHABET[secureRandom.nextInt(MEMBER_NUMBER_ALPHABET.length)]);
+            }
+            String candidate = value.toString();
+            if (!userRepository.existsByMemberNumber(candidate)) {
+                return candidate;
+            }
+        }
+        throw new IllegalStateException("Could not generate a unique member number");
     }
 }

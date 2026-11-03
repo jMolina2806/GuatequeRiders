@@ -39,3 +39,12 @@ export async function updateUserRole(userId: number, role: 'USER' | 'ADMIN'): Pr
   })
   return handleResponse<User>(response)
 }
+
+export async function updateUserMembership(userId: number, active: boolean): Promise<User> {
+  const response = await fetch(`${API_BASE}/users/${userId}/membership`, {
+    method: 'PATCH',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ active }),
+  })
+  return handleResponse<User>(response)
+}

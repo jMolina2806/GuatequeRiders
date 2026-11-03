@@ -8,8 +8,18 @@ import type { User } from '@/features/auth/types/auth.types'
 import './AdminUsersPage.css'
 
 export default function AdminUsersPage() {
-  const { users, isLoading, error, roleUpdatingId, feedback, retry, changeRole, clearFeedback } =
-    useAdminUsers()
+  const {
+    users,
+    isLoading,
+    error,
+    roleUpdatingId,
+    membershipUpdatingId,
+    feedback,
+    retry,
+    changeRole,
+    changeMembership,
+    clearFeedback,
+  } = useAdminUsers()
   const { user, refreshUser, logout } = useAuth()
   const navigate = useNavigate()
   const [pendingUser, setPendingUser] = useState<User | null>(null)
@@ -17,6 +27,30 @@ export default function AdminUsersPage() {
   const handleToggleRole = (target: User) => {
     clearFeedback()
     setPendingUser(target)
+  }
+
+  const handleToggleMembership = async (target: User) => {
+    clearFeedback()
+    const nextActive = !target.memberActive
+    const confirmed = window.confirm(
+      nextActive
+        ? `¿Activar como socio a ${target.username}? El carnet será válido durante un año.`
+        : `¿Desactivar la membresía de ${target.username}? Sus QR actuales dejarán de ser válidos.`,
+    )
+    if (!confirmed) return
+
+    try {
+      const updated = await changeMembership(target.id, nextActive)
+      if (updated.id === user?.id) {
+        try {
+          await refreshUser()
+        } catch {
+          logout()
+        }
+      }
+    } catch {
+      // el feedback de error ya lo gestiona el hook
+    }
   }
 
   const handleConfirmRoleChange = async () => {
@@ -49,7 +83,7 @@ export default function AdminUsersPage() {
     <section className="admin-users">
       <header className="admin-users__header">
         <h1>Usuarios</h1>
-        <p>Gestiona los roles de los usuarios de la plataforma.</p>
+        <p>Gestiona roles y membresías. Solo los socios activos pueden abrir un carnet válido.</p>
       </header>
 
       {feedback && (
@@ -88,7 +122,13 @@ export default function AdminUsersPage() {
           <p>{error ? 'No se pudieron cargar los usuarios.' : 'No hay usuarios registrados.'}</p>
         </div>
       ) : (
-        <UserTable users={users} roleUpdatingId={roleUpdatingId} onToggleRole={handleToggleRole} />
+        <UserTable
+          users={users}
+          roleUpdatingId={roleUpdatingId}
+          membershipUpdatingId={membershipUpdatingId}
+          onToggleRole={handleToggleRole}
+          onToggleMembership={handleToggleMembership}
+        />
       )}
 
       <RoleChangeConfirm

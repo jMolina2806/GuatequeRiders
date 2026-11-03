@@ -9,7 +9,7 @@ import './Navbar.css'
 const INSTAGRAM_URL = 'https://www.instagram.com/guateque_riders/'
 
 export default function Navbar() {
-  const { user, isAuthenticated, isLoading, isAdmin, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, isAdmin, isMember, logout } = useAuth()
   const { totalUnits } = useCart()
   const { key: locationKey } = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -150,6 +150,11 @@ export default function Navbar() {
           {!isLoading &&
             (isAuthenticated ? (
               <>
+                {isMember && (
+                  <NavLink className="navbar__admin" to="/member-card" onClick={closeMenu}>
+                    Carnet
+                  </NavLink>
+                )}
                 <NavLink className="navbar__user" to="/profile" onClick={closeMenu}>
                   <span className="navbar__user-label">Perfil</span>
                   <span className="navbar__username">{user?.username}</span>

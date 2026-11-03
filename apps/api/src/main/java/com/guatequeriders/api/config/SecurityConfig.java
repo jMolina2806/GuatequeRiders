@@ -74,15 +74,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/notifications/unsubscribe").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/routes", "/api/routes/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/{id}").permitAll()
-                         .requestMatchers(HttpMethod.GET, "/api/circuits", "/api/circuits/{id}").permitAll()
-                         .requestMatchers(HttpMethod.GET, "/api/collaborators", "/api/collaborators/{id}").permitAll()
-                         .requestMatchers(HttpMethod.GET, "/api/uploads/collaborators/**").permitAll()
-                         .requestMatchers(HttpMethod.GET,
-                                  "/api/routes/{routeId}/photos",
-                                  "/api/routes/{routeId}/photos/{photoId}/file",
-                                  "/api/routes/{routeId}/photos/{photoId}/download").permitAll()
-                          .requestMatchers(HttpMethod.GET, "/api/merch/campaign/current").permitAll()
-                          .requestMatchers("/api/health").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/circuits", "/api/circuits/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/collaborators", "/api/collaborators/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/uploads/collaborators/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/routes/{routeId}/photos",
+                                "/api/routes/{routeId}/photos/{photoId}/file",
+                                "/api/routes/{routeId}/photos/{photoId}/download").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/merch/campaign/current").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/membership/verify").permitAll()
+                        .requestMatchers("/api/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

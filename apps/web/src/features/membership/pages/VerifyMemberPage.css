@@ -1,0 +1,109 @@
+.verify-member {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px 72px;
+}
+
+.verify-member__panel {
+  width: min(100%, 620px);
+  padding: 34px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.verify-member__panel--valid {
+  border-color: rgba(81, 255, 145, 0.42);
+}
+
+.verify-member__panel--invalid {
+  border-color: rgba(255, 70, 120, 0.45);
+}
+
+.verify-member__icon {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.verify-member__panel--valid .verify-member__icon {
+  color: #7dffac;
+  background: rgba(81, 255, 145, 0.1);
+  border: 1px solid rgba(81, 255, 145, 0.35);
+}
+
+.verify-member__panel--invalid .verify-member__icon {
+  color: #ff6b91;
+  background: rgba(255, 70, 120, 0.1);
+  border: 1px solid rgba(255, 70, 120, 0.35);
+}
+
+.verify-member__eyebrow {
+  margin: 0 0 6px;
+  color: var(--color-primary);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.verify-member__panel h1 {
+  margin: 0 0 22px;
+}
+
+.verify-member__details {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 24px;
+  text-align: left;
+}
+
+.verify-member__details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.verify-member__details dt {
+  color: var(--color-muted);
+}
+
+.verify-member__details dd {
+  margin: 0;
+  font-weight: 800;
+  text-align: right;
+}
+
+.verify-member__code-wrap {
+  padding: 18px;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 18px;
+  background: rgba(0, 240, 255, 0.04);
+}
+
+.verify-member__code-wrap span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.verify-member__code-wrap strong {
+  font-size: clamp(34px, 9vw, 54px);
+  letter-spacing: 0.12em;
+}
+
+.verify-member__notice {
+  margin: 20px 0 0;
+  color: var(--color-muted);
+  font-size: 12px;
+}

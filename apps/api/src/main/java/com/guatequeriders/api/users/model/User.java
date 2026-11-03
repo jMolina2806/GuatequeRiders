@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,6 +41,18 @@ public class User {
 
     @Column(name = "privacy_policy_version", length = 40)
     private String privacyPolicyVersion;
+
+    @Column(name = "member_number", unique = true, length = 32)
+    private String memberNumber;
+
+    @Column(name = "membership_active", nullable = false)
+    private boolean membershipActive;
+
+    @Column(name = "membership_valid_until")
+    private LocalDate membershipValidUntil;
+
+    @Column(name = "membership_version", nullable = false)
+    private long membershipVersion;
 
     public User() {
     }
@@ -76,4 +89,16 @@ public class User {
 
     public String getPrivacyPolicyVersion() { return privacyPolicyVersion; }
     public void setPrivacyPolicyVersion(String privacyPolicyVersion) { this.privacyPolicyVersion = privacyPolicyVersion; }
+
+    public String getMemberNumber() { return memberNumber; }
+    public void setMemberNumber(String memberNumber) { this.memberNumber = memberNumber; }
+
+    public boolean isMembershipActive() { return membershipActive; }
+    public void setMembershipActive(boolean membershipActive) { this.membershipActive = membershipActive; }
+
+    public LocalDate getMembershipValidUntil() { return membershipValidUntil; }
+    public void setMembershipValidUntil(LocalDate membershipValidUntil) { this.membershipValidUntil = membershipValidUntil; }
+
+    public long getMembershipVersion() { return membershipVersion; }
+    public void setMembershipVersion(long membershipVersion) { this.membershipVersion = membershipVersion; }
 }

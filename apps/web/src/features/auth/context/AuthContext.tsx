@@ -24,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then((current) => {
         if (cancelled) return
         setUser(current)
+        saveSession(token, current)
       })
       .catch(() => {
         if (cancelled) return
@@ -73,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     isAuthenticated: user !== null,
     isAdmin: user?.role === 'ADMIN',
+    isMember: user?.memberActive === true,
     isLoading,
     login,
     register,
