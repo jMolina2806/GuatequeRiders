@@ -22,6 +22,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/legal': 'Aviso legal',
   '/privacy': 'Privacidad',
   '/merch-terms': 'Condiciones Merch',
+  '/cookies': 'Cookies y almacenamiento',
+  '/member-card': 'Carnet de socio',
 }
 
 function PageTitle() {
