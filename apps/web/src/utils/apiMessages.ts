@@ -4,6 +4,9 @@ const MESSAGES: Record<string, string> = {
   'Invalid request body': 'Solicitud no válida',
   'Internal server error': 'Error interno del servidor',
   'Validation failed': 'Datos no válidos',
+  'Phone number is required': 'El teléfono es obligatorio',
+  'Phone number must be valid': 'Introduce un número de teléfono válido',
+  'Email must be valid': 'Introduce un email válido',
   'Image file must not exceed 5 MB': 'La imagen no puede superar los 5 MB',
   'Image MIME type does not match its content': 'El tipo MIME no coincide con el contenido de la imagen',
   'Image file is required': 'Debes seleccionar una imagen',
@@ -55,6 +58,9 @@ export function translateApiMessage(message: string): string {
   }
   if (message.startsWith('Email already registered')) {
     return 'El email ya está registrado'
+  }
+  if (message.startsWith('Phone already registered')) {
+    return 'El teléfono ya está registrado'
   }
   if (message.startsWith('Route not found')) {
     return 'Ruta no encontrada'
