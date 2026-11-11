@@ -11,9 +11,22 @@ type LegalSection = {
   eyebrow: string
   title: string
   intro: string
+  version: string
   requiresDefinition?: boolean
   blocks: LegalBlock[]
 }
+
+const LEGAL_RESPONSIBLE =
+  import.meta.env.VITE_LEGAL_RESPONSIBLE?.trim() || '[PENDIENTE DE DEFINIR]'
+
+const LEGAL_CONTACT_EMAIL =
+  import.meta.env.VITE_LEGAL_CONTACT_EMAIL?.trim() || '[PENDIENTE DE DEFINIR]'
+
+const LEGAL_CONTACT_ADDRESS =
+  import.meta.env.VITE_LEGAL_CONTACT_ADDRESS?.trim() || '[PENDIENTE DE DEFINIR]'
+
+const MERCH_SELLER =
+  import.meta.env.VITE_MERCH_SELLER?.trim() || '[PENDIENTE ANTES DE ACTIVAR STRIPE LIVE]'
 
 const DEFINITION_NOTICE =
   'Guateque Riders es una comunidad motera, no una empresa ni una sociedad mercantil. Antes de abrir la plataforma al público deberá definirse quién actúa como responsable de la plataforma y del tratamiento de datos. Si se activa la venta real de Merch, también deberá definirse quién realiza jurídicamente esa venta y recibe los pagos.'
@@ -24,6 +37,7 @@ const SECTIONS: Record<string, LegalSection> = {
     title: 'Aviso legal',
     intro:
       'Información general sobre Guateque Riders, el uso de la plataforma y las condiciones de acceso.',
+    version: '28/10/2026',
     requiresDefinition: true,
     blocks: [
       {
@@ -33,8 +47,9 @@ const SECTIONS: Record<string, LegalSection> = {
           'Guateque Riders no se presenta en esta versión como sociedad mercantil, empresa o asociación formalizada.',
         ],
         items: [
-          'Responsable de la plataforma: [PENDIENTE DE DEFINIR]',
-          'Email general de contacto: [PENDIENTE HASTA DISPONER DE DOMINIO]',
+          `Responsable de la plataforma: ${LEGAL_RESPONSIBLE}`,
+          `Email general de contacto: ${LEGAL_CONTACT_EMAIL}`,
+          `Dirección de contacto: ${LEGAL_CONTACT_ADDRESS}`,
         ],
       },
       {
@@ -84,6 +99,7 @@ const SECTIONS: Record<string, LegalSection> = {
     title: 'Política de privacidad',
     intro:
       'Esta política explica qué datos trata la plataforma de Guateque Riders, para qué se utilizan y qué derechos tienes.',
+    version: '28/10/2026',
     requiresDefinition: true,
     blocks: [
       {
@@ -92,8 +108,9 @@ const SECTIONS: Record<string, LegalSection> = {
           'Guateque Riders es una comunidad motera. La persona que finalmente determine los fines y medios del tratamiento de los datos deberá identificarse como responsable antes de abrir el registro público de usuarios.',
         ],
         items: [
-          'Responsable del tratamiento: [PENDIENTE DE DEFINIR]',
-          'Email para privacidad y ejercicio de derechos: [PENDIENTE HASTA DISPONER DE DOMINIO]',
+          `Responsable del tratamiento: ${LEGAL_RESPONSIBLE}`,
+          `Email para privacidad y ejercicio de derechos: ${LEGAL_CONTACT_EMAIL}`,
+          `Dirección de contacto: ${LEGAL_CONTACT_ADDRESS}`,
         ],
       },
       {
@@ -150,7 +167,7 @@ const SECTIONS: Record<string, LegalSection> = {
       {
         title: '8. Almacenamiento técnico en el navegador',
         paragraphs: [
-          'La aplicación utiliza almacenamiento local del navegador para mantener la sesión iniciada y la información técnica necesaria de autenticación. Consulta la sección de Cookies y almacenamiento para más información.',
+          'La aplicación utiliza almacenamiento local del navegador para mantener la sesión iniciada. Actualmente se almacenan el token técnico de autenticación y los datos mínimos del usuario necesarios para restaurar la sesión. Consulta la sección de Cookies y almacenamiento para conocer el detalle y cómo eliminar estos datos.',
         ],
       },
     ],
@@ -160,6 +177,7 @@ const SECTIONS: Record<string, LegalSection> = {
     title: 'Condiciones de Merch',
     intro:
       'Funcionamiento previsto para las campañas y pedidos de merchandising gestionados mediante Guateque Riders.',
+    version: '28/10/2026',
     requiresDefinition: true,
     blocks: [
       {
@@ -170,8 +188,8 @@ const SECTIONS: Record<string, LegalSection> = {
           'Antes de aceptar pagos reales deberá definirse quién actúa jurídicamente como vendedor o responsable de la operación, quién recibe los pagos y cuál será el canal de contacto para pedidos e incidencias.',
         ],
         items: [
-          'Responsable de la venta real: [PENDIENTE ANTES DE ACTIVAR STRIPE LIVE]',
-          'Email para pedidos e incidencias: [PENDIENTE HASTA DISPONER DE DOMINIO]',
+          `Responsable de la venta real: ${MERCH_SELLER}`,
+          `Email para pedidos e incidencias: ${LEGAL_CONTACT_EMAIL}`,
         ],
       },
       {
@@ -228,25 +246,36 @@ const SECTIONS: Record<string, LegalSection> = {
     eyebrow: 'Navegación',
     title: 'Cookies y almacenamiento',
     intro:
-      'Información sobre el almacenamiento técnico utilizado actualmente por Guateque Riders.',
+      'Información sobre las tecnologías de almacenamiento utilizadas actualmente por Guateque Riders.',
+    version: '11/11/2026',
     blocks: [
       {
         title: '1. Situación actual',
         paragraphs: [
-          'Guateque Riders no incorpora actualmente herramientas propias de analítica, publicidad comportamental ni cookies de marketing.',
-          'La aplicación utiliza almacenamiento local del navegador para conservar el token de autenticación y los datos mínimos de sesión. Este almacenamiento es necesario para mantener la sesión iniciada y prestar funciones solicitadas por el usuario.',
+          'Guateque Riders no utiliza actualmente cookies propias de analítica, publicidad comportamental ni marketing, ni integra herramientas propias de seguimiento con esas finalidades.',
+          'Por este motivo, mientras se mantenga esta configuración, la web no muestra un banner para aceptar o rechazar cookies no necesarias.',
         ],
       },
       {
-        title: '2. Servicios externos',
+        title: '2. Almacenamiento técnico de sesión',
         paragraphs: [
-          'Al abandonar Guateque Riders para utilizar servicios externos, como Stripe Checkout, Instagram o WhatsApp, esos servicios pueden aplicar sus propias cookies o tecnologías de almacenamiento conforme a sus políticas.',
+          'Para mantener la sesión iniciada, la aplicación utiliza el almacenamiento local del navegador. Se guardan dos elementos técnicos: guateque.auth.token, que contiene el token de autenticación, y guateque.auth.user, que contiene los datos mínimos de usuario necesarios para restaurar la sesión.',
+          'Estos datos se crean al iniciar sesión o registrarse y se eliminan al cerrar sesión. También pueden eliminarse manualmente borrando los datos del sitio desde la configuración del navegador.',
+          'Este almacenamiento se utiliza únicamente para autenticación y funcionamiento de la cuenta; no se emplea para elaborar perfiles publicitarios ni medir el comportamiento del usuario con fines de marketing.',
         ],
       },
       {
-        title: '3. Cambios futuros',
+        title: '3. Servicios externos',
         paragraphs: [
-          'Si en el futuro se incorporan cookies o tecnologías no estrictamente necesarias, la plataforma mostrará la información y los controles de consentimiento que resulten exigibles antes de utilizarlas.',
+          'Los enlaces a Instagram o WhatsApp llevan al usuario fuera de Guateque Riders. Esos servicios gestionan sus propias cookies y tecnologías conforme a sus políticas.',
+          'Cuando se utilice Stripe Checkout para pagos, el usuario será redirigido al entorno de Stripe. Stripe puede utilizar sus propias tecnologías necesarias para seguridad, prevención del fraude y procesamiento del pago conforme a su propia política.',
+        ],
+      },
+      {
+        title: '4. Consentimiento y cambios futuros',
+        paragraphs: [
+          'Si en el futuro se añaden analítica, publicidad, píxeles de seguimiento u otras tecnologías que no sean estrictamente necesarias, Guateque Riders bloqueará su uso hasta que se haya ofrecido la información y, cuando corresponda, se haya obtenido el consentimiento del usuario.',
+          'En ese caso se incorporarán controles para aceptar, rechazar y configurar las categorías no necesarias con el mismo nivel de accesibilidad.',
         ],
       },
     ],
@@ -263,7 +292,7 @@ export default function LegalInfoPage() {
         <span>{section.eyebrow}</span>
         <h1>{section.title}</h1>
         <p>{section.intro}</p>
-        <small>Versión: 28/10/2026</small>
+        <small>Versión: {section.version}</small>
       </header>
 
       {section.requiresDefinition && (

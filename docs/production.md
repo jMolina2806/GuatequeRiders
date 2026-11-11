@@ -19,14 +19,15 @@ La aplicación está preparada para desplegarse con:
 No publicar hasta completar estos puntos:
 
 1. Definir quién actúa como responsable de la plataforma y del tratamiento de datos antes de abrir el registro público.
-2. Crear un email de contacto de la comunidad cuando exista dominio.
-3. Si se va a activar venta real de Merch, definir antes quién recibe los pagos y actúa como vendedor o responsable de la operación.
-4. Revisar las condiciones reales de entrega, costes, cancelaciones y devoluciones antes de activar Stripe LIVE.
-5. Comprar/configurar el dominio.
-6. Contratar un servidor o plataforma compatible con Docker.
-7. Configurar backups externos y probar una restauración.
-8. Verificar el dominio de email.
-9. Activar Stripe LIVE únicamente después de probar el despliegue completo y cerrar los puntos anteriores.
+2. Configurar `LEGAL_RESPONSIBLE`, `LEGAL_CONTACT_EMAIL` y `LEGAL_CONTACT_ADDRESS` con datos reales antes de compilar el frontend de producción.
+3. Crear un email de contacto de la comunidad cuando exista dominio.
+4. Si se va a activar venta real de Merch, definir antes quién recibe los pagos y actúa como vendedor o responsable de la operación y configurar `MERCH_SELLER`.
+5. Revisar las condiciones reales de entrega, costes, cancelaciones y devoluciones antes de activar Stripe LIVE.
+6. Comprar/configurar el dominio.
+7. Contratar un servidor o plataforma compatible con Docker.
+8. Configurar backups externos y probar una restauración.
+9. Verificar el dominio de email.
+10. Activar Stripe LIVE únicamente después de probar el despliegue completo y cerrar los puntos anteriores.
 
 ## Dominio y HTTPS
 
@@ -63,6 +64,15 @@ Utiliza valores distintos para:
 - `JWT_SECRET`
 - `UNSUBSCRIBE_SECRET`
 - `POSTGRES_PASSWORD`
+
+Completa también los datos legales que se insertan en el frontend durante el build:
+
+- `LEGAL_RESPONSIBLE`
+- `LEGAL_CONTACT_EMAIL`
+- `LEGAL_CONTACT_ADDRESS`
+- `MERCH_SELLER` si se activa venta real
+
+Si alguno queda vacío, la web mostrará un aviso de dato pendiente en las páginas legales.
 
 ## Primer despliegue
 

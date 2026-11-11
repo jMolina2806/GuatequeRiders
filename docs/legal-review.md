@@ -81,12 +81,15 @@ Referencia:
 
 ## Cookies y almacenamiento
 
-La versión actual no integra analítica ni publicidad propia.
+La versión actual no integra analítica, publicidad comportamental ni cookies de marketing propias.
 
-Se utiliza almacenamiento local para mantener la sesión autenticada. Si se añaden tecnologías no estrictamente necesarias, deberá revisarse la necesidad de consentimiento previo y controles de configuración.
+La sesión se mantiene mediante almacenamiento local del navegador con dos claves técnicas: `guateque.auth.token` y `guateque.auth.user`. La política de Cookies y almacenamiento informa de este uso, de cómo eliminarlo y de los servicios externos.
 
-Referencia:
+Mientras no se añadan tecnologías no estrictamente necesarias, no se muestra un banner de consentimiento. Si en el futuro se incorporan analítica, publicidad, píxeles u otras tecnologías no exceptuadas, deberán bloquearse hasta obtener el consentimiento cuando corresponda, ofreciendo aceptar y rechazar al mismo nivel.
+
+Referencias:
 - Ley 34/2002, artículo 22.2: https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758
+- AEPD, Guía sobre el uso de las cookies: https://www.aepd.es/guias/guia-cookies.pdf
 
 ## Proveedores
 
