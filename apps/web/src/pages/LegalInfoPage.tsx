@@ -104,7 +104,7 @@ const SECTIONS: Record<string, LegalSection> = {
     title: 'Política de privacidad',
     intro:
       'Esta política explica qué datos trata la plataforma de Guateque Riders, para qué se utilizan y qué derechos tienes.',
-    version: '11/11/2026',
+    version: '11/11/2026 · revisión 2',
     requiresDefinition: true,
     blocks: [
       {
