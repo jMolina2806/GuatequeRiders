@@ -44,7 +44,7 @@ export default function AdminUsersPage() {
         }
       }
     } catch {
-      // el feedback de error ya lo gestiona el hook
+      return
     }
   }
 
