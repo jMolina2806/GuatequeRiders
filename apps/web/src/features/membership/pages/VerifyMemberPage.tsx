@@ -2,14 +2,6 @@ import { useEffect, useState } from 'react'
 import { verifyMembership, type MembershipVerification } from '../services/membership.service'
 import './VerifyMemberPage.css'
 
-function formatDate(value: string): string {
-  return new Date(`${value}T12:00:00`).toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
 export default function VerifyMemberPage() {
   const [verification, setVerification] = useState<MembershipVerification | null>(null)
   const [invalid, setInvalid] = useState(false)
@@ -74,10 +66,6 @@ export default function VerifyMemberPage() {
           <div>
             <dt>N.º de socio</dt>
             <dd>{verification.memberNumber}</dd>
-          </div>
-          <div>
-            <dt>Válido hasta</dt>
-            <dd>{formatDate(verification.validUntil)}</dd>
           </div>
         </dl>
 
