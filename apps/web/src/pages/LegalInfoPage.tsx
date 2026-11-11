@@ -28,8 +28,13 @@ const LEGAL_CONTACT_ADDRESS =
 const MERCH_SELLER =
   import.meta.env.VITE_MERCH_SELLER?.trim() || '[PENDIENTE DE DOCUMENTAR PARA LA CAMPAÑA FINALIZADA]'
 
+const LEGAL_DETAILS_COMPLETE =
+  !LEGAL_RESPONSIBLE.startsWith('[PENDIENTE')
+  && !LEGAL_CONTACT_EMAIL.startsWith('[PENDIENTE')
+  && !LEGAL_CONTACT_ADDRESS.startsWith('[PENDIENTE')
+
 const DEFINITION_NOTICE =
-  'Guateque Riders es una comunidad motera, no una empresa ni una sociedad mercantil. Antes de abrir la plataforma al público deberá definirse quién actúa como responsable de la plataforma y del tratamiento de datos. Si se activa la venta real de Merch, también deberá definirse quién realiza jurídicamente esa venta y recibe los pagos.'
+  'Antes de abrir la plataforma al público deben configurarse los datos reales de la persona o entidad responsable de la plataforma y del tratamiento de datos.'
 
 const SECTIONS: Record<string, LegalSection> = {
   '/legal': {
@@ -116,7 +121,7 @@ const SECTIONS: Record<string, LegalSection> = {
       {
         title: '2. Datos que tratamos',
         items: [
-          'Cuenta: nombre de usuario, email, contraseña almacenada de forma cifrada y fecha de alta.',
+          'Cuenta: nombre de usuario, email, contraseña protegida mediante hash BCrypt y fecha de alta.',
           'Participación: inscripciones y actividad relacionada con rutas y eventos.',
           'Merch: nombre, email, teléfono, productos, talla, personalización, notas y, cuando proceda, datos necesarios para entrega.',
           'Pagos: estado, identificadores técnicos e importe. Los datos completos de tarjeta se introducen en Stripe y no se almacenan en Guateque Riders.',
@@ -161,7 +166,7 @@ const SECTIONS: Record<string, LegalSection> = {
         title: '7. Derechos',
         paragraphs: [
           'Puedes solicitar acceso, rectificación, supresión, oposición, limitación y portabilidad cuando correspondan, así como retirar un consentimiento sin afectar a la licitud del tratamiento anterior.',
-          'Antes de abrir el registro público deberá publicarse el email de contacto del responsable para poder ejercer estos derechos. También puede presentarse una reclamación ante la Agencia Española de Protección de Datos.',
+          `Para ejercer estos derechos puedes escribir a ${LEGAL_CONTACT_EMAIL}. También puede presentarse una reclamación ante la Agencia Española de Protección de Datos.`,
         ],
       },
       {
@@ -278,7 +283,7 @@ export default function LegalInfoPage() {
         <small>Versión: {section.version}</small>
       </header>
 
-      {section.requiresDefinition && (
+      {section.requiresDefinition && !LEGAL_DETAILS_COMPLETE && (
         <div className="legal-info__notice">
           <strong>Definición pendiente antes de producción</strong>
           <p>{DEFINITION_NOTICE}</p>
@@ -300,9 +305,11 @@ export default function LegalInfoPage() {
       </div>
 
       <div className="legal-info__reference">
-        <strong>Revisión antes de producción</strong>
+        <strong>{LEGAL_DETAILS_COMPLETE ? 'Información legal' : 'Revisión antes de producción'}</strong>
         <p>
-          Los textos reflejan que Guateque Riders es una comunidad motera. Antes de abrir el registro público deberá identificarse al responsable real del tratamiento de datos. Antes de activar Stripe LIVE deberá definirse además quién realiza la venta de Merch y adaptar la información legal a esa situación concreta.
+          {LEGAL_DETAILS_COMPLETE
+            ? 'Los datos del responsable y del canal de contacto se han configurado para esta versión de la plataforma.'
+            : 'Antes de abrir el registro público deben completarse los datos reales del responsable y del canal de contacto. La campaña de Merch permanece cerrada y sin venta activa.'}
         </p>
       </div>
     </section>
