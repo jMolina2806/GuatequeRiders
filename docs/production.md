@@ -21,13 +21,12 @@ No publicar hasta completar estos puntos:
 1. Definir quién actúa como responsable de la plataforma y del tratamiento de datos antes de abrir el registro público.
 2. Configurar `LEGAL_RESPONSIBLE`, `LEGAL_CONTACT_EMAIL` y `LEGAL_CONTACT_ADDRESS` con datos reales antes de compilar el frontend de producción.
 3. Crear un email de contacto de la comunidad cuando exista dominio.
-4. Si se va a activar venta real de Merch, definir antes quién recibe los pagos y actúa como vendedor o responsable de la operación y configurar `MERCH_SELLER`.
-5. Revisar las condiciones reales de entrega, costes, cancelaciones y devoluciones antes de activar Stripe LIVE.
+4. Mantener Stripe y la creación de nuevas campañas de Merch desactivados en producción.
+5. Si la campaña de Merch ya finalizada fue una venta real, documentar quién actuó como responsable de esa operación y configurar `MERCH_SELLER`.
 6. Comprar/configurar el dominio.
 7. Contratar un servidor o plataforma compatible con Docker.
 8. Configurar backups externos y probar una restauración.
 9. Verificar el dominio de email.
-10. Activar Stripe LIVE únicamente después de probar el despliegue completo y cerrar los puntos anteriores.
 
 ## Dominio y HTTPS
 
@@ -105,24 +104,20 @@ Cuando exista dominio:
 docker compose --env-file .env.production -f docker-compose.prod.yml up -d api
 ```
 
-## Stripe LIVE
+## Merch y Stripe
 
-No reutilices claves TEST.
+Para este lanzamiento no hay venta activa de Merch.
 
-Antes de activar:
+Mantén en producción:
 
-1. Configura la cuenta Stripe para producción.
-2. Crea un webhook LIVE apuntando a:
-   `https://TU_DOMINIO/api/payments/stripe/webhook`
-3. Guarda la clave secreta LIVE en `STRIPE_SECRET_KEY`.
-4. Guarda el secreto del webhook LIVE en `STRIPE_WEBHOOK_SECRET`.
-5. Establece:
-   ```
-   STRIPE_ENABLED=true
-   STRIPE_MODE=live
-   ```
-6. Reinicia la API.
-7. Realiza una compra real de importe controlado y verifica pedido, webhook, email y estado.
+```
+STRIPE_ENABLED=false
+MERCH_NEW_CAMPAIGNS_ENABLED=false
+```
+
+No configures claves LIVE ni webhook de Stripe mientras no exista una nueva campaña aprobada y revisada legalmente.
+
+Los pedidos de la campaña finalizada pueden seguir disponibles para consulta, seguimiento e incidencias.
 
 ## Backups
 
