@@ -4,7 +4,6 @@ import { translateApiMessage } from '@/utils/apiMessages'
 export type MemberCard = {
   memberNumber: string
   username: string
-  validUntil: string
   verificationCode: string
   verificationExpiresAt: string
 }
@@ -13,7 +12,6 @@ export type MembershipVerification = {
   valid: boolean
   memberNumber: string
   username: string
-  validUntil: string
   verificationCode: string
   expiresAt: string
 }
