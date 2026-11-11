@@ -31,7 +31,7 @@ require_value() {
 require_not_placeholder() {
   local name="$1"
   local value="${!name:-}"
-  if [[ "$value" == *REEMPLAZAR* || "$value" == *PENDIENTE* || "$value" == *example* || "$value" == *EJEMPLO* ]]; then
+  if [[ "$value" == *REEMPLAZAR* || "$value" == *PENDIENTE* || "$value" == *example* || "$value" == *EJEMPLO* || "$value" == *"NOMBRE COMPLETO"* || "$value" == *"DIRECCION DE CONTACTO"* ]]; then
     fail "$name contiene un valor de ejemplo o pendiente"
   fi
 }
