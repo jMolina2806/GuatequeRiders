@@ -17,7 +17,7 @@ public record RegisterRequest(
 
         @NotBlank(message = "Phone number is required")
         @Pattern(
-                regexp = "^(?:\\+?[1-9](?:[ -]?\\d){7,14}|[6789](?:[ -]?\\d){8})$",
+                regexp = "^(?:[6789](?:[ -]?\\d){8}|\\+[1-9](?:[ -]?\\d){7,14})$",
                 message = "Phone number must be valid"
         )
         String phone,
