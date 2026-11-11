@@ -121,7 +121,7 @@ const SECTIONS: Record<string, LegalSection> = {
       {
         title: '2. Datos que tratamos',
         items: [
-          'Cuenta: nombre de usuario, email, contraseña protegida mediante hash BCrypt y fecha de alta.',
+          'Cuenta: nombre de usuario, email, teléfono, contraseña protegida mediante hash BCrypt y fecha de alta.',
           'Participación: inscripciones y actividad relacionada con rutas y eventos.',
           'Merch: nombre, email, teléfono, productos, talla, personalización, notas y, cuando proceda, datos necesarios para entrega.',
           'Pagos: estado, identificadores técnicos e importe. Los datos completos de tarjeta se introducen en Stripe y no se almacenan en Guateque Riders.',
