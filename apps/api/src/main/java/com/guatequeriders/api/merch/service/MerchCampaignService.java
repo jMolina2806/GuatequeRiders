@@ -23,6 +23,7 @@ import com.guatequeriders.api.orders.repository.OrderRepository;
 import com.guatequeriders.api.orders.repository.SupplierOrderBatchRepository;
 import com.guatequeriders.api.notifications.service.NotificationService;
 import com.guatequeriders.api.users.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,15 +39,18 @@ public class MerchCampaignService {
     private final OrderRepository orderRepository;
     private final SupplierOrderBatchRepository batchRepository;
     private final NotificationService notificationService;
+    private final boolean newCampaignsEnabled;
 
     public MerchCampaignService(MerchCampaignRepository campaignRepository,
                                 OrderRepository orderRepository,
                                 SupplierOrderBatchRepository batchRepository,
-                                NotificationService notificationService) {
+                                NotificationService notificationService,
+                                @Value("${app.merch.new-campaigns-enabled:true}") boolean newCampaignsEnabled) {
         this.campaignRepository = campaignRepository;
         this.orderRepository = orderRepository;
         this.batchRepository = batchRepository;
         this.notificationService = notificationService;
+        this.newCampaignsEnabled = newCampaignsEnabled;
     }
 
     @Transactional(readOnly = true)
@@ -64,6 +68,9 @@ public class MerchCampaignService {
 
     @Transactional
     public MerchCampaign openCampaign(User openedBy) {
+        if (!newCampaignsEnabled) {
+            throw new ConflictException("New Merch campaigns are disabled");
+        }
         if (campaignRepository.findByStatusForUpdate(CampaignStatus.OPEN).isPresent()) {
             throw new ConflictException("There is already an open Merch campaign");
         }

@@ -48,22 +48,22 @@ Referencias:
 
 ## Merch
 
-Mientras Stripe LIVE esté desactivado, el Merch puede mantenerse como flujo técnico de prueba.
+La campaña de Merch ya realizada se considera finalizada y la versión de producción no permitirá abrir nuevas campañas ni aceptar nuevos pedidos.
 
-Antes de aceptar dinero real deben definirse:
+Para el lanzamiento deben mantenerse estas condiciones:
 
-- quién recibe los pagos,
-- quién actúa como vendedor o responsable de la operación,
-- canal de contacto para pedidos e incidencias,
-- modalidad y costes de entrega,
-- condiciones de cancelación, devolución y desistimiento,
-- tratamiento de productos personalizados.
+- Stripe desactivado en producción.
+- creación de nuevas campañas desactivada;
+- catálogo mostrado únicamente como histórico, sin botones de compra;
+- pedidos anteriores disponibles solo para consulta, seguimiento, entrega e incidencias;
+- conservación de la información necesaria de pedidos y pagos durante los plazos que correspondan.
 
-Solo en ese momento deben completarse las obligaciones de información que correspondan a la situación jurídica real.
+Si la campaña finalizada constituyó una venta real a consumidores, debe quedar documentado quién actuó como vendedor o responsable de la operación y mantenerse un canal de contacto para incidencias y derechos que sigan vigentes. La finalización de la campaña no elimina las obligaciones derivadas de operaciones ya realizadas.
 
-Referencias:
-- Real Decreto Legislativo 1/2007, artículos 102 y 103.
-- https://www.boe.es/buscar/act.php?id=BOE-A-2007-20555
+Si en el futuro se reactivase el Merch, antes de aceptar nuevos pedidos tendría que revisarse de nuevo la información precontractual, precios, entrega, desistimiento, devoluciones, productos personalizados, proveedor de pagos y responsable de la venta.
+
+Referencia:
+- Real Decreto Legislativo 1/2007: https://www.boe.es/buscar/act.php?id=BOE-A-2007-20555
 
 ## Comunicaciones por email
 
