@@ -77,7 +77,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
             autoComplete="tel"
             inputMode="tel"
             placeholder="600111222"
-            pattern="(?:\\+?[1-9][0-9]{7,14}|[6789][0-9]{8})"
+            pattern="(?:[6789][0-9]{8}|\\+[1-9][0-9]{7,14})"
             maxLength={16}
             required
           />
