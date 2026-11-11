@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 
 @Service
 public class MembershipService {
@@ -40,7 +39,6 @@ public class MembershipService {
         return new MemberCardResponse(
                 current.getMemberNumber(),
                 current.getUsername(),
-                current.getMembershipValidUntil(),
                 verification.code(),
                 verification.expiresAt()
         );
@@ -60,7 +58,6 @@ public class MembershipService {
                 true,
                 user.getMemberNumber(),
                 user.getUsername(),
-                user.getMembershipValidUntil(),
                 claims.code(),
                 claims.expiresAt()
         );
@@ -73,10 +70,7 @@ public class MembershipService {
     }
 
     private boolean isActive(User user) {
-        return user.isMembershipActive()
-                && user.getMemberNumber() != null
-                && user.getMembershipValidUntil() != null
-                && !user.getMembershipValidUntil().isBefore(LocalDate.now());
+        return user.isMembershipActive() && user.getMemberNumber() != null;
     }
 
     private ResponseStatusException unavailable() {
