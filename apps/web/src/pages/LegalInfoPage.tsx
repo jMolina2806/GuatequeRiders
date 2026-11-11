@@ -174,74 +174,57 @@ const SECTIONS: Record<string, LegalSection> = {
   },
   '/merch-terms': {
     eyebrow: 'Merchandising',
-    title: 'Condiciones de Merch',
+    title: 'Información de campaña Merch finalizada',
     intro:
-      'Funcionamiento previsto para las campañas y pedidos de merchandising gestionados mediante Guateque Riders.',
-    version: '28/10/2026',
-    requiresDefinition: true,
+      'Información aplicable a la campaña de merchandising ya realizada por Guateque Riders.',
+    version: '11/11/2026',
     blocks: [
       {
-        title: '1. Situación del Merch',
+        title: '1. Estado actual',
         paragraphs: [
-          'Guateque Riders es una comunidad motera y estas condiciones describen el funcionamiento técnico previsto de las campañas de Merch.',
-          'Mientras Stripe LIVE no esté activado, esta funcionalidad se mantiene en entorno de prueba y no constituye por sí sola una oferta pública de venta real.',
-          'Antes de aceptar pagos reales deberá definirse quién actúa jurídicamente como vendedor o responsable de la operación, quién recibe los pagos y cuál será el canal de contacto para pedidos e incidencias.',
+          'La campaña de merchandising de Guateque Riders ha finalizado. Actualmente la plataforma no acepta nuevos pedidos, no permite abrir nuevas campañas en producción y no ofrece productos a la venta.',
+          'El catálogo que pueda seguir visible tiene carácter informativo e histórico y no constituye una oferta de venta.',
+        ],
+      },
+      {
+        title: '2. Pedidos de la campaña finalizada',
+        paragraphs: [
+          'Los pedidos creados durante la campaña permanecen accesibles a las personas usuarias y al equipo administrador únicamente para consulta, seguimiento, entrega, atención de incidencias y conservación de la información necesaria.',
+          'La plataforma conserva el estado del pedido, productos, cantidades, importes y demás datos asociados durante el tiempo necesario para gestionar la campaña finalizada y atender las obligaciones que resulten aplicables.',
+        ],
+      },
+      {
+        title: '3. Pagos',
+        paragraphs: [
+          'Guateque Riders no almacena números completos de tarjeta ni códigos CVC. Cuando un pago se haya procesado mediante un proveedor externo, la plataforma conserva únicamente los identificadores técnicos, estado e importe necesarios para relacionar el pago con el pedido.',
+          'Actualmente Stripe y la creación de nuevas campañas permanecen desactivados en producción.',
+        ],
+      },
+      {
+        title: '4. Entrega e incidencias',
+        paragraphs: [
+          'Las incidencias relacionadas con pedidos de la campaña finalizada deberán atenderse mediante el canal de contacto publicado por Guateque Riders.',
+          `Contacto para pedidos e incidencias: ${LEGAL_CONTACT_EMAIL}`,
+        ],
+      },
+      {
+        title: '5. Responsable de la campaña',
+        paragraphs: [
+          'Si la campaña realizada tuvo la consideración jurídica de venta a consumidores, deberá poder identificarse a la persona o entidad que actuó como responsable de esa operación y conservarse la documentación correspondiente durante los plazos aplicables.',
         ],
         items: [
-          `Responsable de la venta real: ${MERCH_SELLER}`,
-          `Email para pedidos e incidencias: ${LEGAL_CONTACT_EMAIL}`,
+          `Responsable documentado de la campaña: ${MERCH_SELLER}`,
         ],
       },
       {
-        title: '2. Funcionamiento de las campañas',
+        title: '6. Futuras campañas',
         paragraphs: [
-          'El Merch funciona por campañas con un periodo de apertura. Mientras la campaña esté abierta pueden crearse pedidos y completarse pagos cuando el sistema de pago esté habilitado. Al cerrarse se congela el lote que se utilizará para preparar el pedido al proveedor.',
-          'Un pedido no se considera pagado hasta que la plataforma recibe la confirmación válida del proveedor de pago.',
-        ],
-      },
-      {
-        title: '3. Productos, tallas y personalización',
-        paragraphs: [
-          'La ficha del producto y el resumen previo al pago muestran el producto, talla, cantidad, personalización e importe seleccionado.',
-          'La persona compradora es responsable de revisar talla y texto de personalización antes de confirmar el pedido.',
-        ],
-      },
-      {
-        title: '4. Precio y pago',
-        paragraphs: [
-          'Antes de activar una venta real deberán quedar definidos y mostrados de forma clara el precio final, los posibles costes de entrega y cualquier otro importe aplicable.',
-          'Cuando se active Stripe LIVE, los pagos con tarjeta se procesarán mediante Stripe Checkout. Guateque Riders no recibirá ni almacenará el número completo de tarjeta ni el CVC.',
-        ],
-      },
-      {
-        title: '5. Confirmación y seguimiento',
-        paragraphs: [
-          'Tras confirmarse un pago se registra el pedido y se envía una comunicación operativa al email indicado. El estado puede avanzar por las fases Confirmado, En producción, Listo para entregar y Entregado.',
-          'La versión de estas condiciones aceptada al crear el pedido queda registrada junto con la fecha de aceptación.',
-        ],
-      },
-      {
-        title: '6. Cancelación, devolución y personalización',
-        paragraphs: [
-          'La aplicación permite cancelar directamente un pedido pendiente que todavía no haya sido pagado.',
-          'Antes de activar ventas reales deberán concretarse las condiciones de desistimiento, devolución e incidencias según el tipo de producto y la persona o entidad que actúe como vendedor.',
-          'Si existen productos claramente personalizados, se revisará específicamente cómo afecta esa personalización al derecho de desistimiento. Los derechos frente a productos defectuosos o no conformes deberán mantenerse en todo caso cuando resulten aplicables.',
-        ],
-      },
-      {
-        title: '7. Entrega',
-        paragraphs: [
-          'Antes de activar ventas reales se definirá si la entrega será presencial, mediante envío o ambas opciones, y se mostrará al usuario cualquier coste y condición antes del pago.',
-        ],
-      },
-      {
-        title: '8. Activación de venta real',
-        paragraphs: [
-          'Stripe LIVE permanecerá desactivado hasta que estén definidos el responsable de la venta, las condiciones reales de entrega y devolución, el canal de contacto y la información legal que corresponda.',
+          'La web no tiene actualmente prevista una nueva campaña de merchandising. Si en el futuro se reactivase esta funcionalidad, antes de aceptar nuevos pedidos se revisarían de nuevo las condiciones de venta, entrega, devoluciones, información legal y configuración de pagos.',
         ],
       },
     ],
   },
+
   '/cookies': {
     eyebrow: 'Navegación',
     title: 'Cookies y almacenamiento',
