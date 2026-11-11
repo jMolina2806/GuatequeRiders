@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -50,9 +49,6 @@ public class User {
 
     @Column(name = "membership_active", nullable = false)
     private boolean membershipActive;
-
-    @Column(name = "membership_valid_until")
-    private LocalDate membershipValidUntil;
 
     @Column(name = "membership_version", nullable = false)
     private long membershipVersion;
@@ -101,9 +97,6 @@ public class User {
 
     public boolean isMembershipActive() { return membershipActive; }
     public void setMembershipActive(boolean membershipActive) { this.membershipActive = membershipActive; }
-
-    public LocalDate getMembershipValidUntil() { return membershipValidUntil; }
-    public void setMembershipValidUntil(LocalDate membershipValidUntil) { this.membershipValidUntil = membershipValidUntil; }
 
     public long getMembershipVersion() { return membershipVersion; }
     public void setMembershipVersion(long membershipVersion) { this.membershipVersion = membershipVersion; }
