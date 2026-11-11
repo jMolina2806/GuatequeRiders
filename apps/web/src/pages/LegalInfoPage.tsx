@@ -42,7 +42,7 @@ const SECTIONS: Record<string, LegalSection> = {
     title: 'Aviso legal',
     intro:
       'Información general sobre Guateque Riders, el uso de la plataforma y las condiciones de acceso.',
-    version: '28/10/2026',
+    version: '11/11/2026',
     requiresDefinition: true,
     blocks: [
       {
@@ -104,7 +104,7 @@ const SECTIONS: Record<string, LegalSection> = {
     title: 'Política de privacidad',
     intro:
       'Esta política explica qué datos trata la plataforma de Guateque Riders, para qué se utilizan y qué derechos tienes.',
-    version: '28/10/2026',
+    version: '11/11/2026',
     requiresDefinition: true,
     blocks: [
       {
