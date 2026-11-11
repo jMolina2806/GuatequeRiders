@@ -13,10 +13,19 @@ function formatDate(value: string | null): string {
   })
 }
 
-function oneYearFromToday(): string {
-  const date = new Date()
-  date.setFullYear(date.getFullYear() + 1)
-  return date.toISOString().slice(0, 10)
+function oneYearFrom(value: string | null): string {
+  const today = new Date()
+  today.setHours(12, 0, 0, 0)
+
+  const current = value ? new Date(`${value}T12:00:00`) : today
+  const base = current.getTime() > today.getTime() ? current : today
+  const renewed = new Date(base)
+  renewed.setFullYear(renewed.getFullYear() + 1)
+
+  const year = renewed.getFullYear()
+  const month = String(renewed.getMonth() + 1).padStart(2, '0')
+  const day = String(renewed.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 export default function AdminMembersPage() {
@@ -47,7 +56,7 @@ export default function AdminMembersPage() {
       const updated = await changeMembership(
         target.id,
         active,
-        active ? oneYearFromToday() : undefined,
+        active ? oneYearFrom(target.membershipValidUntil) : undefined,
       )
 
       if (updated.id === user?.id) {
