@@ -17,6 +17,7 @@ app:
     verification-expiration-seconds: ${MEMBERSHIP_VERIFICATION_EXPIRATION_SECONDS:90}
   merch:
     test-payments-enabled: ${MERCH_TEST_PAYMENTS_ENABLED:false}
+    new-campaigns-enabled: ${MERCH_NEW_CAMPAIGNS_ENABLED:true}
   community:
     whatsapp-group-url: ${APP_WHATSAPP_GROUP_URL:}
   mail:
