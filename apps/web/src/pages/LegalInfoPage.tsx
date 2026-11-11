@@ -26,7 +26,7 @@ const LEGAL_CONTACT_ADDRESS =
   import.meta.env.VITE_LEGAL_CONTACT_ADDRESS?.trim() || '[PENDIENTE DE DEFINIR]'
 
 const MERCH_SELLER =
-  import.meta.env.VITE_MERCH_SELLER?.trim() || '[PENDIENTE ANTES DE ACTIVAR STRIPE LIVE]'
+  import.meta.env.VITE_MERCH_SELLER?.trim() || '[PENDIENTE DE DOCUMENTAR PARA LA CAMPAÑA FINALIZADA]'
 
 const DEFINITION_NOTICE =
   'Guateque Riders es una comunidad motera, no una empresa ni una sociedad mercantil. Antes de abrir la plataforma al público deberá definirse quién actúa como responsable de la plataforma y del tratamiento de datos. Si se activa la venta real de Merch, también deberá definirse quién realiza jurídicamente esa venta y recibe los pagos.'
