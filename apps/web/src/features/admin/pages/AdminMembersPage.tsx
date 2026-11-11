@@ -4,30 +4,6 @@ import { useAdminUsers } from '../hooks/useAdminUsers'
 import './AdminUsersPage.css'
 import '../components/UserTable/UserTable.css'
 
-function formatDate(value: string | null): string {
-  if (!value) return '—'
-  return new Date(`${value}T12:00:00`).toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
-function oneYearFrom(value: string | null): string {
-  const today = new Date()
-  today.setHours(12, 0, 0, 0)
-
-  const current = value ? new Date(`${value}T12:00:00`) : today
-  const base = current.getTime() > today.getTime() ? current : today
-  const renewed = new Date(base)
-  renewed.setFullYear(renewed.getFullYear() + 1)
-
-  const year = renewed.getFullYear()
-  const month = String(renewed.getMonth() + 1).padStart(2, '0')
-  const day = String(renewed.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
 export default function AdminMembersPage() {
   const {
     users,
@@ -44,20 +20,11 @@ export default function AdminMembersPage() {
   const updateMembership = async (target: User, active: boolean) => {
     clearFeedback()
 
-    const action = active
-      ? target.memberActive
-        ? 'renovar durante un año'
-        : 'activar como socio durante un año'
-      : 'desactivar como socio'
-
+    const action = active ? 'activar como socio' : 'quitar como socio'
     if (!window.confirm(`¿Quieres ${action} a ${target.username}?`)) return
 
     try {
-      const updated = await changeMembership(
-        target.id,
-        active,
-        active ? oneYearFrom(target.membershipValidUntil) : undefined,
-      )
+      const updated = await changeMembership(target.id, active)
 
       if (updated.id === user?.id) {
         try {
@@ -81,8 +48,8 @@ export default function AdminMembersPage() {
       <header className="admin-users__header">
         <h1>Socios</h1>
         <p>
-          Gestiona las membresías del club. Las nuevas cuentas se crean como socio activo
-          automáticamente durante un año.
+          Gestiona quién forma parte del club. El estado de socio no caduca y solo cambia
+          cuando un administrador lo activa o lo desactiva.
         </p>
       </header>
 
@@ -126,7 +93,6 @@ export default function AdminMembersPage() {
                 <th scope="col">Email</th>
                 <th scope="col">Teléfono</th>
                 <th scope="col">Estado</th>
-                <th scope="col">Validez</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
@@ -142,32 +108,20 @@ export default function AdminMembersPage() {
                     <td data-label="N.º socio">{member.memberNumber ?? '—'}</td>
                     <td data-label="Email">{member.email}</td>
                     <td data-label="Teléfono">{member.phone ?? '—'}</td>
-                    <td data-label="Estado">{member.memberActive ? 'Activo' : 'Inactivo'}</td>
-                    <td data-label="Validez">{formatDate(member.membershipValidUntil)}</td>
+                    <td data-label="Estado">{member.memberActive ? 'Socio' : 'No socio'}</td>
                     <td className="user-table__actions" data-label="Acciones">
                       <button
                         className="btn btn--ghost btn--sm"
                         type="button"
                         disabled={updating}
-                        onClick={() => updateMembership(member, true)}
+                        onClick={() => updateMembership(member, !member.memberActive)}
                       >
                         {updating
                           ? 'Actualizando...'
                           : member.memberActive
-                            ? 'Renovar 1 año'
-                            : 'Activar 1 año'}
+                            ? 'Quitar socio'
+                            : 'Hacer socio'}
                       </button>
-
-                      {member.memberActive && (
-                        <button
-                          className="btn btn--ghost btn--sm"
-                          type="button"
-                          disabled={updating}
-                          onClick={() => updateMembership(member, false)}
-                        >
-                          Desactivar
-                        </button>
-                      )}
                     </td>
                   </tr>
                 )
