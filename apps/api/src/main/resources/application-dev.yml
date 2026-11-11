@@ -1,5 +1,7 @@
 app:
   environment: ${APP_ENV:development}
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:false}
 
 spring:
   datasource:

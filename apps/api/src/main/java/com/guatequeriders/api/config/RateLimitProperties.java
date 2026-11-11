@@ -6,9 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RateLimitProperties {
 
     private boolean enabled = true;
-    private int loginPerMinute = 60;
-    private int checkoutSessionPerMinute = 20;
-    private int membershipVerificationPerMinute = 60;
+    private int loginPerMinute = 10;
+    private int registrationPerMinute = 5;
+    private int checkoutSessionPerMinute = 10;
+    private int membershipVerificationPerMinute = 30;
 
     public boolean isEnabled() {
         return enabled;
@@ -24,6 +25,14 @@ public class RateLimitProperties {
 
     public void setLoginPerMinute(int loginPerMinute) {
         this.loginPerMinute = loginPerMinute;
+    }
+
+    public int getRegistrationPerMinute() {
+        return registrationPerMinute;
+    }
+
+    public void setRegistrationPerMinute(int registrationPerMinute) {
+        this.registrationPerMinute = registrationPerMinute;
     }
 
     public int getCheckoutSessionPerMinute() {

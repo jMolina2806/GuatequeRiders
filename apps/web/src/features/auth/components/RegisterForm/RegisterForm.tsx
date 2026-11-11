@@ -66,6 +66,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
         <div className="auth-form__field">
           <label htmlFor="register-password">Contraseña</label>
+          <span className="auth-form__hint">Mínimo 10 caracteres.</span>
           <input
             id="register-password"
             name="password"
@@ -73,7 +74,8 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="new-password"
-            minLength={6}
+            minLength={10}
+            maxLength={72}
             required
           />
         </div>
