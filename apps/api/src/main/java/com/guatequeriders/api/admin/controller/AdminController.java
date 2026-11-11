@@ -50,6 +50,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateMembership(@PathVariable Long id,
                                                          @Valid @RequestBody UpdateMembershipRequest request) {
-        return ResponseEntity.ok(adminService.updateMembership(id, request.active(), request.validUntil()));
+        return ResponseEntity.ok(adminService.updateMembership(id, request.active()));
     }
 }
