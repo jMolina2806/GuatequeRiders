@@ -9,7 +9,6 @@ export type User = {
   createdAt: string
   memberActive: boolean
   memberNumber: string | null
-  membershipValidUntil: string | null
 }
 
 export type LoginRequest = {
