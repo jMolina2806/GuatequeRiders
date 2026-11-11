@@ -20,14 +20,18 @@ public class CollaboratorResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static CollaboratorResponse from(Collaborator collaborator, String publicImageUrl) {
+    public static CollaboratorResponse from(
+            Collaborator collaborator,
+            String publicImageUrl,
+            boolean includeMemberBenefits
+    ) {
         CollaboratorResponse response = new CollaboratorResponse();
         response.id = collaborator.getId();
         response.name = collaborator.getName();
         response.type = collaborator.getType();
         response.shortDescription = collaborator.getShortDescription();
-        response.discountPercentage = collaborator.getDiscountPercentage();
-        response.benefit = collaborator.getBenefit();
+        response.discountPercentage = includeMemberBenefits ? collaborator.getDiscountPercentage() : null;
+        response.benefit = includeMemberBenefits ? collaborator.getBenefit() : null;
         response.websiteUrl = collaborator.getWebsiteUrl();
         response.imageUrl = publicImageUrl;
         response.featured = collaborator.isFeatured();

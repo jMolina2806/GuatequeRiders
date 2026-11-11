@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.guatequeriders.api.users.model.User;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,23 +41,33 @@ public class CollaboratorsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CollaboratorResponse>> getAll() {
+    public ResponseEntity<List<CollaboratorResponse>> getAll(
+            @AuthenticationPrincipal User user
+    ) {
         boolean admin = isAdmin();
+        boolean includeMemberBenefits = admin || isActiveMember(user);
         return ResponseEntity.ok(collaboratorsService.findAll(admin).stream()
-                .map(this::toResponse)
+                .map(collaborator -> toResponse(collaborator, includeMemberBenefits))
                 .toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CollaboratorResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(collaboratorsService.findById(id, isAdmin())));
+    public ResponseEntity<CollaboratorResponse> getById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        boolean admin = isAdmin();
+        return ResponseEntity.ok(toResponse(
+                collaboratorsService.findById(id, admin),
+                admin || isActiveMember(user)
+        ));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CollaboratorResponse> create(
             @Valid @RequestBody CreateCollaboratorRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(collaboratorsService.create(request)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(collaboratorsService.create(request), true));
     }
 
     @PutMapping("/{id}")
@@ -63,7 +75,7 @@ public class CollaboratorsController {
     public ResponseEntity<CollaboratorResponse> update(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCollaboratorRequest request) {
-        return ResponseEntity.ok(toResponse(collaboratorsService.update(id, request)));
+        return ResponseEntity.ok(toResponse(collaboratorsService.update(id, request), true));
     }
 
     @PatchMapping("/{id}/active")
@@ -71,7 +83,7 @@ public class CollaboratorsController {
     public ResponseEntity<CollaboratorResponse> updateActive(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCollaboratorActiveRequest request) {
-        return ResponseEntity.ok(toResponse(collaboratorsService.updateActive(id, request.getActive())));
+        return ResponseEntity.ok(toResponse(collaboratorsService.updateActive(id, request.getActive()), true));
     }
 
     @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -79,13 +91,13 @@ public class CollaboratorsController {
     public ResponseEntity<CollaboratorResponse> uploadImage(
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) {
-        return ResponseEntity.ok(toResponse(collaboratorsService.uploadImage(id, file)));
+        return ResponseEntity.ok(toResponse(collaboratorsService.uploadImage(id, file), true));
     }
 
     @DeleteMapping("/{id}/image")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CollaboratorResponse> deleteImage(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(collaboratorsService.deleteImage(id)));
+        return ResponseEntity.ok(toResponse(collaboratorsService.deleteImage(id), true));
     }
 
     @DeleteMapping("/{id}")
@@ -95,8 +107,16 @@ public class CollaboratorsController {
         return ResponseEntity.noContent().build();
     }
 
-    private CollaboratorResponse toResponse(Collaborator collaborator) {
-        return CollaboratorResponse.from(collaborator, collaboratorsService.publicImageUrl(collaborator));
+    private CollaboratorResponse toResponse(Collaborator collaborator, boolean includeMemberBenefits) {
+        return CollaboratorResponse.from(
+                collaborator,
+                collaboratorsService.publicImageUrl(collaborator),
+                includeMemberBenefits
+        );
+    }
+
+    private boolean isActiveMember(User user) {
+        return user != null && user.isMembershipActive() && user.getMemberNumber() != null;
     }
 
     private boolean isAdmin() {

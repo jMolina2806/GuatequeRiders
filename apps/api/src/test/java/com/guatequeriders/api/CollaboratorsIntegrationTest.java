@@ -3,6 +3,7 @@ package com.guatequeriders.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guatequeriders.api.collaborators.repository.CollaboratorRepository;
+import com.guatequeriders.api.users.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,9 @@ class CollaboratorsIntegrationTest {
     @Autowired
     private CollaboratorRepository collaboratorRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @AfterEach
     void cleanTestData() throws IOException {
         collaboratorRepository.deleteAll();
@@ -103,6 +107,43 @@ class CollaboratorsIntegrationTest {
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertThat(objectMapper.readTree(adminBody).findValuesAsText("name"))
                 .contains("Colaborador inactivo");
+    }
+
+    @Test
+    void collaboratorBenefitsAreVisibleOnlyToMembersAndAdmins() throws Exception {
+        String adminToken = login("admin", "admin123");
+        String userToken = login("demo", "demo123");
+        createCollaborator(adminToken, "Descuento privado", true);
+
+        mockMvc.perform(get("/api/collaborators"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].discountPercentage").doesNotExist())
+                .andExpect(jsonPath("$[0].benefit").doesNotExist());
+
+        mockMvc.perform(get("/api/collaborators")
+                        .header("Authorization", bearer(userToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].discountPercentage").doesNotExist())
+                .andExpect(jsonPath("$[0].benefit").doesNotExist());
+
+        long demoId = userRepository.findByUsername("demo").orElseThrow().getId();
+        mockMvc.perform(patch("/api/admin/users/{id}/membership", demoId)
+                        .header("Authorization", bearer(adminToken))
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("active", true))))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/collaborators")
+                        .header("Authorization", bearer(userToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].discountPercentage").value(10))
+                .andExpect(jsonPath("$[0].benefit").value("Beneficio confirmado"));
+
+        mockMvc.perform(get("/api/collaborators")
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].discountPercentage").value(10))
+                .andExpect(jsonPath("$[0].benefit").value("Beneficio confirmado"));
     }
 
     @Test

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
@@ -57,7 +56,6 @@ public class UsersService {
         user.setPrivacyPolicyVersion(LegalVersions.PRIVACY_POLICY);
         user.setMemberNumber(generateMemberNumber());
         user.setMembershipActive(true);
-        user.setMembershipValidUntil(LocalDate.now().plusYears(1));
         user.setMembershipVersion(1);
 
         return userRepository.save(user);

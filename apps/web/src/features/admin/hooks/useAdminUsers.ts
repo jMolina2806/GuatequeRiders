@@ -54,15 +54,11 @@ export function useAdminUsers() {
     }
   }
 
-  const changeMembership = async (
-    userId: number,
-    active: boolean,
-    validUntil?: string,
-  ): Promise<User> => {
+  const changeMembership = async (userId: number, active: boolean): Promise<User> => {
     setMembershipUpdatingId(userId)
     setFeedback(null)
     try {
-      const updated = await adminService.updateUserMembership(userId, active, validUntil)
+      const updated = await adminService.updateUserMembership(userId, active)
       setUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)))
       setFeedback({
         message: active ? 'Socio activado correctamente' : 'Membresía desactivada',

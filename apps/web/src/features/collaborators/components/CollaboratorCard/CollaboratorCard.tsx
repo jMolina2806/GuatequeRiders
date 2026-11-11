@@ -11,6 +11,7 @@ import './CollaboratorCard.css'
 type CollaboratorCardProps = {
   collaborator: Collaborator
   isAdmin?: boolean
+  canViewBenefits?: boolean
   onEdit?: (collaborator: Collaborator) => void
   onDelete?: (collaborator: Collaborator) => void
   onToggleActive?: (collaborator: Collaborator) => void
@@ -19,6 +20,7 @@ type CollaboratorCardProps = {
 export default function CollaboratorCard({
   collaborator,
   isAdmin = false,
+  canViewBenefits = false,
   onEdit,
   onDelete,
   onToggleActive,
@@ -54,9 +56,18 @@ export default function CollaboratorCard({
       <p className="collaborator-card__description">{collaborator.shortDescription}</p>
 
       <div className="collaborator-card__benefit">
-        <span>Ventaja para miembros</span>
-        <strong>{getBenefitLabel(collaborator)}</strong>
-        {discountLabel && collaborator.benefit && <small>{collaborator.benefit}</small>}
+        <span>Ventaja para socios</span>
+        {canViewBenefits ? (
+          <>
+            <strong>{getBenefitLabel(collaborator)}</strong>
+            {discountLabel && collaborator.benefit && <small>{collaborator.benefit}</small>}
+          </>
+        ) : (
+          <>
+            <strong>Beneficio exclusivo para socios</strong>
+            <small>Hazte socio para consultar el descuento o ventaja disponible.</small>
+          </>
+        )}
       </div>
 
       <div className="collaborator-card__footer">

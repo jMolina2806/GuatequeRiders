@@ -2,14 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getMyMemberCard, type MemberCard } from '../services/membership.service'
 import './MemberCardPage.css'
 
-function formatDate(value: string): string {
-  return new Date(`${value}T12:00:00`).toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
 export default function MemberCardPage() {
   const [card, setCard] = useState<MemberCard | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -101,8 +93,6 @@ export default function MemberCardPage() {
           <strong>{card.username}</strong>
           <span className="member-card__label">N.º de socio</span>
           <strong>{card.memberNumber}</strong>
-          <span className="member-card__label">Válido hasta</span>
-          <strong>{formatDate(card.validUntil)}</strong>
         </div>
 
         <div className="member-card__verification">

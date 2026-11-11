@@ -22,7 +22,7 @@ const FILTERS: CollaboratorFilter[] = [
 ]
 
 export default function CollaboratorsPage() {
-  const { isAdmin } = useAuth()
+  const { isAdmin, isMember } = useAuth()
   const {
     collaborators,
     editingCollaborator,
@@ -137,6 +137,7 @@ export default function CollaboratorsPage() {
               key={collaborator.id}
               collaborator={collaborator}
               isAdmin={isAdmin}
+              canViewBenefits={isAdmin || isMember}
               onEdit={openEdit}
               onDelete={setPendingDelete}
               onToggleActive={(item) => setCollaboratorActive(item, !item.active)}
