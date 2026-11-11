@@ -11,6 +11,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   const { register } = useAuth()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -21,7 +22,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     setError(null)
     setIsSubmitting(true)
     try {
-      await register({ username, email, password, privacyAccepted })
+      await register({ username, email, phone: phone.trim().replace(/[ -]/g, ''), password, privacyAccepted })
       onSuccess?.()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrarse')
@@ -60,6 +61,24 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             autoComplete="email"
+            required
+          />
+        </div>
+
+        <div className="auth-form__field">
+          <label htmlFor="register-phone">Teléfono</label>
+          <span className="auth-form__hint">Ejemplo: 600111222 o +34600111222.</span>
+          <input
+            id="register-phone"
+            name="phone"
+            type="tel"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            autoComplete="tel"
+            inputMode="tel"
+            placeholder="600111222"
+            pattern="(?:\\+?[1-9][0-9]{7,14}|[6789][0-9]{8})"
+            maxLength={16}
             required
           />
         </div>
