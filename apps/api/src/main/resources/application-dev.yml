@@ -1,5 +1,7 @@
 app:
   environment: ${APP_ENV:development}
+  seed:
+    enabled: ${DATA_SEED_ENABLED:true}
   rate-limit:
     enabled: ${RATE_LIMIT_ENABLED:false}
 

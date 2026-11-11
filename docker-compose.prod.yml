@@ -20,6 +20,7 @@ services:
     restart: unless-stopped
     environment:
       APP_ENV: production
+      DATA_SEED_ENABLED: "false"
       APP_PUBLIC_URL: https://${APP_DOMAIN}
       APP_ALLOWED_ORIGINS: https://${APP_DOMAIN}
       APP_UPLOAD_DIR: /app/uploads

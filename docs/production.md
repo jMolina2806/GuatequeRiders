@@ -179,3 +179,18 @@ Flujo recomendado:
 El código puede volver al commit anterior y reconstruirse.
 
 Las migraciones de base de datos no deben revertirse manualmente en caliente. Si una release requiere rollback de datos, utiliza el backup previo y sigue un procedimiento controlado de restauración.
+
+
+## Base de datos limpia para el lanzamiento
+
+Producción no carga datos de ejemplo. El inicializador de desarrollo solo se ejecuta con el perfil `dev` y puede desactivarse con:
+
+```bash
+DATA_SEED_ENABLED=false
+```
+
+Para un lanzamiento desde cero, utiliza una base PostgreSQL nueva o un volumen de producción vacío. No copies la base de datos de desarrollo al servidor.
+
+Si el volumen `guatequeriders-postgres-prod` ya se utilizó únicamente para pruebas previas al lanzamiento y quieres descartarlo, elimina ese volumen antes del primer arranque definitivo. Esta operación borra permanentemente todos los datos contenidos en él.
+
+Después del primer arranque, Flyway debe crear únicamente el esquema de tablas y migraciones. No deben existir usuarios demo, rutas demo, eventos demo, colaboradores demo, pedidos ni campañas de prueba.
