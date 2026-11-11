@@ -52,12 +52,14 @@ class LegalAcceptanceIntegrationTest {
         String suffix = UUID.randomUUID().toString().substring(0, 8);
         String username = "legal-" + suffix;
         String email = username + "@example.com";
+        String phone = uniqueSpanishPhone();
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "username", username,
                                 "email", email,
+                                "phone", phone,
                                 "password", "password123",
                                 "privacyAccepted", false
                         ))))
@@ -68,15 +70,44 @@ class LegalAcceptanceIntegrationTest {
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "username", username,
                                 "email", email,
+                                "phone", phone,
                                 "password", "password123",
                                 "privacyAccepted", true
                         ))))
                 .andExpect(status().isCreated());
 
         User user = userRepository.findByUsername(username).orElseThrow();
+        org.assertj.core.api.Assertions.assertThat(user.getPhone()).isEqualTo("+34" + phone);
         org.assertj.core.api.Assertions.assertThat(user.getPrivacyAcknowledgedAt()).isNotNull();
         org.assertj.core.api.Assertions.assertThat(user.getPrivacyPolicyVersion())
                 .isEqualTo(LegalVersions.PRIVACY_POLICY);
+    }
+
+    @Test
+    void registrationRejectsInvalidEmailAndPhone() throws Exception {
+        String suffix = UUID.randomUUID().toString().substring(0, 8);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "username", "email-" + suffix,
+                                "email", "no-es-un-email",
+                                "phone", uniqueSpanishPhone(),
+                                "password", "password123",
+                                "privacyAccepted", true
+                        ))))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "username", "phone-" + suffix,
+                                "email", "phone-" + suffix + "@example.com",
+                                "phone", "1234",
+                                "password", "password123",
+                                "privacyAccepted", true
+                        ))))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -140,6 +171,11 @@ class LegalAcceptanceIntegrationTest {
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
         return objectMapper.readTree(response).get("token").asText();
+    }
+
+    private String uniqueSpanishPhone() {
+        int suffix = Math.floorMod(UUID.randomUUID().hashCode(), 100_000_000);
+        return String.format("6%08d", suffix);
     }
 
     private String bearer(String token) {

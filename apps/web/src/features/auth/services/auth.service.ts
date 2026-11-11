@@ -16,7 +16,7 @@ type ApiErrorBody = {
 function getErrorMessage(body: ApiErrorBody | null, status: number): string {
   const message = body?.message
   if (message === 'Validation failed' && body?.errors && body.errors.length > 0) {
-    return body.errors[0]
+    return translateApiMessage(body.errors[0])
   }
   if (message) {
     return translateApiMessage(message)

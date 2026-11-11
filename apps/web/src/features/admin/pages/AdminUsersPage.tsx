@@ -13,11 +13,9 @@ export default function AdminUsersPage() {
     isLoading,
     error,
     roleUpdatingId,
-    membershipUpdatingId,
     feedback,
     retry,
     changeRole,
-    changeMembership,
     clearFeedback,
   } = useAdminUsers()
   const { user, refreshUser, logout } = useAuth()
@@ -27,30 +25,6 @@ export default function AdminUsersPage() {
   const handleToggleRole = (target: User) => {
     clearFeedback()
     setPendingUser(target)
-  }
-
-  const handleToggleMembership = async (target: User) => {
-    clearFeedback()
-    const nextActive = !target.memberActive
-    const confirmed = window.confirm(
-      nextActive
-        ? `¿Activar como socio a ${target.username}? El carnet será válido durante un año.`
-        : `¿Desactivar la membresía de ${target.username}? Sus QR actuales dejarán de ser válidos.`,
-    )
-    if (!confirmed) return
-
-    try {
-      const updated = await changeMembership(target.id, nextActive)
-      if (updated.id === user?.id) {
-        try {
-          await refreshUser()
-        } catch {
-          logout()
-        }
-      }
-    } catch {
-      // el feedback de error ya lo gestiona el hook
-    }
   }
 
   const handleConfirmRoleChange = async () => {
@@ -70,7 +44,7 @@ export default function AdminUsersPage() {
         }
       }
     } catch {
-      // el feedback de error ya lo gestiona el hook
+      return
     }
   }
 
@@ -83,7 +57,7 @@ export default function AdminUsersPage() {
     <section className="admin-users">
       <header className="admin-users__header">
         <h1>Usuarios</h1>
-        <p>Gestiona roles y membresías. Solo los socios activos pueden abrir un carnet válido.</p>
+        <p>Gestiona las cuentas y los roles de acceso. Las membresías se administran desde la sección Socios.</p>
       </header>
 
       {feedback && (
@@ -125,9 +99,7 @@ export default function AdminUsersPage() {
         <UserTable
           users={users}
           roleUpdatingId={roleUpdatingId}
-          membershipUpdatingId={membershipUpdatingId}
           onToggleRole={handleToggleRole}
-          onToggleMembership={handleToggleMembership}
         />
       )}
 

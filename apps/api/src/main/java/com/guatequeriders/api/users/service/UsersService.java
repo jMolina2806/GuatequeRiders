@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Service
 public class UsersService {
@@ -28,19 +29,27 @@ public class UsersService {
     }
 
     @Transactional
-    public User register(String username, String email, String password) {
-        if (userRepository.existsByUsername(username)) {
-            throw new DuplicateResourceException("Username already exists: " + username);
+    public User register(String username, String email, String phone, String password) {
+        String normalizedUsername = username.trim();
+        String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+        String normalizedPhone = normalizePhone(phone);
+
+        if (userRepository.existsByUsername(normalizedUsername)) {
+            throw new DuplicateResourceException("Username already exists: " + normalizedUsername);
         }
-        if (userRepository.existsByEmail(email)) {
-            throw new DuplicateResourceException("Email already registered: " + email);
+        if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+            throw new DuplicateResourceException("Email already registered: " + normalizedEmail);
+        }
+        if (userRepository.existsByPhone(normalizedPhone)) {
+            throw new DuplicateResourceException("Phone already registered: " + normalizedPhone);
         }
 
         LocalDateTime now = LocalDateTime.now();
 
         User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
+        user.setUsername(normalizedUsername);
+        user.setEmail(normalizedEmail);
+        user.setPhone(normalizedPhone);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(Role.USER);
         user.setCreatedAt(now);
@@ -52,6 +61,14 @@ public class UsersService {
         user.setMembershipVersion(1);
 
         return userRepository.save(user);
+    }
+
+    private String normalizePhone(String phone) {
+        String value = phone.trim().replace(" ", "").replace("-", "");
+        if (value.matches("[6789]\\d{8}")) {
+            return "+34" + value;
+        }
+        return value.startsWith("+") ? value : "+" + value;
     }
 
     private String generateMemberNumber() {

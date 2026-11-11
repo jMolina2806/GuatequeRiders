@@ -19,6 +19,7 @@ import PreparationSheetPage from '@/pages/PreparationSheetPage'
 import LegalInfoPage from '@/pages/LegalInfoPage'
 import AdminDashboardPage from '@/features/admin/pages/AdminDashboardPage'
 import AdminUsersPage from '@/features/admin/pages/AdminUsersPage'
+import AdminMembersPage from '@/features/admin/pages/AdminMembersPage'
 import AdminOrdersPage from '@/features/admin/pages/AdminOrdersPage'
 import RequireAdmin from '@/features/admin/components/RequireAdmin'
 import RequireMember from '@/features/membership/components/RequireMember'
@@ -72,6 +73,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireAdmin>
             <AdminUsersPage />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/members',
+        element: (
+          <RequireAdmin>
+            <AdminMembersPage />
           </RequireAdmin>
         ),
       },
