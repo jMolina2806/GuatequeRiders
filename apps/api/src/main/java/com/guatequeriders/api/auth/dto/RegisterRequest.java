@@ -3,6 +3,7 @@ package com.guatequeriders.api.auth.dto;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
@@ -13,6 +14,13 @@ public record RegisterRequest(
         @NotBlank(message = "Email is required")
         @Email(message = "Email must be valid")
         String email,
+
+        @NotBlank(message = "Phone number is required")
+        @Pattern(
+                regexp = "^(?:\\+?[1-9](?:[ -]?\\d){7,14}|[6789](?:[ -]?\\d){8})$",
+                message = "Phone number must be valid"
+        )
+        String phone,
 
         @NotBlank(message = "Password is required")
         @Size(min = 10, max = 72, message = "Password must be between 10 and 72 characters")
