@@ -63,6 +63,11 @@
   color: var(--color-text-secondary);
 }
 
+.auth-form__hint {
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
 .auth-form__field input {
   padding: 10px 14px;
   background: var(--color-background);
