@@ -4,6 +4,7 @@ export type User = {
   id: number
   username: string
   email: string
+  phone: string | null
   role: UserRole
   createdAt: string
   memberActive: boolean
@@ -19,6 +20,7 @@ export type LoginRequest = {
 export type RegisterRequest = {
   username: string
   email: string
+  phone: string
   password: string
   privacyAccepted: boolean
 }
