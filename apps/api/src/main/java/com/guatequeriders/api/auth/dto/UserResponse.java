@@ -3,7 +3,6 @@ package com.guatequeriders.api.auth.dto;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record UserResponse(
@@ -14,14 +13,10 @@ public record UserResponse(
         Role role,
         LocalDateTime createdAt,
         boolean memberActive,
-        String memberNumber,
-        LocalDate membershipValidUntil
+        String memberNumber
 ) {
     public static UserResponse from(User user) {
-        boolean active = user.isMembershipActive()
-                && user.getMemberNumber() != null
-                && user.getMembershipValidUntil() != null
-                && !user.getMembershipValidUntil().isBefore(LocalDate.now());
+        boolean active = user.isMembershipActive() && user.getMemberNumber() != null;
 
         return new UserResponse(
                 user.getId(),
@@ -31,8 +26,7 @@ public record UserResponse(
                 user.getRole(),
                 user.getCreatedAt(),
                 active,
-                user.getMemberNumber(),
-                user.getMembershipValidUntil()
+                user.getMemberNumber()
         );
     }
 }
