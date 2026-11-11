@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -88,7 +87,7 @@ public class AdminService {
     }
 
     @Transactional
-    public UserResponse updateMembership(Long userId, boolean active, LocalDate validUntil) {
+    public UserResponse updateMembership(Long userId, boolean active) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
@@ -97,11 +96,6 @@ public class AdminService {
                 user.setMemberNumber(generateMemberNumber());
             }
             user.setMembershipActive(true);
-            LocalDate effectiveValidUntil = validUntil;
-            if (effectiveValidUntil == null || effectiveValidUntil.isBefore(LocalDate.now())) {
-                effectiveValidUntil = LocalDate.now().plusYears(1);
-            }
-            user.setMembershipValidUntil(effectiveValidUntil);
         } else {
             user.setMembershipActive(false);
         }
