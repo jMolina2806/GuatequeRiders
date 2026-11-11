@@ -71,7 +71,16 @@ Completa también los datos legales que se insertan en el frontend durante el bu
 - `LEGAL_CONTACT_ADDRESS`
 - `MERCH_SELLER` si se activa venta real
 
-Si alguno queda vacío, la web mostrará un aviso de dato pendiente en las páginas legales.
+El build de producción exige los datos legales principales y fallará si no están definidos.
+
+Antes de construir, ejecuta:
+
+```bash
+chmod +x scripts/check-production-env.sh
+./scripts/check-production-env.sh
+```
+
+No continúes con el despliegue si el preflight devuelve errores.
 
 ## Primer despliegue
 
@@ -155,14 +164,15 @@ Flujo recomendado:
 7. pull/build/deploy
 8. health check
 9. smoke test:
-   - registro/login,
-   - rutas/eventos/circuitos,
-   - perfil y notificaciones,
-   - Merch,
-   - pago,
-   - webhook,
-   - email,
-   - estados del pedido.
+   - registro y login,
+   - creación automática de socio y acceso al carnet,
+   - rutas, eventos y circuitos,
+   - perfil, pedidos históricos y preferencias,
+   - Merch visible únicamente como campaña finalizada,
+   - comprobar que no existe compra ni apertura de nueva campaña,
+   - Aviso legal, Privacidad y Cookies sin textos [PENDIENTE],
+   - logout y eliminación de la sesión local.
+10. revisar las cabeceras HTTPS y ejecutar un backup de prueba.
 
 ## Rollback
 
