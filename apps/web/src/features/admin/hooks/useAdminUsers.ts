@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { User } from '@/features/auth/types/auth.types'
+import type { User, UserRole } from '@/features/auth/types/auth.types'
 import * as adminService from '../services/admin.service'
 
 export type AdminFeedback = {
@@ -34,14 +34,14 @@ export function useAdminUsers() {
     fetchUsers()
   }, [fetchUsers])
 
-  const changeRole = async (userId: number, role: 'USER' | 'ADMIN'): Promise<User> => {
+  const changeRole = async (userId: number, role: UserRole): Promise<User> => {
     setRoleUpdatingId(userId)
     setFeedback(null)
     try {
       const updated = await adminService.updateUserRole(userId, role)
       setUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)))
       setFeedback({
-        message: role === 'ADMIN' ? 'Rol cambiado a administrador' : 'Rol cambiado a usuario',
+        message: role === 'ADMIN' ? 'Rol cambiado a administrador' : role === 'COLLABORATOR' ? 'Acceso de colaborador activado' : 'Rol cambiado a usuario',
         type: 'success',
       })
       return updated

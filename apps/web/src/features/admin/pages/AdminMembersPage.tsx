@@ -168,6 +168,7 @@ export default function AdminMembersPage() {
                 const numberValue = draftNumbers[member.id] ?? member.memberNumber ?? ''
                 const hasNumberChange = numberValue.trim().toUpperCase() !== (member.memberNumber ?? '')
                 const isAdmin = member.role === 'ADMIN'
+                const isCollaborator = member.role === 'COLLABORATOR'
 
                 return (
                   <tr key={member.id}>
@@ -212,7 +213,7 @@ export default function AdminMembersPage() {
                       <button
                         className="btn btn--ghost btn--sm"
                         type="button"
-                        disabled={updatingFounder || updatingNumber}
+                        disabled={updatingFounder || updatingNumber || isCollaborator}
                         onClick={() => void updateFounder(member)}
                       >
                         {updatingFounder
@@ -227,13 +228,14 @@ export default function AdminMembersPage() {
                     <td data-label="Estado">
                       {member.memberActive ? 'Socio activo' : 'Miembro registrado'}
                       {isAdmin && <span className="admin-members__admin-label"> · Admin</span>}
+                      {isCollaborator && <span className="admin-members__admin-label"> · Colaborador</span>}
                     </td>
                     <td className="user-table__actions" data-label="Acciones">
                       <button
                         className="btn btn--ghost btn--sm"
                         type="button"
-                        disabled={updating || isAdmin}
-                        title={isAdmin ? 'Los administradores mantienen su carnet de socio' : undefined}
+                        disabled={updating || isAdmin || isCollaborator}
+                        title={isAdmin ? 'Los administradores mantienen su carnet de socio' : isCollaborator ? 'Una cuenta de colaborador no puede ser socio' : undefined}
                         onClick={() => updateMembership(member, !member.memberActive)}
                       >
                         {updating

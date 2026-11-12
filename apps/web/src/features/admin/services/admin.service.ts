@@ -1,4 +1,4 @@
-import type { User } from '@/features/auth/types/auth.types'
+import type { User, UserRole } from '@/features/auth/types/auth.types'
 import { getToken } from '@/features/auth/services/session'
 import { translateApiMessage } from '@/utils/apiMessages'
 import type { AdminStats, UpdateRoleRequest } from '../types/admin.types'
@@ -30,7 +30,7 @@ export async function getUsers(): Promise<User[]> {
   return handleResponse<User[]>(response)
 }
 
-export async function updateUserRole(userId: number, role: 'USER' | 'ADMIN'): Promise<User> {
+export async function updateUserRole(userId: number, role: UserRole): Promise<User> {
   const request: UpdateRoleRequest = { role }
   const response = await fetch(`${API_BASE}/users/${userId}/role`, {
     method: 'PATCH',

@@ -20,3 +20,9 @@
   border: 1px solid rgba(0, 240, 255, 0.3);
   color: var(--color-primary);
 }
+
+.role-badge--collaborator {
+  background: rgba(255, 195, 68, 0.12);
+  border: 1px solid rgba(255, 195, 68, 0.32);
+  color: #ffc344;
+}

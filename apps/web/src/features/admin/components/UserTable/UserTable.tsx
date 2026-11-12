@@ -1,4 +1,4 @@
-import type { User } from '@/features/auth/types/auth.types'
+import type { User, UserRole } from '@/features/auth/types/auth.types'
 import RoleBadge from '../RoleBadge'
 import './UserTable.css'
 
@@ -6,7 +6,7 @@ type UserTableProps = {
   users: User[]
   roleUpdatingId: number | null
   membershipUpdatingId: number | null
-  onToggleRole: (user: User) => void
+  onChangeRole: (user: User, role: UserRole) => void
   onToggleMembership: (user: User) => void
 }
 
@@ -20,7 +20,7 @@ export default function UserTable({
   users,
   roleUpdatingId,
   membershipUpdatingId,
-  onToggleRole,
+  onChangeRole,
   onToggleMembership,
 }: UserTableProps) {
   return (
@@ -41,7 +41,6 @@ export default function UserTable({
           {users.map((user) => {
             const isUpdating = roleUpdatingId === user.id
             const isMembershipUpdating = membershipUpdatingId === user.id
-            const nextRole = user.role === 'ADMIN' ? 'USER' : 'ADMIN'
 
             return (
               <tr key={user.id}>
@@ -55,7 +54,7 @@ export default function UserTable({
                 </td>
                 <td data-label="Estado">
                   <span className={user.memberActive ? 'user-table__membership user-table__membership--active' : 'user-table__membership'}>
-                    {user.memberActive ? 'Socio activo' : 'Miembro registrado'}
+                    {user.role === 'COLLABORATOR' ? 'Verificación de carnets' : user.memberActive ? 'Socio activo' : 'Miembro registrado'}
                   </span>
                 </td>
                 <td data-label="Registro">{formatDate(user.createdAt)}</td>
@@ -63,20 +62,27 @@ export default function UserTable({
                   <button
                     className="btn btn--ghost btn--sm"
                     onClick={() => onToggleMembership(user)}
-                    disabled={isMembershipUpdating || user.role === 'ADMIN'}
-                    title={user.role === 'ADMIN' ? 'Los administradores mantienen el carnet' : 'Solo tras comprobar WhatsApp'}
+                    disabled={isMembershipUpdating || user.role !== 'USER'}
+                    title={user.role !== 'USER' ? 'Solo se puede cambiar el estado de socio a cuentas de usuario' : 'Solo tras comprobar WhatsApp'}
                     type="button"
                   >
                     {isMembershipUpdating ? 'Actualizando...' : user.memberActive ? 'Quitar socio' : 'Hacer socio'}
                   </button>
-                  <button
-                    className="btn btn--ghost btn--sm"
-                    onClick={() => onToggleRole(user)}
-                    disabled={isUpdating}
-                    type="button"
-                  >
-                    {isUpdating ? 'Cambiando...' : `Hacer ${nextRole === 'ADMIN' ? 'admin' : 'usuario'}`}
-                  </button>
+                  {user.role !== 'ADMIN' && (
+                    <button className="btn btn--ghost btn--sm" onClick={() => onChangeRole(user, 'ADMIN')} disabled={isUpdating} type="button">
+                      {isUpdating ? 'Cambiando...' : 'Hacer admin'}
+                    </button>
+                  )}
+                  {user.role !== 'COLLABORATOR' && (
+                    <button className="btn btn--ghost btn--sm" onClick={() => onChangeRole(user, 'COLLABORATOR')} disabled={isUpdating} type="button">
+                      {isUpdating ? 'Cambiando...' : 'Hacer colaborador'}
+                    </button>
+                  )}
+                  {user.role !== 'USER' && (
+                    <button className="btn btn--ghost btn--sm" onClick={() => onChangeRole(user, 'USER')} disabled={isUpdating} type="button">
+                      {isUpdating ? 'Cambiando...' : 'Hacer usuario'}
+                    </button>
+                  )}
                 </td>
               </tr>
             )

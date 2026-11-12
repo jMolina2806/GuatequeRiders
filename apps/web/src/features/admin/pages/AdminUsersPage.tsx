@@ -4,7 +4,7 @@ import UserTable from '../components/UserTable'
 import RoleChangeConfirm from '../components/RoleChangeConfirm'
 import { useAdminUsers } from '../hooks/useAdminUsers'
 import { useAuth } from '@/features/auth/context/useAuth'
-import type { User } from '@/features/auth/types/auth.types'
+import type { User, UserRole } from '@/features/auth/types/auth.types'
 import './AdminUsersPage.css'
 
 export default function AdminUsersPage() {
@@ -23,6 +23,7 @@ export default function AdminUsersPage() {
   const { user, refreshUser, logout } = useAuth()
   const navigate = useNavigate()
   const [pendingUser, setPendingUser] = useState<User | null>(null)
+  const [pendingRole, setPendingRole] = useState<UserRole | null>(null)
 
   const handleToggleMembership = async (target: User) => {
     clearFeedback()
@@ -45,25 +46,27 @@ export default function AdminUsersPage() {
     }
   }
 
-  const handleToggleRole = (target: User) => {
+  const handleChangeRole = (target: User, role: UserRole) => {
     clearFeedback()
     setPendingUser(target)
+    setPendingRole(role)
   }
 
   const handleConfirmRoleChange = async () => {
-    if (!pendingUser) return
-    const targetRole = pendingUser.role === 'ADMIN' ? 'USER' : 'ADMIN'
+    if (!pendingUser || !pendingRole) return
+    const targetRole = pendingRole
     try {
       const updated = await changeRole(pendingUser.id, targetRole)
       setPendingUser(null)
+      setPendingRole(null)
       if (updated.id === user?.id) {
         try {
           await refreshUser()
         } catch {
           logout()
         }
-        if (updated.role === 'USER') {
-          navigate('/')
+        if (updated.role !== 'ADMIN') {
+          navigate(updated.role === 'COLLABORATOR' ? '/verify-member' : '/')
         }
       }
     } catch {
@@ -74,13 +77,14 @@ export default function AdminUsersPage() {
   const handleCancelRoleChange = () => {
     if (roleUpdatingId !== null) return
     setPendingUser(null)
+    setPendingRole(null)
   }
 
   return (
     <section className="admin-users">
       <header className="admin-users__header">
         <h1>Usuarios</h1>
-        <p>Los registros son miembros. Confirma primero su pertenencia al WhatsApp del grupo para activarlos como socios y darles acceso al carnet. Los fundadores se gestionan desde Socios.</p>
+        <p>Verifica WhatsApp antes de activar el carnet de socio. Para dar acceso a una tienda, comprueba que la cuenta pertenece a ese negocio y pulsa «Hacer colaborador»: solo podrá verificar carnets.</p>
       </header>
 
       {feedback && (
@@ -123,13 +127,14 @@ export default function AdminUsersPage() {
           users={users}
           roleUpdatingId={roleUpdatingId}
           membershipUpdatingId={membershipUpdatingId}
-          onToggleRole={handleToggleRole}
+          onChangeRole={handleChangeRole}
           onToggleMembership={handleToggleMembership}
         />
       )}
 
       <RoleChangeConfirm
         user={pendingUser}
+        targetRole={pendingRole}
         isUpdating={roleUpdatingId !== null}
         onConfirm={handleConfirmRoleChange}
         onCancel={handleCancelRoleChange}
