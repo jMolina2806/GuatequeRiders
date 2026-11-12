@@ -749,3 +749,45 @@
     width: 100%;
   }
 }
+
+.admin-orders-page__readiness {
+  margin: 0 0 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.admin-orders-page__readiness strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+
+.admin-orders-page__readiness p {
+  margin: 5px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.admin-orders-page__confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 14px 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.admin-orders-page__confirmation input {
+  flex-shrink: 0;
+  margin-top: 5px;
+  accent-color: var(--color-primary);
+}
+
+@media (max-width: 640px) {
+  .admin-orders-page__actions {
+    flex-wrap: wrap;
+  }
+}

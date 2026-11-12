@@ -3,6 +3,7 @@ package com.guatequeriders.api.merch.controller;
 import com.guatequeriders.api.merch.dto.CampaignCloseResponse;
 import com.guatequeriders.api.merch.dto.CampaignDashboardResponse;
 import com.guatequeriders.api.merch.dto.CampaignHistoryEntryResponse;
+import com.guatequeriders.api.merch.dto.CampaignOpeningReadinessResponse;
 import com.guatequeriders.api.merch.dto.MerchCampaignResponse;
 import com.guatequeriders.api.merch.service.MerchCampaignService;
 import com.guatequeriders.api.orders.dto.SupplierOrderBatchResponse;
@@ -33,6 +34,11 @@ public class AdminMerchCampaignController {
     @GetMapping
     public ResponseEntity<List<CampaignHistoryEntryResponse>> listCampaigns() {
         return ResponseEntity.ok(campaignService.listCampaigns());
+    }
+
+    @GetMapping("/readiness")
+    public ResponseEntity<CampaignOpeningReadinessResponse> openingReadiness() {
+        return ResponseEntity.ok(campaignService.openingReadiness());
     }
 
     @PostMapping

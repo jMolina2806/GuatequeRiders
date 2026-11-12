@@ -7,6 +7,7 @@ import type {
   Campaign,
   CampaignDashboard,
   CampaignHistoryEntry,
+  CampaignOpeningReadiness,
   CampaignStatus,
   Order,
   OrderStatus,
@@ -205,9 +206,30 @@ export default function AdminOrdersPage() {
   const [dashboardError, setDashboardError] = useState<string | null>(null)
   const [reloadToken, setReloadToken] = useState(0)
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false)
-  const [action, setAction] = useState<'close' | 'ordered' | null>(null)
+  const [action, setAction] = useState<'open' | 'close' | 'ordered' | null>(null)
   const [advancingOrderId, setAdvancingOrderId] = useState<number | null>(null)
   const [feedback, setFeedback] = useState<string | null>(null)
+  const [readiness, setReadiness] = useState<CampaignOpeningReadiness | null>(null)
+  const [readinessError, setReadinessError] = useState<string | null>(null)
+  const [isOpenModalOpen, setIsOpenModalOpen] = useState(false)
+  const [legalReviewed, setLegalReviewed] = useState(false)
+  const [pricingReviewed, setPricingReviewed] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    setReadinessError(null)
+    merchService.getOpeningReadiness()
+      .then((response) => {
+        if (!cancelled) setReadiness(response)
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setReadiness(null)
+          setReadinessError(err instanceof Error ? err.message : 'No se pudo comprobar la disponibilidad de campañas')
+        }
+      })
+    return () => { cancelled = true }
+  }, [reloadToken])
 
   useEffect(() => {
     let cancelled = false
@@ -297,6 +319,28 @@ export default function AdminOrdersPage() {
     setReloadToken((value) => value + 1)
   }
 
+  const handleOpenCampaign = async () => {
+    if (!readiness?.canOpen || !legalReviewed || !pricingReviewed) return
+    setAction('open')
+    setFeedback(null)
+    try {
+      const newCampaign = await merchService.openCampaign()
+      await refreshMerch()
+      setSelectedCampaignId(newCampaign.id)
+      setDashboard(null)
+      setIsOpenModalOpen(false)
+      setLegalReviewed(false)
+      setPricingReviewed(false)
+      setFeedback(`Campaña #${newCampaign.id} abierta. El catálogo ya admite pedidos y pagos.`)
+      setReloadToken((value) => value + 1)
+    } catch (err) {
+      setFeedback(err instanceof Error ? err.message : 'No se pudo abrir la campaña Merch')
+      setReloadToken((value) => value + 1)
+    } finally {
+      setAction(null)
+    }
+  }
+
   const handleCloseCampaign = async () => {
     if (selectedCampaignId === null) return
     setAction('close')
@@ -357,15 +401,31 @@ export default function AdminOrdersPage() {
         <div>
           <span className="admin-orders-page__eyebrow">Admin / Merch</span>
           <h1>Gestión de campañas</h1>
-          <p>Controla cada campaña sin mezclar pedidos de periodos distintos.</p>
+          <p>Las campañas permanecen cerradas hasta que un administrador decida abrirlas. Cada campaña mantiene sus pedidos separados.</p>
         </div>
         <div className="admin-orders-page__actions">
+          <button
+            className="btn btn--primary"
+            type="button"
+            onClick={() => setIsOpenModalOpen(true)}
+            disabled={!readiness?.canOpen || isHistoryLoading || action !== null}
+            title={readiness?.blockers.join(' ') || 'Abrir una nueva campaña'}
+          >
+            {action === 'open' ? 'Abriendo...' : 'Abrir campaña'}
+          </button>
           <button className="btn btn--ghost" type="button" onClick={handleReload} disabled={isHistoryLoading || action !== null}>
             Actualizar historial
           </button>
         </div>
       </header>
 
+      {readinessError && <p className="admin-orders-page__error" role="alert">{readinessError}</p>}
+      {!readinessError && readiness && !readiness.canOpen && (
+        <div className="admin-orders-page__readiness" role="status">
+          <strong>No es posible abrir una campaña todavía.</strong>
+          {readiness.blockers.map((blocker) => <p key={blocker}>{blocker}</p>)}
+        </div>
+      )}
       {historyError && <p className="admin-orders-page__error" role="alert">{historyError}</p>}
       {feedback && <p className="admin-orders-page__feedback" role="status">{feedback}</p>}
 
@@ -563,6 +623,42 @@ export default function AdminOrdersPage() {
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={isOpenModalOpen}
+        onClose={() => {
+          if (action === null) setIsOpenModalOpen(false)
+        }}
+        title="Abrir nueva campaña Merch"
+      >
+        <div className="admin-close-confirmation">
+          <p>Esta acción abrirá ventas reales en la web: los socios podrán añadir prendas al carrito, crear pedidos y pagar.</p>
+          <label className="admin-orders-page__confirmation">
+            <input
+              type="checkbox"
+              checked={legalReviewed}
+              disabled={action !== null}
+              onChange={(event) => setLegalReviewed(event.target.checked)}
+            />
+            <span>He comprobado la información legal, el responsable de la venta y las condiciones para compradores.</span>
+          </label>
+          <label className="admin-orders-page__confirmation">
+            <input
+              type="checkbox"
+              checked={pricingReviewed}
+              disabled={action !== null}
+              onChange={(event) => setPricingReviewed(event.target.checked)}
+            />
+            <span>He revisado precios, proveedor, entrega y que Stripe permite cobrar en modo real.</span>
+          </label>
+          <div className="admin-close-confirmation__actions">
+            <button className="btn btn--ghost" type="button" onClick={() => setIsOpenModalOpen(false)} disabled={action !== null}>Cancelar</button>
+            <button className="btn btn--primary" type="button" onClick={() => void handleOpenCampaign()} disabled={action !== null || !legalReviewed || !pricingReviewed || !readiness?.canOpen}>
+              {action === 'open' ? 'Abriendo...' : 'Confirmar apertura'}
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {selectedDashboard && selectedCampaign?.status === 'OPEN' && (
         <Modal

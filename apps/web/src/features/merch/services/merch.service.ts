@@ -2,6 +2,7 @@ import { getToken } from '@/features/auth/services/session'
 import { translateApiMessage } from '@/utils/apiMessages'
 import type {
   Campaign,
+  CampaignOpeningReadiness,
   CampaignDashboard,
   CampaignHistoryEntry,
   CloseCampaignResponse,
@@ -27,6 +28,11 @@ export async function getCurrentCampaign(): Promise<Campaign | null> {
   const response = await fetch('/api/merch/campaign/current')
   if (response.status === 404) return null
   return handleResponse<Campaign>(response)
+}
+
+export async function getOpeningReadiness(): Promise<CampaignOpeningReadiness> {
+  const response = await fetch('/api/admin/merch/campaigns/readiness', { headers: authHeaders() })
+  return handleResponse<CampaignOpeningReadiness>(response)
 }
 
 export async function openCampaign(): Promise<Campaign> {

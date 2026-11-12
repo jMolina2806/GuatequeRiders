@@ -48,12 +48,12 @@ Referencias:
 
 ## Merch
 
-La campaña de Merch ya realizada se considera finalizada y la versión de producción no permitirá abrir nuevas campañas ni aceptar nuevos pedidos.
+La campaña de Merch ya realizada se considera finalizada. El lanzamiento mantendrá los pedidos desactivados; el sistema conserva la posibilidad de abrir nuevas campañas desde administración solo cuando los cobros reales estén preparados.
 
 Para el lanzamiento deben mantenerse estas condiciones:
 
-- Stripe desactivado en producción.
-- creación de nuevas campañas desactivada;
+- Stripe desactivado mientras no se haya revisado una campaña de venta futura.
+- ninguna campaña nueva abierta al lanzar; la capacidad de abrir campañas se prepara en el panel, pero el backend la bloquea mientras Stripe LIVE no esté configurado;
 - catálogo mostrado únicamente como histórico, sin botones de compra;
 - pedidos anteriores disponibles solo para consulta, seguimiento, entrega e incidencias;
 - conservación de la información necesaria de pedidos y pagos durante los plazos que correspondan.

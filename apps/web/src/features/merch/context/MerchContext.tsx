@@ -8,8 +8,8 @@ export function MerchProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const refresh = useCallback(async () => {
-    setIsLoading(true)
+  const refresh = useCallback(async (silent = false) => {
+    if (!silent) setIsLoading(true)
     try {
       const currentCampaign = await merchService.getCurrentCampaign()
       setCampaign(currentCampaign)
@@ -18,12 +18,19 @@ export function MerchProvider({ children }: { children: ReactNode }) {
       setCampaign(null)
       setError(err instanceof Error ? err.message : 'No se pudo cargar el estado del Merch')
     } finally {
-      setIsLoading(false)
+      if (!silent) setIsLoading(false)
     }
   }, [])
 
   useEffect(() => {
     void refresh()
+    const interval = window.setInterval(() => { void refresh(true) }, 60_000)
+    const refreshOnFocus = () => { void refresh(true) }
+    window.addEventListener('focus', refreshOnFocus)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('focus', refreshOnFocus)
+    }
   }, [refresh])
 
   const openCampaign = useCallback(async () => {
