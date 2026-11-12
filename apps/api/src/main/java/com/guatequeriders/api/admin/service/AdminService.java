@@ -120,9 +120,21 @@ public class AdminService {
     }
 
     @Transactional
+    public UserResponse updateFounder(Long userId, boolean founder) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+        user.setFounder(founder);
+        return UserResponse.from(user);
+    }
+
+    @Transactional
     public UserResponse updateMemberNumber(Long userId, String requestedNumber) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        if (!user.isFounder()) {
+            throw new ConflictException("Manual member numbers are reserved for founders");
+        }
 
         String normalized = requestedNumber.trim().toUpperCase(Locale.ROOT);
         if (normalized.matches("[0-9]{1,12}")) {

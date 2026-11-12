@@ -40,6 +40,15 @@ export async function updateUserRole(userId: number, role: 'USER' | 'ADMIN'): Pr
   return handleResponse<User>(response)
 }
 
+export async function updateFounder(userId: number, founder: boolean): Promise<User> {
+  const response = await fetch(`${API_BASE}/users/${userId}/founder`, {
+    method: 'PATCH',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ founder }),
+  })
+  return handleResponse<User>(response)
+}
+
 export async function updateMemberNumber(userId: number, memberNumber: string): Promise<User> {
   const response = await fetch(`${API_BASE}/users/${userId}/member-number`, {
     method: 'PATCH',

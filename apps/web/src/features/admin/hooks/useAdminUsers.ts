@@ -14,6 +14,7 @@ export function useAdminUsers() {
   const [roleUpdatingId, setRoleUpdatingId] = useState<number | null>(null)
   const [membershipUpdatingId, setMembershipUpdatingId] = useState<number | null>(null)
   const [memberNumberUpdatingId, setMemberNumberUpdatingId] = useState<number | null>(null)
+  const [founderUpdatingId, setFounderUpdatingId] = useState<number | null>(null)
   const [feedback, setFeedback] = useState<AdminFeedback | null>(null)
 
   const fetchUsers = useCallback(async () => {
@@ -77,6 +78,28 @@ export function useAdminUsers() {
     }
   }
 
+  const changeFounder = async (userId: number, founder: boolean): Promise<User> => {
+    setFounderUpdatingId(userId)
+    setFeedback(null)
+    try {
+      const updated = await adminService.updateFounder(userId, founder)
+      setUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)))
+      setFeedback({
+        message: founder ? 'Miembro marcado como fundador' : 'Se ha quitado la condición de fundador',
+        type: 'success',
+      })
+      return updated
+    } catch (err) {
+      setFeedback({
+        message: err instanceof Error ? err.message : 'Error al actualizar el estado de fundador',
+        type: 'error',
+      })
+      throw err
+    } finally {
+      setFounderUpdatingId(null)
+    }
+  }
+
   const changeMemberNumber = async (userId: number, memberNumber: string): Promise<User> => {
     setMemberNumberUpdatingId(userId)
     setFeedback(null)
@@ -107,11 +130,13 @@ export function useAdminUsers() {
     roleUpdatingId,
     membershipUpdatingId,
     memberNumberUpdatingId,
+    founderUpdatingId,
     feedback,
     retry: fetchUsers,
     changeRole,
     changeMembership,
     changeMemberNumber,
+    changeFounder,
     clearFeedback,
   }
 }

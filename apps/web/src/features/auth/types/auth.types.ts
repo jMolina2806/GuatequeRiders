@@ -9,6 +9,7 @@ export type User = {
   createdAt: string
   memberActive: boolean
   memberNumber: string | null
+  founder: boolean
 }
 
 export type LoginRequest = {

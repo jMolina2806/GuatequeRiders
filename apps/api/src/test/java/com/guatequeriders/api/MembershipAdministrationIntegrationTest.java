@@ -68,6 +68,9 @@ class MembershipAdministrationIntegrationTest {
         User second = createUser("other");
         String token = login("admin", "admin123");
 
+        markFounder(token, first.getId(), true);
+        markFounder(token, second.getId(), true);
+
         mockMvc.perform(patch("/api/admin/users/{id}/member-number", first.getId())
                         .header("Authorization", bearer(token))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,6 +92,72 @@ class MembershipAdministrationIntegrationTest {
                 .andExpect(status().isBadRequest());
 
         assertThat(userRepository.findById(second.getId()).orElseThrow().getMemberNumber()).isNull();
+    }
+
+    @Test
+    void ordinaryMembersKeepAutomaticNumbersAndCannotHaveManualNumbers() throws Exception {
+        String unique = UUID.randomUUID().toString().substring(0, 8);
+        String username = "regular-" + unique;
+        String phone = String.format("6%08d", Math.floorMod(UUID.randomUUID().hashCode(), 100_000_000));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "username", username,
+                                "email", username + "@example.com",
+                                "phone", phone,
+                                "password", "test12345",
+                                "privacyAccepted", true
+                        ))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.user.memberActive").value(true))
+                .andExpect(jsonPath("$.user.founder").value(false))
+                .andExpect(jsonPath("$.user.memberNumber").isNotEmpty());
+
+        User person = userRepository.findByUsername(username).orElseThrow();
+        String autoNumber = person.getMemberNumber();
+
+        mockMvc.perform(patch("/api/admin/users/{id}/member-number", person.getId())
+                        .header("Authorization", bearer(login("admin", "admin123")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("memberNumber", "GR-0001"))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Manual member numbers are reserved for founders"));
+
+        assertThat(userRepository.findById(person.getId()).orElseThrow().getMemberNumber()).isEqualTo(autoNumber);
+    }
+
+    @Test
+    void removingFounderStatusPreventsFutureManualNumberChanges() throws Exception {
+        User person = createUser("founder-remove");
+        String token = login("admin", "admin123");
+        markFounder(token, person.getId(), true);
+
+        mockMvc.perform(patch("/api/admin/users/{id}/member-number", person.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("memberNumber", "GR-0099"))))
+                .andExpect(status().isOk());
+
+        markFounder(token, person.getId(), false);
+
+        mockMvc.perform(patch("/api/admin/users/{id}/member-number", person.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("memberNumber", "GR-0100"))))
+                .andExpect(status().isConflict());
+
+        assertThat(userRepository.findById(person.getId()).orElseThrow().getMemberNumber()).isEqualTo("GR-0099");
+    }
+
+    @Test
+    void nonAdminCannotChangeFounderStatus() throws Exception {
+        User person = createUser("not-founder");
+        mockMvc.perform(patch("/api/admin/users/{id}/founder", person.getId())
+                        .header("Authorization", bearer(login(person.getUsername(), "test12345")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("founder", true))))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -136,6 +205,15 @@ class MembershipAdministrationIntegrationTest {
                         .content(objectMapper.writeValueAsString(Map.of("active", false))))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Administrators must remain active members"));
+    }
+
+    private void markFounder(String token, Long userId, boolean founder) throws Exception {
+        mockMvc.perform(patch("/api/admin/users/{id}/founder", userId)
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("founder", founder))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.founder").value(founder));
     }
 
     private User createUser(String prefix) {

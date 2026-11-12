@@ -12,10 +12,12 @@ export default function AdminMembersPage() {
     error,
     membershipUpdatingId,
     memberNumberUpdatingId,
+    founderUpdatingId,
     feedback,
     retry,
     changeMembership,
     changeMemberNumber,
+    changeFounder,
     clearFeedback,
   } = useAdminUsers()
   const { user, refreshUser, logout } = useAuth()
@@ -67,6 +69,33 @@ export default function AdminMembersPage() {
     }
   }
 
+  const updateFounder = async (target: User) => {
+    clearFeedback()
+    const action = target.founder ? 'quitar la condición de fundador' : 'marcar como fundador'
+    if (!window.confirm(`¿Quieres ${action} a ${target.username}?`)) return
+
+    try {
+      const updated = await changeFounder(target.id, !target.founder)
+      if (!updated.founder) {
+        setDraftNumbers((current) => {
+          const next = { ...current }
+          delete next[target.id]
+          return next
+        })
+      }
+
+      if (updated.id === user?.id) {
+        try {
+          await refreshUser()
+        } catch {
+          logout()
+        }
+      }
+    } catch {
+      return
+    }
+  }
+
   const members = [...users].sort((a, b) => {
     if (a.memberActive !== b.memberActive) return a.memberActive ? -1 : 1
     return a.username.localeCompare(b.username, 'es')
@@ -78,8 +107,9 @@ export default function AdminMembersPage() {
         <h1>Socios</h1>
         <p>
           Gestiona quién forma parte del club. El estado de socio no caduca y solo cambia
-          cuando un administrador lo activa o lo desactiva. El número se puede personalizar
-          y los administradores también tienen carnet de socio.
+          cuando un administrador lo activa o lo desactiva. Los números se asignan automáticamente.
+          Solo los fundadores pueden tener un número personalizado por un administrador.
+          Los administradores también tienen carnet de socio.
         </p>
       </header>
 
@@ -120,6 +150,7 @@ export default function AdminMembersPage() {
               <tr>
                 <th scope="col">Socio</th>
                 <th scope="col">N.º socio</th>
+                <th scope="col">Fundador</th>
                 <th scope="col">Email</th>
                 <th scope="col">Teléfono</th>
                 <th scope="col">Estado</th>
@@ -130,6 +161,7 @@ export default function AdminMembersPage() {
               {members.map((member) => {
                 const updating = membershipUpdatingId === member.id
                 const updatingNumber = memberNumberUpdatingId === member.id
+                const updatingFounder = founderUpdatingId === member.id
                 const numberValue = draftNumbers[member.id] ?? member.memberNumber ?? ''
                 const hasNumberChange = numberValue.trim().toUpperCase() !== (member.memberNumber ?? '')
                 const isAdmin = member.role === 'ADMIN'
@@ -140,32 +172,52 @@ export default function AdminMembersPage() {
                       {member.username}
                     </td>
                     <td data-label="N.º socio">
-                      <div className="admin-members__number-editor">
-                        <input
-                          type="text"
-                          aria-label={`Número de socio de ${member.username}`}
-                          value={numberValue}
-                          maxLength={32}
-                          placeholder="GR-0001"
-                          autoCapitalize="characters"
-                          spellCheck={false}
-                          disabled={updatingNumber}
-                          onChange={(event) =>
-                            setDraftNumbers((current) => ({
-                              ...current,
-                              [member.id]: event.target.value.toUpperCase(),
-                            }))
-                          }
-                        />
-                        <button
-                          className="btn btn--ghost btn--sm"
-                          type="button"
-                          disabled={!hasNumberChange || !numberValue.trim() || updatingNumber}
-                          onClick={() => void saveMemberNumber(member)}
-                        >
-                          {updatingNumber ? 'Guardando...' : 'Guardar número'}
-                        </button>
-                      </div>
+                      {member.founder ? (
+                        <div className="admin-members__number-editor">
+                          <input
+                            type="text"
+                            aria-label={`Número de socio de ${member.username}`}
+                            value={numberValue}
+                            maxLength={32}
+                            placeholder="GR-0001"
+                            autoCapitalize="characters"
+                            spellCheck={false}
+                            disabled={updatingNumber || updatingFounder}
+                            onChange={(event) =>
+                              setDraftNumbers((current) => ({
+                                ...current,
+                                [member.id]: event.target.value.toUpperCase(),
+                              }))
+                            }
+                          />
+                          <button
+                            className="btn btn--ghost btn--sm"
+                            type="button"
+                            disabled={!hasNumberChange || !numberValue.trim() || updatingNumber || updatingFounder}
+                            onClick={() => void saveMemberNumber(member)}
+                          >
+                            {updatingNumber ? 'Guardando...' : 'Guardar número'}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="admin-members__automatic-number">
+                          {member.memberNumber ?? 'Pendiente de asignación'}
+                        </span>
+                      )}
+                    </td>
+                    <td data-label="Fundador">
+                      <button
+                        className="btn btn--ghost btn--sm"
+                        type="button"
+                        disabled={updatingFounder || updatingNumber}
+                        onClick={() => void updateFounder(member)}
+                      >
+                        {updatingFounder
+                          ? 'Actualizando...'
+                          : member.founder
+                            ? 'Quitar fundador'
+                            : 'Marcar fundador'}
+                      </button>
                     </td>
                     <td data-label="Email">{member.email}</td>
                     <td data-label="Teléfono">{member.phone ?? '—'}</td>

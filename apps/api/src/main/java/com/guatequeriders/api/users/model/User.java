@@ -53,6 +53,9 @@ public class User {
     @Column(name = "membership_version", nullable = false)
     private long membershipVersion;
 
+    @Column(name = "founder", nullable = false)
+    private boolean founder;
+
     public User() {
     }
 
@@ -100,4 +103,7 @@ public class User {
 
     public long getMembershipVersion() { return membershipVersion; }
     public void setMembershipVersion(long membershipVersion) { this.membershipVersion = membershipVersion; }
+
+    public boolean isFounder() { return founder; }
+    public void setFounder(boolean founder) { this.founder = founder; }
 }
