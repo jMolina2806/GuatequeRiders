@@ -63,6 +63,37 @@ class MembershipAdministrationIntegrationTest {
     }
 
     @Test
+    void temporaryMemberCodeCanBeVerifiedWithoutQr() throws Exception {
+        String token = login("admin", "admin123");
+        String cardBody = mockMvc.perform(get("/api/membership/me/card")
+                        .header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        var card = objectMapper.readTree(cardBody);
+        String number = card.get("memberNumber").asText();
+        String code = card.get("verificationCode").asText();
+
+        mockMvc.perform(post("/api/membership/verify-code")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "memberNumber", number,
+                                "code", code
+                        ))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.valid").value(true))
+                .andExpect(jsonPath("$.memberNumber").value(number));
+
+        String wrongCode = code.equals("000000") ? "000001" : "000000";
+        mockMvc.perform(post("/api/membership/verify-code")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "memberNumber", number,
+                                "code", wrongCode
+                        ))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void adminCanChooseANumberAndDuplicateNumbersAreRejected() throws Exception {
         User first = createUser("number");
         User second = createUser("other");

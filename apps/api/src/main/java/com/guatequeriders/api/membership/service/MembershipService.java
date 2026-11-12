@@ -6,6 +6,7 @@ import com.guatequeriders.api.membership.security.MembershipTokenService;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import java.util.Locale;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,23 @@ public class MembershipService {
                 user.getUsername(),
                 claims.code(),
                 claims.expiresAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public MembershipVerificationResponse verifyCode(String memberNumber, String code) {
+        String normalized = memberNumber.trim().toUpperCase(Locale.ROOT);
+        User user = userRepository.findByMemberNumber(normalized)
+                .orElseThrow(this::unavailable);
+        if (!isActive(user) || !tokenService.matchesCode(user.getId(), user.getMembershipVersion(), code)) {
+            throw unavailable();
+        }
+        return new MembershipVerificationResponse(
+                true,
+                user.getMemberNumber(),
+                user.getUsername(),
+                code,
+                tokenService.currentCodeExpiration()
         );
     }
 

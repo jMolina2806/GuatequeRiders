@@ -77,7 +77,8 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         if ("POST".equalsIgnoreCase(method) && path.matches("/api/orders/\\d+/checkout-session")) {
             return properties.getCheckoutSessionPerMinute();
         }
-        if ("POST".equalsIgnoreCase(method) && "/api/membership/verify".equals(path)) {
+        if ("POST".equalsIgnoreCase(method)
+                && ("/api/membership/verify".equals(path) || "/api/membership/verify-code".equals(path))) {
             return properties.getMembershipVerificationPerMinute();
         }
         return -1;

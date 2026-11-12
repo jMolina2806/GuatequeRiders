@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { getMyMemberCard, type MemberCard } from '../services/membership.service'
 import './MemberCardPage.css'
 
@@ -106,7 +107,12 @@ export default function MemberCardPage() {
         </div>
 
         <p className="member-card__security">
-          El código y el contador cambian automáticamente. Muestra siempre el carnet abierto desde la web.
+          El código y el contador cambian automáticamente. Un colaborador puede comprobar
+          el número de socio y este código desde la página de verificación.
+          Muestra siempre el carnet abierto desde la web.
+        </p>
+        <p className="member-card__security">
+          <Link to="/verify-member">Ir a la verificación del carnet</Link>
         </p>
       </article>
     </section>
