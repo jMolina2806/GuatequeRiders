@@ -13,14 +13,37 @@ export default function AdminUsersPage() {
     isLoading,
     error,
     roleUpdatingId,
+    membershipUpdatingId,
     feedback,
     retry,
     changeRole,
+    changeMembership,
     clearFeedback,
   } = useAdminUsers()
   const { user, refreshUser, logout } = useAuth()
   const navigate = useNavigate()
   const [pendingUser, setPendingUser] = useState<User | null>(null)
+
+  const handleToggleMembership = async (target: User) => {
+    clearFeedback()
+    const prompt = target.memberActive
+      ? `¿Has comprobado que ${target.username} ha salido del grupo de WhatsApp y quieres quitarle el estado de socio?`
+      : `¿Has comprobado que ${target.username} pertenece al grupo de WhatsApp? Confirma para activar su carnet de socio.`
+    if (!window.confirm(prompt)) return
+
+    try {
+      const updated = await changeMembership(target.id, !target.memberActive)
+      if (updated.id === user?.id) {
+        try {
+          await refreshUser()
+        } catch {
+          logout()
+        }
+      }
+    } catch {
+      return
+    }
+  }
 
   const handleToggleRole = (target: User) => {
     clearFeedback()
@@ -57,7 +80,7 @@ export default function AdminUsersPage() {
     <section className="admin-users">
       <header className="admin-users__header">
         <h1>Usuarios</h1>
-        <p>Gestiona las cuentas y los roles de acceso. Las membresías se administran desde la sección Socios.</p>
+        <p>Los registros son miembros. Confirma primero su pertenencia al WhatsApp del grupo para activarlos como socios y darles acceso al carnet. Los fundadores se gestionan desde Socios.</p>
       </header>
 
       {feedback && (
@@ -99,7 +122,9 @@ export default function AdminUsersPage() {
         <UserTable
           users={users}
           roleUpdatingId={roleUpdatingId}
+          membershipUpdatingId={membershipUpdatingId}
           onToggleRole={handleToggleRole}
+          onToggleMembership={handleToggleMembership}
         />
       )}
 

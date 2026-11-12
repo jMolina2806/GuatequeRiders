@@ -26,8 +26,10 @@ export default function AdminMembersPage() {
   const updateMembership = async (target: User, active: boolean) => {
     clearFeedback()
 
-    const action = active ? 'activar como socio' : 'quitar como socio'
-    if (!window.confirm(`¿Quieres ${action} a ${target.username}?`)) return
+    const prompt = active
+      ? `¿Has comprobado que ${target.username} está en el grupo de WhatsApp? Confirma para activar su carnet.`
+      : `¿Has comprobado que ${target.username} ha salido del grupo de WhatsApp? Confirma para desactivar el carnet.`
+    if (!window.confirm(prompt)) return
 
     try {
       const updated = await changeMembership(target.id, active)
@@ -106,10 +108,11 @@ export default function AdminMembersPage() {
       <header className="admin-users__header">
         <h1>Socios</h1>
         <p>
-          Gestiona quién forma parte del club. El estado de socio no caduca y solo cambia
-          cuando un administrador lo activa o lo desactiva. Los números se asignan automáticamente.
-          Solo los fundadores pueden tener un número personalizado por un administrador.
-          Los administradores también tienen carnet de socio.
+          Registrarse crea una cuenta de miembro, no un socio. Confirma manualmente
+          que una persona está en el grupo de WhatsApp antes de activar su carnet.
+          Si sale del grupo, desactiva su condición de socio. El número se asigna
+          automáticamente al activarlo; solo los fundadores pueden personalizarlo.
+          Los administradores mantienen su propio carnet.
         </p>
       </header>
 
@@ -222,7 +225,7 @@ export default function AdminMembersPage() {
                     <td data-label="Email">{member.email}</td>
                     <td data-label="Teléfono">{member.phone ?? '—'}</td>
                     <td data-label="Estado">
-                      {member.memberActive ? 'Socio' : 'No socio'}
+                      {member.memberActive ? 'Socio activo' : 'Miembro registrado'}
                       {isAdmin && <span className="admin-members__admin-label"> · Admin</span>}
                     </td>
                     <td className="user-table__actions" data-label="Acciones">

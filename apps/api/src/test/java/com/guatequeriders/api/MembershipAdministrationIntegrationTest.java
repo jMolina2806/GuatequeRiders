@@ -110,12 +110,26 @@ class MembershipAdministrationIntegrationTest {
                                 "privacyAccepted", true
                         ))))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.user.memberActive").value(true))
+                .andExpect(jsonPath("$.user.memberActive").value(false))
                 .andExpect(jsonPath("$.user.founder").value(false))
-                .andExpect(jsonPath("$.user.memberNumber").isNotEmpty());
+                .andExpect(jsonPath("$.user.memberNumber").isEmpty());
 
         User person = userRepository.findByUsername(username).orElseThrow();
-        String autoNumber = person.getMemberNumber();
+        assertThat(person.getMemberNumber()).isNull();
+
+        mockMvc.perform(get("/api/membership/me/card")
+                        .header("Authorization", bearer(login(username, "test12345"))))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(patch("/api/admin/users/{id}/membership", person.getId())
+                        .header("Authorization", bearer(login("admin", "admin123")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("active", true))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberActive").value(true))
+                .andExpect(jsonPath("$.memberNumber").isNotEmpty());
+
+        String autoNumber = userRepository.findById(person.getId()).orElseThrow().getMemberNumber();
 
         mockMvc.perform(patch("/api/admin/users/{id}/member-number", person.getId())
                         .header("Authorization", bearer(login("admin", "admin123")))
