@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import type { User } from '../../types/auth.types'
 import { useAuth } from '../../context/useAuth'
 import '../auth-form.css'
 
 type LoginFormProps = {
-  onSuccess?: () => void
+  onSuccess?: (user: User) => void
 }
 
 export default function LoginForm({ onSuccess }: LoginFormProps) {
@@ -19,8 +20,8 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     setError(null)
     setIsSubmitting(true)
     try {
-      await login({ username, password })
-      onSuccess?.()
+      const currentUser = await login({ username, password })
+      onSuccess?.(currentUser)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión')
     } finally {

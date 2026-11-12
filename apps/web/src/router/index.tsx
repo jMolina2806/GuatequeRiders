@@ -25,6 +25,7 @@ import RequireAdmin from '@/features/admin/components/RequireAdmin'
 import RequireMember from '@/features/membership/components/RequireMember'
 import MemberCardPage from '@/features/membership/pages/MemberCardPage'
 import VerifyMemberPage from '@/features/membership/pages/VerifyMemberPage'
+import RequireVerifier from '@/features/membership/components/RequireVerifier'
 
 export const router = createBrowserRouter([
   {
@@ -49,7 +50,14 @@ export const router = createBrowserRouter([
           </RequireMember>
         ),
       },
-      { path: 'verify-member', element: <VerifyMemberPage /> },
+      {
+        path: 'verify-member',
+        element: (
+          <RequireVerifier>
+            <VerifyMemberPage />
+          </RequireVerifier>
+        ),
+      },
       { path: 'unsubscribe', element: <UnsubscribePage /> },
       { path: 'legal', element: <LegalInfoPage /> },
       { path: 'privacy', element: <LegalInfoPage /> },

@@ -11,6 +11,7 @@ const INSTAGRAM_URL = 'https://www.instagram.com/guateque_riders/'
 
 export default function Navbar() {
   const { user, isAuthenticated, isLoading, isAdmin, isMember, logout } = useAuth()
+  const canVerify = isAdmin || user?.role === 'COLLABORATOR'
   const { totalUnits } = useCart()
   const { isOpen: merchIsOpen } = useMerch()
   const { key: locationKey } = useLocation()
@@ -163,10 +164,17 @@ export default function Navbar() {
                     Carnet
                   </NavLink>
                 )}
-                <NavLink className="navbar__user" to="/profile" onClick={closeMenu}>
-                  <span className="navbar__user-label">Perfil</span>
-                  <span className="navbar__username">{user?.username}</span>
-                </NavLink>
+                {canVerify && (
+                  <NavLink className="navbar__admin" to="/verify-member" onClick={closeMenu}>
+                    Verificar carnets
+                  </NavLink>
+                )}
+                {user?.role !== 'COLLABORATOR' && (
+                  <NavLink className="navbar__user" to="/profile" onClick={closeMenu}>
+                    <span className="navbar__user-label">Perfil</span>
+                    <span className="navbar__username">{user?.username}</span>
+                  </NavLink>
+                )}
                 {isAdmin && (
                   <NavLink className="navbar__admin" to="/admin" onClick={closeMenu}>
                     Admin

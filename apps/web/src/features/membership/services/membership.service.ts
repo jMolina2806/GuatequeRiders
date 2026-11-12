@@ -46,6 +46,7 @@ export async function verifyMemberCode(memberNumber: string, code: string): Prom
   const response = await fetch('/api/membership/verify-code', {
     method: 'POST',
     headers: {
+      ...authHeaders(),
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'Cache-Control': 'no-store',
@@ -60,6 +61,7 @@ export async function verifyMembership(token: string): Promise<MembershipVerific
   const response = await fetch('/api/membership/verify', {
     method: 'POST',
     headers: {
+      ...authHeaders(),
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'Cache-Control': 'no-store',
