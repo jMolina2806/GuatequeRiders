@@ -63,6 +63,85 @@ class MembershipAdministrationIntegrationTest {
     }
 
     @Test
+    void collaboratorRoleRestrictsVerificationAndRevokesAccessWhenRemoved() throws Exception {
+        String adminToken = login("admin", "admin123");
+        String cardResponse = mockMvc.perform(get("/api/membership/me/card")
+                        .header("Authorization", bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        var card = objectMapper.readTree(cardResponse);
+        Map<String, String> payload = Map.of(
+                "memberNumber", card.get("memberNumber").asText(),
+                "code", card.get("verificationCode").asText()
+        );
+
+        mockMvc.perform(post("/api/membership/verify-code")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isUnauthorized());
+
+        User collaborator = createUser("partner");
+        String collaboratorToken = login(collaborator.getUsername(), "test12345");
+
+        mockMvc.perform(post("/api/membership/verify-code")
+                        .header("Authorization", bearer(collaboratorToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(patch("/api/admin/users/{id}/role", collaborator.getId())
+                        .header("Authorization", bearer(adminToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("role", "COLLABORATOR"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role").value("COLLABORATOR"))
+                .andExpect(jsonPath("$.memberActive").value(false));
+
+        mockMvc.perform(get("/api/auth/me")
+                        .header("Authorization", bearer(collaboratorToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role").value("COLLABORATOR"));
+
+        mockMvc.perform(post("/api/membership/verify-code")
+                        .header("Authorization", bearer(collaboratorToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.valid").value(true));
+
+        mockMvc.perform(get("/api/admin/users")
+                        .header("Authorization", bearer(collaboratorToken)))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/api/users/me/routes")
+                        .header("Authorization", bearer(collaboratorToken)))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/api/membership/me/card")
+                        .header("Authorization", bearer(collaboratorToken)))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(patch("/api/admin/users/{id}/membership", collaborator.getId())
+                        .header("Authorization", bearer(adminToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("active", true))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Collaborator accounts cannot be members"));
+
+        mockMvc.perform(patch("/api/admin/users/{id}/role", collaborator.getId())
+                        .header("Authorization", bearer(adminToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("role", "USER"))))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/membership/verify-code")
+                        .header("Authorization", bearer(collaboratorToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void temporaryMemberCodeCanBeVerifiedWithoutQr() throws Exception {
         String token = login("admin", "admin123");
         String cardBody = mockMvc.perform(get("/api/membership/me/card")
@@ -74,6 +153,7 @@ class MembershipAdministrationIntegrationTest {
         String code = card.get("verificationCode").asText();
 
         mockMvc.perform(post("/api/membership/verify-code")
+                        .header("Authorization", bearer(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "memberNumber", number,
@@ -85,6 +165,7 @@ class MembershipAdministrationIntegrationTest {
 
         String wrongCode = code.equals("000000") ? "000001" : "000000";
         mockMvc.perform(post("/api/membership/verify-code")
+                        .header("Authorization", bearer(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "memberNumber", number,
