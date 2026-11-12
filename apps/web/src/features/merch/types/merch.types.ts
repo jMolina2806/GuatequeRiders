@@ -5,6 +5,11 @@ export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'IN_PRODUCTION' | 'READY' | 
 
 export type CampaignStatus = 'OPEN' | 'CLOSED' | 'ORDERED'
 
+export type CampaignOpeningReadiness = {
+  canOpen: boolean
+  blockers: string[]
+}
+
 export type Campaign = {
   id: number
   status: CampaignStatus
