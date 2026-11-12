@@ -62,8 +62,8 @@ if [[ "${LEGAL_CONTACT_EMAIL:-}" != *@*.* ]]; then
   fail "LEGAL_CONTACT_EMAIL no parece un email válido"
 fi
 
-if [[ "${STRIPE_ENABLED:-false}" != "false" ]]; then
-  fail "STRIPE_ENABLED debe permanecer false para este lanzamiento"
+if [[ "${STRIPE_ENABLED:-false}" != "false" && "${STRIPE_ENABLED:-false}" != "true" ]]; then
+  fail "STRIPE_ENABLED debe ser true o false"
 fi
 
 if [[ "${STRIPE_ENABLED:-false}" == "true" ]]; then
@@ -98,6 +98,5 @@ fi
 echo "Preflight de producción correcto."
 echo "Dominio: $APP_DOMAIN"
 echo "Responsable legal configurado."
-echo "Stripe: desactivado."
-echo "Creación de campañas preparada: ${MERCH_NEW_CAMPAIGNS_ENABLED:-true}."
+ echo "Creación de campañas preparada: ${MERCH_NEW_CAMPAIGNS_ENABLED:-true}."
 echo "Stripe activo: ${STRIPE_ENABLED:-false}."

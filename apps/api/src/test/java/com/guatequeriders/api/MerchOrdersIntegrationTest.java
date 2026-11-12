@@ -101,6 +101,12 @@ class MerchOrdersIntegrationTest {
                 .andExpect(jsonPath("$.acceptingOrders").value(false))
                 .andExpect(jsonPath("$.acceptingPayments").value(false));
 
+        mockMvc.perform(get("/api/admin/merch/campaigns/readiness")
+                        .header("Authorization", bearer(login("admin", "admin123"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canOpen").value(true))
+                .andExpect(jsonPath("$.blockers.length()").value(0));
+
         mockMvc.perform(post("/api/admin/merch/campaigns")
                         .header("Authorization", bearer(login("demo", "demo123"))))
                 .andExpect(status().isForbidden());
@@ -111,6 +117,12 @@ class MerchOrdersIntegrationTest {
                 .andExpect(jsonPath("$.status").value("OPEN"))
                 .andExpect(jsonPath("$.acceptingOrders").value(true))
                 .andExpect(jsonPath("$.acceptingPayments").value(true));
+
+        mockMvc.perform(get("/api/admin/merch/campaigns/readiness")
+                        .header("Authorization", bearer(login("admin", "admin123"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canOpen").value(false))
+                .andExpect(jsonPath("$.blockers[0]").value("Ya hay una campaña Merch abierta."));
     }
 
     @Test
