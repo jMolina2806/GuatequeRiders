@@ -42,10 +42,26 @@ export async function getMyMemberCard(): Promise<MemberCard> {
   return handleResponse<MemberCard>(response)
 }
 
+export async function verifyMemberCode(memberNumber: string, code: string): Promise<MembershipVerification> {
+  const response = await fetch('/api/membership/verify-code', {
+    method: 'POST',
+    headers: {
+      ...authHeaders(),
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'Cache-Control': 'no-store',
+    },
+    cache: 'no-store',
+    body: JSON.stringify({ memberNumber, code }),
+  })
+  return handleResponse<MembershipVerification>(response)
+}
+
 export async function verifyMembership(token: string): Promise<MembershipVerification> {
   const response = await fetch('/api/membership/verify', {
     method: 'POST',
     headers: {
+      ...authHeaders(),
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'Cache-Control': 'no-store',

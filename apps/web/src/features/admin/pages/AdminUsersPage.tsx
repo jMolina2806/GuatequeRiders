@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import UserTable from '../components/UserTable'
 import RoleChangeConfirm from '../components/RoleChangeConfirm'
 import { useAdminUsers } from '../hooks/useAdminUsers'
 import { useAuth } from '@/features/auth/context/useAuth'
-import type { User } from '@/features/auth/types/auth.types'
+import type { User, UserRole } from '@/features/auth/types/auth.types'
 import './AdminUsersPage.css'
 
 export default function AdminUsersPage() {
@@ -13,34 +13,60 @@ export default function AdminUsersPage() {
     isLoading,
     error,
     roleUpdatingId,
+    membershipUpdatingId,
     feedback,
     retry,
     changeRole,
+    changeMembership,
     clearFeedback,
   } = useAdminUsers()
   const { user, refreshUser, logout } = useAuth()
   const navigate = useNavigate()
   const [pendingUser, setPendingUser] = useState<User | null>(null)
+  const [pendingRole, setPendingRole] = useState<UserRole | null>(null)
 
-  const handleToggleRole = (target: User) => {
+  const handleToggleMembership = async (target: User) => {
     clearFeedback()
-    setPendingUser(target)
-  }
+    const prompt = target.memberActive
+      ? `¿Has comprobado que ${target.username} ha salido del grupo de WhatsApp y quieres quitarle el estado de socio?`
+      : `¿Has comprobado que ${target.username} pertenece al grupo de WhatsApp? Confirma para activar su carnet de socio.`
+    if (!window.confirm(prompt)) return
 
-  const handleConfirmRoleChange = async () => {
-    if (!pendingUser) return
-    const targetRole = pendingUser.role === 'ADMIN' ? 'USER' : 'ADMIN'
     try {
-      const updated = await changeRole(pendingUser.id, targetRole)
-      setPendingUser(null)
+      const updated = await changeMembership(target.id, !target.memberActive)
       if (updated.id === user?.id) {
         try {
           await refreshUser()
         } catch {
           logout()
         }
-        if (updated.role === 'USER') {
-          navigate('/')
+      }
+    } catch {
+      return
+    }
+  }
+
+  const handleChangeRole = (target: User, role: UserRole) => {
+    clearFeedback()
+    setPendingUser(target)
+    setPendingRole(role)
+  }
+
+  const handleConfirmRoleChange = async () => {
+    if (!pendingUser || !pendingRole) return
+    const targetRole = pendingRole
+    try {
+      const updated = await changeRole(pendingUser.id, targetRole)
+      setPendingUser(null)
+      setPendingRole(null)
+      if (updated.id === user?.id) {
+        try {
+          await refreshUser()
+        } catch {
+          logout()
+        }
+        if (updated.role !== 'ADMIN') {
+          navigate(updated.role === 'COLLABORATOR' ? '/verify-member' : '/')
         }
       }
     } catch {
@@ -51,13 +77,15 @@ export default function AdminUsersPage() {
   const handleCancelRoleChange = () => {
     if (roleUpdatingId !== null) return
     setPendingUser(null)
+    setPendingRole(null)
   }
 
   return (
     <section className="admin-users">
       <header className="admin-users__header">
         <h1>Usuarios</h1>
-        <p>Gestiona las cuentas y los roles de acceso. Las membresías se administran desde la sección Socios.</p>
+        <p>Verifica WhatsApp antes de activar el carnet de socio. Para dar acceso a una tienda, comprueba que la cuenta pertenece a ese negocio y pulsa «Hacer colaborador»: solo podrá verificar carnets.</p>
+        <Link to="/admin/members" className="btn btn--ghost btn--sm">Abrir pendientes y socios activos</Link>
       </header>
 
       {feedback && (
@@ -99,12 +127,15 @@ export default function AdminUsersPage() {
         <UserTable
           users={users}
           roleUpdatingId={roleUpdatingId}
-          onToggleRole={handleToggleRole}
+          membershipUpdatingId={membershipUpdatingId}
+          onChangeRole={handleChangeRole}
+          onToggleMembership={handleToggleMembership}
         />
       )}
 
       <RoleChangeConfirm
         user={pendingUser}
+        targetRole={pendingRole}
         isUpdating={roleUpdatingId !== null}
         onConfirm={handleConfirmRoleChange}
         onCancel={handleCancelRoleChange}

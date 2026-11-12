@@ -1,4 +1,4 @@
-import type { User } from '@/features/auth/types/auth.types'
+import type { User, UserRole } from '@/features/auth/types/auth.types'
 import { getToken } from '@/features/auth/services/session'
 import { translateApiMessage } from '@/utils/apiMessages'
 import type { AdminStats, UpdateRoleRequest } from '../types/admin.types'
@@ -30,12 +30,30 @@ export async function getUsers(): Promise<User[]> {
   return handleResponse<User[]>(response)
 }
 
-export async function updateUserRole(userId: number, role: 'USER' | 'ADMIN'): Promise<User> {
+export async function updateUserRole(userId: number, role: UserRole): Promise<User> {
   const request: UpdateRoleRequest = { role }
   const response = await fetch(`${API_BASE}/users/${userId}/role`, {
     method: 'PATCH',
     headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(request),
+  })
+  return handleResponse<User>(response)
+}
+
+export async function updateFounder(userId: number, founder: boolean): Promise<User> {
+  const response = await fetch(`${API_BASE}/users/${userId}/founder`, {
+    method: 'PATCH',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ founder }),
+  })
+  return handleResponse<User>(response)
+}
+
+export async function updateMemberNumber(userId: number, memberNumber: string): Promise<User> {
+  const response = await fetch(`${API_BASE}/users/${userId}/member-number`, {
+    method: 'PATCH',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ memberNumber }),
   })
   return handleResponse<User>(response)
 }

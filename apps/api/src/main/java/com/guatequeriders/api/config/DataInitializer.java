@@ -18,6 +18,7 @@ import com.guatequeriders.api.routes.repository.RouteRepository;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
+import com.guatequeriders.api.admin.service.MemberNumberService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
@@ -39,6 +40,7 @@ import java.time.LocalTime;
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final MemberNumberService memberNumberService;
     private final RouteRepository routeRepository;
     private final RouteOrganizerRepository routeOrganizerRepository;
     private final RouteRegistrationRepository registrationRepository;
@@ -48,6 +50,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserRepository userRepository,
+                           MemberNumberService memberNumberService,
                            RouteRepository routeRepository,
                            RouteOrganizerRepository routeOrganizerRepository,
                            RouteRegistrationRepository registrationRepository,
@@ -56,6 +59,7 @@ public class DataInitializer implements CommandLineRunner {
                            MerchCampaignRepository merchCampaignRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.memberNumberService = memberNumberService;
         this.routeRepository = routeRepository;
         this.routeOrganizerRepository = routeOrganizerRepository;
         this.registrationRepository = registrationRepository;
@@ -82,7 +86,10 @@ public class DataInitializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole(Role.ADMIN);
             admin.setCreatedAt(LocalDateTime.now());
+            admin.setMembershipActive(true);
+            admin.setMembershipVersion(1);
             userRepository.save(admin);
+            admin.setMemberNumber(memberNumberService.forRegistrationOrder(admin));
         }
 
         if (!userRepository.existsByUsername("demo")) {

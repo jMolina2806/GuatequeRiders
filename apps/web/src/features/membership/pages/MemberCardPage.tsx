@@ -106,7 +106,7 @@ export default function MemberCardPage() {
         </div>
 
         <p className="member-card__security">
-          El código y el contador cambian automáticamente. Muestra siempre el carnet abierto desde la web.
+          Muestra siempre el carnet abierto desde la web para aplicar tus descuentos.
         </p>
       </article>
     </section>

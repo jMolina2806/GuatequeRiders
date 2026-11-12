@@ -1,4 +1,4 @@
-export type UserRole = 'USER' | 'ADMIN'
+export type UserRole = 'USER' | 'ADMIN' | 'COLLABORATOR'
 
 export type User = {
   id: number
@@ -9,6 +9,7 @@ export type User = {
   createdAt: string
   memberActive: boolean
   memberNumber: string | null
+  founder: boolean
 }
 
 export type LoginRequest = {

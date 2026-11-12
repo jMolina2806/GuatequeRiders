@@ -42,6 +42,13 @@ export default function ProfilePage() {
     <section className="profile-page">
       <ProfileHeader user={user} />
 
+      {!isMember && (
+        <div className="profile-page__membership-pending">
+          <strong>Miembro registrado</strong>
+          <p>Tu cuenta está creada. El carnet de socio y los descuentos se activarán cuando un administrador confirme que formas parte del grupo de WhatsApp de GuatequeRiders.</p>
+        </div>
+      )}
+
       {isMember && (
         <div className="profile-page__member-card">
           <div>

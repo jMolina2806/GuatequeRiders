@@ -82,9 +82,11 @@ public class SecurityConfig {
                                 "/api/routes/{routeId}/photos/{photoId}/file",
                                 "/api/routes/{routeId}/photos/{photoId}/download").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/merch/campaign/current").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/membership/verify").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/membership/verify", "/api/membership/verify-code")
+                        .hasAnyRole("ADMIN", "COLLABORATOR")
                         .requestMatchers("/api/health").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                        .anyRequest().hasAnyRole("USER", "ADMIN")
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(restAuthenticationEntryPoint())

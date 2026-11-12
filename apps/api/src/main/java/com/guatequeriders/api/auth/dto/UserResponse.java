@@ -13,7 +13,8 @@ public record UserResponse(
         Role role,
         LocalDateTime createdAt,
         boolean memberActive,
-        String memberNumber
+        String memberNumber,
+        boolean founder
 ) {
     public static UserResponse from(User user) {
         boolean active = user.isMembershipActive() && user.getMemberNumber() != null;
@@ -26,7 +27,8 @@ public record UserResponse(
                 user.getRole(),
                 user.getCreatedAt(),
                 active,
-                user.getMemberNumber()
+                user.getMemberNumber(),
+                user.isFounder()
         );
     }
 }

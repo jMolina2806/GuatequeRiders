@@ -3,6 +3,7 @@ package com.guatequeriders.api.membership.controller;
 import com.guatequeriders.api.membership.dto.MemberCardResponse;
 import com.guatequeriders.api.membership.dto.MembershipVerificationResponse;
 import com.guatequeriders.api.membership.dto.VerifyMembershipRequest;
+import com.guatequeriders.api.membership.dto.VerifyMemberCodeRequest;
 import com.guatequeriders.api.membership.service.MembershipService;
 import com.guatequeriders.api.users.model.User;
 import jakarta.validation.Valid;
@@ -30,6 +31,15 @@ public class MembershipController {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
                 .body(membershipService.getCard(user));
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<MembershipVerificationResponse> verifyCode(
+            @Valid @RequestBody VerifyMemberCodeRequest request
+    ) {
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(membershipService.verifyCode(request.memberNumber(), request.code()));
     }
 
     @PostMapping("/verify")

@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByMemberNumber(String memberNumber);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
@@ -22,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByPhone(String phone);
 
     boolean existsByMemberNumber(String memberNumber);
+
+    boolean existsByMemberNumberAndIdNot(String memberNumber, Long id);
 
     List<User> findAllByOrderByIdAsc();
 

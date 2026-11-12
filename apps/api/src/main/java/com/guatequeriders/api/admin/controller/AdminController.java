@@ -2,6 +2,8 @@ package com.guatequeriders.api.admin.controller;
 
 import com.guatequeriders.api.admin.dto.AdminStatsResponse;
 import com.guatequeriders.api.admin.dto.UpdateMembershipRequest;
+import com.guatequeriders.api.admin.dto.UpdateMemberNumberRequest;
+import com.guatequeriders.api.admin.dto.UpdateFounderRequest;
 import com.guatequeriders.api.admin.dto.UpdateRoleRequest;
 import com.guatequeriders.api.admin.service.AdminService;
 import com.guatequeriders.api.auth.dto.UserResponse;
@@ -51,5 +53,19 @@ public class AdminController {
     public ResponseEntity<UserResponse> updateMembership(@PathVariable Long id,
                                                          @Valid @RequestBody UpdateMembershipRequest request) {
         return ResponseEntity.ok(adminService.updateMembership(id, request.active()));
+    }
+
+    @PatchMapping("/users/{id}/founder")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateFounder(@PathVariable Long id,
+                                                     @Valid @RequestBody UpdateFounderRequest request) {
+        return ResponseEntity.ok(adminService.updateFounder(id, request.founder()));
+    }
+
+    @PatchMapping("/users/{id}/member-number")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateMemberNumber(@PathVariable Long id,
+                                                           @Valid @RequestBody UpdateMemberNumberRequest request) {
+        return ResponseEntity.ok(adminService.updateMemberNumber(id, request.memberNumber()));
     }
 }

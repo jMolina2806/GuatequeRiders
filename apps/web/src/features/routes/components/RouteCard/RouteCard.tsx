@@ -96,10 +96,10 @@ export default function RouteCard({
   return (
     <article className="route-card" onClick={handleDetails}>
       <div className="route-card__visual" aria-hidden="true">
-        <span className="route-card__visual-label">ROUTE / TRACK</span>
+        <span className="route-card__visual-label">GUATEQUE / RUTA</span>
         <strong>{String(route.id).padStart(2, '0')}</strong>
         <span className="route-card__visual-line" />
-        <span className="route-card__visual-signal">LIVE DATA</span>
+        <span className="route-card__visual-signal">{route.distanceKm} KM</span>
       </div>
       <div className="route-card__body">
         <div className="route-card__top">

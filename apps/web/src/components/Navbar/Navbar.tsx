@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '@/features/auth/context/useAuth'
 import CartDrawer from '@/features/merch/components/CartDrawer'
 import { useCart } from '@/features/merch/context/useCart'
+import { useMerch } from '@/features/merch/context/useMerch'
 import { getCommunityLinks } from '@/features/community/services/community.service'
 import './Navbar.css'
 
@@ -10,7 +11,9 @@ const INSTAGRAM_URL = 'https://www.instagram.com/guateque_riders/'
 
 export default function Navbar() {
   const { user, isAuthenticated, isLoading, isAdmin, isMember, logout } = useAuth()
+  const canVerify = isAdmin || user?.role === 'COLLABORATOR'
   const { totalUnits } = useCart()
+  const { isOpen: merchIsOpen } = useMerch()
   const { key: locationKey } = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -68,7 +71,9 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="navbar__logo">Guateque Riders</div>
+      <NavLink to="/" end className="navbar__logo" onClick={closeMenu} aria-label="Guateque Riders, ir a inicio">
+        Guateque <span>Riders</span>
+      </NavLink>
 
       <button
         className="navbar__toggle"
@@ -100,9 +105,11 @@ export default function Navbar() {
           <NavLink to="/collaborators" onClick={closeMenu}>
             Colaboradores
           </NavLink>
-          <NavLink to="/merch" onClick={closeMenu}>
-            Merch
-          </NavLink>
+          {merchIsOpen && (
+            <NavLink to="/merch" onClick={closeMenu}>
+              Merch
+            </NavLink>
+          )}
         </nav>
 
         <div className="navbar__actions">
@@ -136,17 +143,19 @@ export default function Navbar() {
               </svg>
             </a>
           </div>
-          <button
-            className="navbar__cart"
-            type="button"
-            onClick={openCart}
-            aria-expanded={cartIsOpen}
-            aria-controls="cart-drawer"
-            aria-label={`Abrir carrito${totalUnits ? `, ${totalUnits} unidades` : ''}`}
-          >
-            <span aria-hidden="true">🛒</span>
-            {totalUnits > 0 && <span className="navbar__cart-badge">{totalUnits}</span>}
-          </button>
+          {merchIsOpen && (
+            <button
+              className="navbar__cart"
+              type="button"
+              onClick={openCart}
+              aria-expanded={cartIsOpen}
+              aria-controls="cart-drawer"
+              aria-label={`Abrir carrito${totalUnits ? `, ${totalUnits} unidades` : ''}`}
+            >
+              <span aria-hidden="true">🛒</span>
+              {totalUnits > 0 && <span className="navbar__cart-badge">{totalUnits}</span>}
+            </button>
+          )}
           {!isLoading &&
             (isAuthenticated ? (
               <>
@@ -155,10 +164,17 @@ export default function Navbar() {
                     Carnet
                   </NavLink>
                 )}
-                <NavLink className="navbar__user" to="/profile" onClick={closeMenu}>
-                  <span className="navbar__user-label">Perfil</span>
-                  <span className="navbar__username">{user?.username}</span>
-                </NavLink>
+                {canVerify && (
+                  <NavLink className="navbar__admin" to="/verify-member" onClick={closeMenu}>
+                    Verificar carnets
+                  </NavLink>
+                )}
+                {user?.role !== 'COLLABORATOR' && (
+                  <NavLink className="navbar__user" to="/profile" onClick={closeMenu}>
+                    <span className="navbar__user-label">Perfil</span>
+                    <span className="navbar__username">{user?.username}</span>
+                  </NavLink>
+                )}
                 {isAdmin && (
                   <NavLink className="navbar__admin" to="/admin" onClick={closeMenu}>
                     Admin
@@ -182,7 +198,7 @@ export default function Navbar() {
             ))}
         </div>
       </div>
-      <CartDrawer isOpen={cartIsOpen} onClose={closeCart} />
+      {merchIsOpen && <CartDrawer isOpen={cartIsOpen} onClose={closeCart} />}
     </header>
   )
 }
