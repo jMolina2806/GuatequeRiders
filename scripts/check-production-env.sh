@@ -98,5 +98,5 @@ fi
 echo "Preflight de producción correcto."
 echo "Dominio: $APP_DOMAIN"
 echo "Responsable legal configurado."
- echo "Creación de campañas preparada: ${MERCH_NEW_CAMPAIGNS_ENABLED:-true}."
+echo "Creación de campañas preparada: ${MERCH_NEW_CAMPAIGNS_ENABLED:-true}."
 echo "Stripe activo: ${STRIPE_ENABLED:-false}."
