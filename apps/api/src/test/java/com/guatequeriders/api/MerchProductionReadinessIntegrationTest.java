@@ -30,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.jpa.hibernate.ddl-auto=create-drop",
         "spring.flyway.enabled=false",
         "app.environment=production",
+        "app.allowed-origins=https://guatequeriders.example",
+        "app.public-url=https://guatequeriders.example",
         "app.merch.new-campaigns-enabled=true",
         "stripe.enabled=false"
 })
