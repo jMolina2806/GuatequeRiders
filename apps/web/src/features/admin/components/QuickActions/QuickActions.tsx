@@ -11,7 +11,7 @@ const ACTIONS: QuickAction[] = [
   { to: '/routes', label: 'Gestionar rutas', description: 'Crear y editar rutas del club' },
   { to: '/events', label: 'Gestionar eventos', description: 'Crear y editar eventos del club' },
   { to: '/admin/users', label: 'Gestionar usuarios', description: 'Cambiar los roles de los usuarios' },
-  { to: '/admin/members', label: 'Gestionar socios', description: 'Activar, renovar o desactivar membresías' },
+  { to: '/admin/members', label: 'Gestionar socios', description: 'Revisar pendientes del grupo general y administrar carnets activos' },
   { to: '/admin/orders', label: 'Gestionar campañas Merch', description: 'Abrir, cerrar y consultar campañas' },
 ]
 

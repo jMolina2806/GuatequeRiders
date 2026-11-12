@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import UserTable from '../components/UserTable'
 import RoleChangeConfirm from '../components/RoleChangeConfirm'
 import { useAdminUsers } from '../hooks/useAdminUsers'
@@ -85,6 +85,7 @@ export default function AdminUsersPage() {
       <header className="admin-users__header">
         <h1>Usuarios</h1>
         <p>Verifica WhatsApp antes de activar el carnet de socio. Para dar acceso a una tienda, comprueba que la cuenta pertenece a ese negocio y pulsa «Hacer colaborador»: solo podrá verificar carnets.</p>
+        <Link to="/admin/members" className="btn btn--ghost btn--sm">Abrir pendientes y socios activos</Link>
       </header>
 
       {feedback && (

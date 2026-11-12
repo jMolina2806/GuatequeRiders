@@ -96,3 +96,202 @@
   font-weight: 700;
   white-space: nowrap;
 }
+
+.admin-members__guidance {
+  margin: 18px 0 22px;
+  padding: 18px 20px;
+  border: 1px solid rgba(0, 240, 255, 0.24);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(125deg, rgba(0, 240, 255, 0.055), rgba(255, 0, 229, 0.025));
+}
+
+.admin-members__guidance strong {
+  color: var(--color-primary);
+  font-size: 14px;
+}
+
+.admin-members__guidance p {
+  margin: 8px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.admin-members__toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0 22px;
+}
+
+.admin-members__tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-members__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-members__tab:hover {
+  border-color: var(--color-border-light);
+  color: var(--color-text);
+}
+
+.admin-members__tab--selected {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(0, 240, 255, 0.07);
+}
+
+.admin-members__tab span {
+  padding: 3px 9px;
+  background: var(--color-surface-strong);
+  border-radius: 999px;
+  color: var(--color-text);
+  font-size: 12px;
+}
+
+.admin-members__tab:focus-visible,
+.admin-members__filters button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.admin-members__filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.admin-members__search {
+  width: min(100%, 440px);
+}
+
+.admin-members__search input {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-members__search input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.admin-members__visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.admin-members__section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-members__section-heading h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.admin-members__section-heading p {
+  margin: 0;
+  max-width: 720px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.admin-members__results {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.admin-members__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.admin-members__status--active {
+  border-color: rgba(0, 255, 136, 0.32);
+  color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+.admin-members__locked {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+@media (max-width: 640px) {
+  .admin-members__tabs {
+    align-items: stretch;
+  }
+
+  .admin-members__tab {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .admin-members__filters,
+  .admin-members__section-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-members__search {
+    width: 100%;
+  }
+
+  .admin-members .user-table {
+    min-width: 0;
+  }
+
+  .admin-members .user-table__actions {
+    justify-content: flex-end;
+  }
+
+  .admin-members__number-editor {
+    min-width: 0;
+    justify-content: flex-end;
+  }
+}
