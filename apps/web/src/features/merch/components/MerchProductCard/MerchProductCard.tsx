@@ -43,7 +43,11 @@ export default function MerchProductCard({ product, isOpen }: MerchProductCardPr
         <span className="merch-product-card__category">Guateque Riders / Oficial</span>
         <h2 className="merch-product-card__title">{product.name}</h2>
         <p className="merch-product-card__description">{product.description}</p>
-        <strong className="merch-product-card__price">{euro.format(product.price)}</strong>
+        {!isOpen ? (
+          <span className="merch-product-card__status">Colección de archivo · No disponible</span>
+        ) : (
+          <>
+            <strong className="merch-product-card__price">{euro.format(product.price)}</strong>
 
         <fieldset className="merch-product-card__sizes">
           <legend>Talla</legend>
@@ -107,10 +111,12 @@ export default function MerchProductCard({ product, isOpen }: MerchProductCardPr
             {isOpen ? 'Añadir al carrito' : 'Compras temporalmente cerradas'}
           </button>
         </div>
-        {feedback && (
-          <p className={`merch-product-card__feedback ${feedback.startsWith('Añadido') ? 'is-success' : ''}`} role="status">
-            {feedback}
-          </p>
+            {feedback && (
+              <p className={`merch-product-card__feedback ${feedback.startsWith('Añadido') ? 'is-success' : ''}`} role="status">
+                {feedback}
+              </p>
+            )}
+          </>
         )}
       </div>
     </article>

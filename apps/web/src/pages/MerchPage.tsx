@@ -17,14 +17,14 @@ export default function MerchPage() {
   const { campaign, isLoading, error } = useMerch()
 
   const status = campaign?.status
-  const statusLabel = isLoading ? 'COMPROBANDO...' : status ? statusLabels[status] : 'SIN CAMPAÑA ACTIVA'
+  const statusLabel = isLoading ? 'COMPROBANDO...' : status ? statusLabels[status] : 'SIN VENTAS ACTIVAS'
 
   return (
     <section className="merch-page">
       <header className="merch-page__header">
         <div className="merch-page__eyebrow">
           <span>Guateque Riders</span>
-          <span>Drop 01 / Archivo</span>
+          <span>Catálogo / Archivo</span>
         </div>
 
         <div className="merch-page__title-row">
@@ -35,11 +35,11 @@ export default function MerchPage() {
         </div>
 
         <p className="merch-page__subtitle">
-          Archivo de la primera campaña de merchandising de Guateque Riders.
+          Conoce los diseños de merchandising de Guateque Riders, expuestos como catálogo de referencia.
         </p>
 
         <p className="merch-page__closed-message">
-          La campaña ha finalizado y actualmente no se aceptan nuevos pedidos ni pagos.
+          No hay ventas disponibles. Los productos se muestran únicamente como referencia y no se admiten pedidos, reservas ni pagos.
         </p>
 
         {campaign && (
@@ -51,8 +51,8 @@ export default function MerchPage() {
         {error && <p className="merch-page__error" role="alert">{error}</p>}
 
         <div className="merch-page__highlights" aria-label="Información de la colección">
-          <span>Campaña finalizada</span>
-          <span>Catálogo histórico</span>
+          <span>Diseños de Guateque Riders</span>
+          <span>Catálogo informativo</span>
           <span>Sin venta activa</span>
         </div>
 
@@ -71,9 +71,9 @@ export default function MerchPage() {
 
       <footer className="merch-page__footer">
         <div>
-          <span className="merch-page__footer-label">Campaña finalizada</span>
+          <span className="merch-page__footer-label">Catálogo de referencia</span>
           <p>
-            Los productos se muestran únicamente como referencia de la campaña ya realizada.
+            Estas prendas se muestran para conocer la colección. No existe una campaña de venta abierta.
           </p>
         </div>
 
