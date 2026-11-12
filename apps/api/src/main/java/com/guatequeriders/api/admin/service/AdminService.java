@@ -19,30 +19,29 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Locale;
 
 @Service
 public class AdminService {
 
-    private static final char[] MEMBER_NUMBER_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".toCharArray();
-
     private final UserRepository userRepository;
+    private final MemberNumberService memberNumberService;
     private final RouteRepository routeRepository;
     private final RouteOrganizerRepository routeOrganizerRepository;
     private final EventRepository eventRepository;
     private final RouteRegistrationRepository routeRegistrationRepository;
     private final EventRegistrationRepository eventRegistrationRepository;
-    private final SecureRandom secureRandom = new SecureRandom();
 
     public AdminService(UserRepository userRepository,
+                        MemberNumberService memberNumberService,
                         RouteRepository routeRepository,
                         RouteOrganizerRepository routeOrganizerRepository,
                         EventRepository eventRepository,
                         RouteRegistrationRepository routeRegistrationRepository,
                         EventRegistrationRepository eventRegistrationRepository) {
         this.userRepository = userRepository;
+        this.memberNumberService = memberNumberService;
         this.routeRepository = routeRepository;
         this.routeOrganizerRepository = routeOrganizerRepository;
         this.eventRepository = eventRepository;
@@ -95,7 +94,7 @@ public class AdminService {
 
         if (newRole == Role.ADMIN && (!user.isMembershipActive() || user.getMemberNumber() == null)) {
             if (user.getMemberNumber() == null) {
-                user.setMemberNumber(generateMemberNumber());
+                user.setMemberNumber(memberNumberService.forRegistrationOrder(user));
             }
             user.setMembershipActive(true);
             user.setMembershipVersion(user.getMembershipVersion() + 1);
@@ -119,7 +118,7 @@ public class AdminService {
 
         if (active) {
             if (user.getMemberNumber() == null) {
-                user.setMemberNumber(generateMemberNumber());
+                user.setMemberNumber(memberNumberService.forRegistrationOrder(user));
             }
             user.setMembershipActive(true);
         } else {
@@ -150,13 +149,14 @@ public class AdminService {
             throw new ConflictException("Manual member numbers are reserved for founders");
         }
 
-        String normalized = requestedNumber.trim().toUpperCase(Locale.ROOT);
-        if (normalized.matches("[0-9]{1,12}")) {
-            normalized = "GR-" + normalized;
+        String digits = requestedNumber.trim().toUpperCase(Locale.ROOT);
+        if (digits.startsWith("GR-")) {
+            digits = digits.substring(3);
         }
-        if (!normalized.matches("GR-[A-Z0-9]+(?:-[A-Z0-9]+)*") || normalized.length() > 32) {
+        if (!digits.matches("[0-9]{1,12}")) {
             throw new IllegalArgumentException("Invalid member number format");
         }
+        String normalized = "GR-" + "0".repeat(Math.max(0, 4 - digits.length())) + digits;
         if (normalized.equals(user.getMemberNumber())) {
             return UserResponse.from(user);
         }
@@ -174,17 +174,4 @@ public class AdminService {
         }
     }
 
-    private String generateMemberNumber() {
-        for (int attempt = 0; attempt < 20; attempt++) {
-            StringBuilder value = new StringBuilder("GR-");
-            for (int i = 0; i < 8; i++) {
-                value.append(MEMBER_NUMBER_ALPHABET[secureRandom.nextInt(MEMBER_NUMBER_ALPHABET.length)]);
-            }
-            String candidate = value.toString();
-            if (!userRepository.existsByMemberNumber(candidate)) {
-                return candidate;
-            }
-        }
-        throw new IllegalStateException("Could not generate a unique member number");
-    }
 }

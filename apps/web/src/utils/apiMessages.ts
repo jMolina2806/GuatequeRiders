@@ -42,7 +42,7 @@ const MESSAGES: Record<string, string> = {
   'Cannot remove the last admin': 'No puedes quitar el último administrador',
   'Administrators must remain active members': 'Los administradores mantienen su carnet de socio',
   'Member number already in use': 'Ese número de socio ya está asignado',
-  'Invalid member number format': 'Usa un número como GR-0001 (o escribe 0001)',
+  'Invalid member number format': 'El número de socio solo puede contener cifras, por ejemplo GR-0001',
   'Manual member numbers are reserved for founders': 'Solo se puede elegir un número manualmente para los fundadores',
   'Cannot change role: user is organizer of one or more routes':
     'No se puede cambiar el rol: el usuario es organizador de una o más rutas',

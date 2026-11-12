@@ -254,6 +254,62 @@ class MembershipAdministrationIntegrationTest {
     }
 
     @Test
+    void earlierRegisteredUsersReceiveLowerNumericNumbersEvenIfApprovedLater() throws Exception {
+        User earlier = createUser("earlier");
+        User later = createUser("later");
+        String token = login("admin", "admin123");
+
+        mockMvc.perform(patch("/api/admin/users/{id}/membership", later.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("active", true))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberNumber").value(String.format("GR-%04d", later.getId())));
+
+        markFounder(token, earlier.getId(), true);
+
+        mockMvc.perform(patch("/api/admin/users/{id}/membership", earlier.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("active", true))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberNumber").value(String.format("GR-%04d", earlier.getId())));
+
+        assertThat(userRepository.findById(earlier.getId()).orElseThrow().getMemberNumber())
+                .matches("GR-[0-9]{4,}");
+        assertThat(userRepository.findById(later.getId()).orElseThrow().getMemberNumber())
+                .matches("GR-[0-9]{4,}");
+    }
+
+    @Test
+    void foundersCanOverrideAutomaticNumberOnlyWithDigits() throws Exception {
+        User founder = createUser("numeric-founder");
+        String token = login("admin", "admin123");
+
+        markFounder(token, founder.getId(), true);
+
+        mockMvc.perform(patch("/api/admin/users/{id}/membership", founder.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("active", true))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberNumber").value(String.format("GR-%04d", founder.getId())));
+
+        mockMvc.perform(patch("/api/admin/users/{id}/member-number", founder.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("memberNumber", "GR-FOUNDERS"))))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(patch("/api/admin/users/{id}/member-number", founder.getId())
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("memberNumber", "000987654"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberNumber").value("GR-000987654"));
+    }
+
+    @Test
     void removingFounderStatusPreventsFutureManualNumberChanges() throws Exception {
         User person = createUser("founder-remove");
         String token = login("admin", "admin123");
@@ -309,7 +365,7 @@ class MembershipAdministrationIntegrationTest {
                         .content(objectMapper.writeValueAsString(Map.of("role", "ADMIN"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberActive").value(true))
-                .andExpect(jsonPath("$.memberNumber").isNotEmpty());
+                .andExpect(jsonPath("$.memberNumber").value(String.format("GR-%04d", person.getId())));
 
         String promotedToken = login(person.getUsername(), "test12345");
         mockMvc.perform(get("/api/membership/me/card")
