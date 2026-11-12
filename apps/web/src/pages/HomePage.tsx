@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import logoSrc from '@/assets/branding/logo-neon.jpeg'
+import heroSrc from '@/assets/hero.png'
+import { useAuth } from '@/features/auth/context/useAuth'
 import StatusBadge from '@/components/StatusBadge'
 import { useCollaborators } from '@/features/collaborators/hooks/useCollaborators'
 import {
@@ -44,6 +46,7 @@ const today = () => new Date().toISOString().slice(0, 10)
 
 export default function HomePage() {
   const { isOpen: merchIsOpen } = useMerch()
+  const { isAdmin, isMember } = useAuth()
   const [routes, setRoutes] = useState<Route[]>([])
   const [events, setEvents] = useState<Event[]>([])
   const [contentLoading, setContentLoading] = useState(true)
@@ -127,11 +130,11 @@ export default function HomePage() {
     <div className="home-dashboard">
       <section className="home-hero">
         <div className="home-hero__content">
-          <span className="home-eyebrow">Guateque Riders / Madrid / 2026</span>
-          <h1>Rueda con tu gente.</h1>
+          <span className="home-eyebrow">Guateque Riders · Madrid · {new Date().getFullYear()}</span>
+          <h1>La carretera nos une.<span>Lo demás es Guateque.</span></h1>
           <p>
-            Comunidad rider para compartir carretera, eventos y todo lo que ocurre cuando el motor
-            se apaga.
+            Rutas, quedadas y kilómetros compartidos con quienes viven las motos como tú.
+            Tu próxima salida empieza aquí.
           </p>
           <div className="home-hero__actions">
             <Link to="/routes" className="btn btn--primary">
@@ -150,9 +153,10 @@ export default function HomePage() {
         </div>
 
         <div className="home-hero__visual" aria-hidden="true">
-          <span className="home-hero__visual-code">GR / 01</span>
-          <img src={logoSrc} alt="" />
-          <span className="home-hero__visual-label">Ride together</span>
+          <span className="home-hero__visual-code">GUATEQUE / RIDERS</span>
+          <img className="home-hero__photo" src={heroSrc} alt="" />
+          <img className="home-hero__brand" src={logoSrc} alt="" />
+          <span className="home-hero__visual-label">RIDE · MEET · REPEAT</span>
           <div className="home-hero__visual-ring" />
         </div>
       </section>
@@ -184,8 +188,8 @@ export default function HomePage() {
           <span>actividades de circuito</span>
         </div>
         <div>
-          <strong>{String(merchProducts.length).padStart(2, '0')}</strong>
-          <span>piezas de colección</span>
+          <strong>{String(collaborators.filter((collaborator) => collaborator.active).length).padStart(2, '0')}</strong>
+          <span>colaboradores activos</span>
         </div>
       </section>
 
@@ -221,6 +225,9 @@ export default function HomePage() {
                   <span>{route.distanceKm} km</span>
                   <span>{DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}</span>
                 </div>
+                <Link to="/routes" className="home-route-card__view" aria-label={`Ver detalles de la ruta ${route.title}`}>
+                  Descubrir ruta <span aria-hidden="true">↗</span>
+                </Link>
               </article>
             ))}
           </div>
@@ -332,7 +339,7 @@ export default function HomePage() {
                 <div>
                   <span className="home-partner-card__type">{COLLABORATOR_TYPE_LABELS[collaborator.type]}</span>
                   <h3>{collaborator.name}</h3>
-                  <p>{getBenefitLabel(collaborator)}</p>
+                  <p>{isAdmin || isMember ? getBenefitLabel(collaborator) : "Ventajas reservadas para socios activos"}</p>
                 </div>
               </article>
             ))}
@@ -342,6 +349,7 @@ export default function HomePage() {
         )}
       </section>
 
+      {merchIsOpen && (
       <section className="home-section home-section--merch">
         <div className="home-section__heading">
           <div>
@@ -367,6 +375,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      )}
 
       {homeError && (
         <p className="home-error" role="status">{homeError}</p>
@@ -381,19 +390,6 @@ export default function HomePage() {
         </Link>
       </section>
 
-      <footer className="home-footer">
-        <div>
-          <strong>Guateque Riders</strong>
-          <p>Comunidad rider de Madrid. Rodamos juntos.</p>
-        </div>
-        <div className="home-footer__links">
-          <Link to="/routes">Rutas</Link>
-          <Link to="/events">Eventos</Link>
-          <Link to="/collaborators">Colaboradores</Link>
-          <Link to="/merch">Merch</Link>
-        </div>
-        <small>&copy; {new Date().getFullYear()} Guateque Riders</small>
-      </footer>
     </div>
   )
 }

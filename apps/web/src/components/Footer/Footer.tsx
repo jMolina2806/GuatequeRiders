@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/context/useAuth'
+import { useMerch } from '@/features/merch/context/useMerch'
 import { getCommunityLinks } from '@/features/community/services/community.service'
 import './Footer.css'
 
@@ -8,6 +9,7 @@ const INSTAGRAM_URL = 'https://www.instagram.com/guateque_riders/'
 
 export default function Footer() {
   const { isAuthenticated } = useAuth()
+  const { isOpen: merchIsOpen } = useMerch()
   const [whatsappGroupUrl, setWhatsappGroupUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export default function Footer() {
           <span className="site-footer__heading">Información</span>
           <Link to="/legal">Aviso legal</Link>
           <Link to="/privacy">Privacidad</Link>
-          <Link to="/merch-terms">Condiciones Merch</Link>
+          {merchIsOpen && <Link to="/merch-terms">Condiciones Merch</Link>}
           <Link to="/cookies">Cookies y almacenamiento</Link>
         </div>
       </div>
