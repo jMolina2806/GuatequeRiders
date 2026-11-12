@@ -6,6 +6,7 @@ import com.guatequeriders.api.merch.dto.CampaignCloseResponse;
 import com.guatequeriders.api.merch.dto.CampaignDashboardResponse;
 import com.guatequeriders.api.merch.dto.CampaignHistoryEntryResponse;
 import com.guatequeriders.api.merch.dto.CampaignStatsResponse;
+import com.guatequeriders.api.merch.dto.CampaignOpeningReadinessResponse;
 import com.guatequeriders.api.merch.dto.MerchCampaignResponse;
 import com.guatequeriders.api.merch.model.CampaignStatus;
 import com.guatequeriders.api.merch.model.MerchCampaign;
@@ -23,6 +24,7 @@ import com.guatequeriders.api.orders.repository.OrderRepository;
 import com.guatequeriders.api.orders.repository.SupplierOrderBatchRepository;
 import com.guatequeriders.api.notifications.service.NotificationService;
 import com.guatequeriders.api.users.model.User;
+import com.guatequeriders.api.payments.config.StripeProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class MerchCampaignService {
@@ -40,17 +43,23 @@ public class MerchCampaignService {
     private final SupplierOrderBatchRepository batchRepository;
     private final NotificationService notificationService;
     private final boolean newCampaignsEnabled;
+    private final StripeProperties stripeProperties;
+    private final boolean production;
 
     public MerchCampaignService(MerchCampaignRepository campaignRepository,
                                 OrderRepository orderRepository,
                                 SupplierOrderBatchRepository batchRepository,
                                 NotificationService notificationService,
-                                @Value("${app.merch.new-campaigns-enabled:true}") boolean newCampaignsEnabled) {
+                                StripeProperties stripeProperties,
+                                @Value("${app.merch.new-campaigns-enabled:true}") boolean newCampaignsEnabled,
+                                @Value("${app.environment:production}") String applicationEnvironment) {
         this.campaignRepository = campaignRepository;
         this.orderRepository = orderRepository;
         this.batchRepository = batchRepository;
         this.notificationService = notificationService;
         this.newCampaignsEnabled = newCampaignsEnabled;
+        this.stripeProperties = stripeProperties;
+        this.production = "production".equalsIgnoreCase(applicationEnvironment);
     }
 
     @Transactional(readOnly = true)
@@ -66,10 +75,28 @@ public class MerchCampaignService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public CampaignOpeningReadinessResponse openingReadiness() {
+        List<String> blockers = new ArrayList<>();
+        if (!newCampaignsEnabled) {
+            blockers.add("La apertura de campañas está deshabilitada en la configuración del servidor.");
+        }
+        if (production && (!stripeProperties.isEnabled() || !stripeProperties.isLiveMode())) {
+            blockers.add("Los cobros de Stripe en modo real deben estar configurados antes de abrir ventas.");
+        }
+        if (campaignRepository.existsByStatus(CampaignStatus.OPEN)) {
+            blockers.add("Ya hay una campaña Merch abierta.");
+        }
+        return new CampaignOpeningReadinessResponse(blockers.isEmpty(), blockers);
+    }
+
     @Transactional
     public MerchCampaign openCampaign(User openedBy) {
         if (!newCampaignsEnabled) {
             throw new ConflictException("New Merch campaigns are disabled");
+        }
+        if (production && (!stripeProperties.isEnabled() || !stripeProperties.isLiveMode())) {
+            throw new ConflictException("Real Stripe payments must be configured before opening a Merch campaign");
         }
         if (campaignRepository.findByStatusForUpdate(CampaignStatus.OPEN).isPresent()) {
             throw new ConflictException("There is already an open Merch campaign");

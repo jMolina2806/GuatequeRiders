@@ -17,6 +17,8 @@ public interface MerchCampaignRepository extends JpaRepository<MerchCampaign, Lo
 
     List<MerchCampaign> findAllByOrderByIdDesc();
 
+    boolean existsByStatus(CampaignStatus status);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select campaign from MerchCampaign campaign where campaign.id = :id")
     Optional<MerchCampaign> findByIdForUpdate(@Param("id") Long id);
