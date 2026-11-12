@@ -105,11 +105,9 @@ export default function Navbar() {
           <NavLink to="/collaborators" onClick={closeMenu}>
             Colaboradores
           </NavLink>
-          {merchIsOpen && (
-            <NavLink to="/merch" onClick={closeMenu}>
-              Merch
-            </NavLink>
-          )}
+          <NavLink to="/merch" onClick={closeMenu}>
+            Merch
+          </NavLink>
         </nav>
 
         <div className="navbar__actions">

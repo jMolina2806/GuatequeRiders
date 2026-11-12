@@ -23,8 +23,9 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>
 }
 
-export async function getCurrentCampaign(): Promise<Campaign> {
+export async function getCurrentCampaign(): Promise<Campaign | null> {
   const response = await fetch('/api/merch/campaign/current')
+  if (response.status === 404) return null
   return handleResponse<Campaign>(response)
 }
 

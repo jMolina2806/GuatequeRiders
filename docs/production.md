@@ -165,10 +165,10 @@ Flujo recomendado:
 8. health check
 9. smoke test:
    - registro y login,
-   - creación automática de socio y acceso al carnet,
+   - registro como miembro pendiente, aprobación manual de socio por pertenencia a WhatsApp y acceso al carnet,
    - rutas, eventos y circuitos,
    - perfil, pedidos históricos y preferencias,
-   - Merch visible únicamente como campaña finalizada,
+   - Merch visible como catálogo informativo incluso sin campañas registradas, sin carrito ni posibilidad de comprar,
    - comprobar que no existe compra ni apertura de nueva campaña,
    - Aviso legal, Privacidad y Cookies sin textos [PENDIENTE],
    - logout y eliminación de la sesión local.

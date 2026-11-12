@@ -16,7 +16,6 @@ import * as eventsService from '@/features/events/services/events.service'
 import type { Route } from '@/features/routes/types/route.types'
 import * as routesService from '@/features/routes/services/routes.service'
 import { merchProducts } from '@/data/clubData'
-import { useMerch } from '@/features/merch/context/useMerch'
 import './HomePage.css'
 
 const DIFFICULTY_LABELS: Record<string, string> = {
@@ -45,7 +44,6 @@ const formatDate = (date: string) => {
 const today = () => new Date().toISOString().slice(0, 10)
 
 export default function HomePage() {
-  const { isOpen: merchIsOpen } = useMerch()
   const { isAdmin, isMember } = useAuth()
   const [routes, setRoutes] = useState<Route[]>([])
   const [events, setEvents] = useState<Event[]>([])
@@ -349,7 +347,6 @@ export default function HomePage() {
         )}
       </section>
 
-      {merchIsOpen && (
       <section className="home-section home-section--merch">
         <div className="home-section__heading">
           <div>
@@ -368,14 +365,13 @@ export default function HomePage() {
                 <img src={product.image} alt="" />
               </div>
               <div>
-                <span>{merchIsOpen ? 'Merch abierto' : 'Temporalmente cerrado'}</span>
+                <span>Catálogo histórico · Sin ventas</span>
                 <h3>{product.name}</h3>
               </div>
             </article>
           ))}
         </div>
       </section>
-      )}
 
       {homeError && (
         <p className="home-error" role="status">{homeError}</p>
