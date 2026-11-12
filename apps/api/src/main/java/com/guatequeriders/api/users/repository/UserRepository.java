@@ -23,6 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByMemberNumber(String memberNumber);
 
+    boolean existsByMemberNumberAndIdNot(String memberNumber, Long id);
+
     List<User> findAllByOrderByIdAsc();
 
     long countByRole(Role role);

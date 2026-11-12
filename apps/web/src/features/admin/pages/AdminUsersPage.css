@@ -51,3 +51,39 @@
     flex-wrap: wrap;
   }
 }
+
+.admin-members__number-editor {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.admin-members__number-editor input {
+  width: 125px;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  outline: none;
+  color: var(--color-text);
+  background: var(--color-surface);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.admin-members__number-editor input:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-neon-cyan);
+}
+
+.admin-members__number-editor input:disabled {
+  opacity: 0.65;
+}
+
+.admin-members__admin-label {
+  color: var(--color-primary);
+  font-weight: 700;
+}

@@ -82,7 +82,10 @@ public class DataInitializer implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole(Role.ADMIN);
             admin.setCreatedAt(LocalDateTime.now());
+            admin.setMembershipActive(true);
+            admin.setMembershipVersion(1);
             userRepository.save(admin);
+            admin.setMemberNumber("GR-ADM-" + admin.getId());
         }
 
         if (!userRepository.existsByUsername("demo")) {

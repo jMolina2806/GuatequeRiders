@@ -3,6 +3,7 @@ package com.guatequeriders.api.admin.service;
 import com.guatequeriders.api.admin.dto.AdminStatsResponse;
 import com.guatequeriders.api.auth.dto.UserResponse;
 import com.guatequeriders.api.common.exception.ConflictException;
+import com.guatequeriders.api.common.exception.DuplicateResourceException;
 import com.guatequeriders.api.common.exception.ResourceNotFoundException;
 import com.guatequeriders.api.eventregistrations.repository.EventRegistrationRepository;
 import com.guatequeriders.api.events.model.EventStatus;
@@ -14,11 +15,13 @@ import com.guatequeriders.api.routes.repository.RouteRepository;
 import com.guatequeriders.api.users.model.Role;
 import com.guatequeriders.api.users.model.User;
 import com.guatequeriders.api.users.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AdminService {
@@ -82,6 +85,14 @@ public class AdminService {
             }
         }
 
+        if (newRole == Role.ADMIN && (!user.isMembershipActive() || user.getMemberNumber() == null)) {
+            if (user.getMemberNumber() == null) {
+                user.setMemberNumber(generateMemberNumber());
+            }
+            user.setMembershipActive(true);
+            user.setMembershipVersion(user.getMembershipVersion() + 1);
+        }
+
         user.setRole(newRole);
         return UserResponse.from(user);
     }
@@ -90,6 +101,10 @@ public class AdminService {
     public UserResponse updateMembership(Long userId, boolean active) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        if (!active && user.getRole() == Role.ADMIN) {
+            throw new ConflictException("Administrators must remain active members");
+        }
 
         if (active) {
             if (user.getMemberNumber() == null) {
@@ -102,6 +117,35 @@ public class AdminService {
 
         user.setMembershipVersion(user.getMembershipVersion() + 1);
         return UserResponse.from(user);
+    }
+
+    @Transactional
+    public UserResponse updateMemberNumber(Long userId, String requestedNumber) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        String normalized = requestedNumber.trim().toUpperCase(Locale.ROOT);
+        if (normalized.matches("[0-9]{1,12}")) {
+            normalized = "GR-" + normalized;
+        }
+        if (!normalized.matches("GR-[A-Z0-9]+(?:-[A-Z0-9]+)*") || normalized.length() > 32) {
+            throw new IllegalArgumentException("Invalid member number format");
+        }
+        if (normalized.equals(user.getMemberNumber())) {
+            return UserResponse.from(user);
+        }
+        if (userRepository.existsByMemberNumberAndIdNot(normalized, userId)) {
+            throw new DuplicateResourceException("Member number already in use");
+        }
+
+        user.setMemberNumber(normalized);
+        user.setMembershipVersion(user.getMembershipVersion() + 1);
+
+        try {
+            return UserResponse.from(userRepository.saveAndFlush(user));
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateResourceException("Member number already in use");
+        }
     }
 
     private String generateMemberNumber() {

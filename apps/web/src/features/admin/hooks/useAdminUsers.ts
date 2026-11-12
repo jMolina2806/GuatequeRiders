@@ -13,6 +13,7 @@ export function useAdminUsers() {
   const [error, setError] = useState<string | null>(null)
   const [roleUpdatingId, setRoleUpdatingId] = useState<number | null>(null)
   const [membershipUpdatingId, setMembershipUpdatingId] = useState<number | null>(null)
+  const [memberNumberUpdatingId, setMemberNumberUpdatingId] = useState<number | null>(null)
   const [feedback, setFeedback] = useState<AdminFeedback | null>(null)
 
   const fetchUsers = useCallback(async () => {
@@ -76,6 +77,25 @@ export function useAdminUsers() {
     }
   }
 
+  const changeMemberNumber = async (userId: number, memberNumber: string): Promise<User> => {
+    setMemberNumberUpdatingId(userId)
+    setFeedback(null)
+    try {
+      const updated = await adminService.updateMemberNumber(userId, memberNumber)
+      setUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)))
+      setFeedback({ message: 'Número de socio actualizado correctamente', type: 'success' })
+      return updated
+    } catch (err) {
+      setFeedback({
+        message: err instanceof Error ? err.message : 'Error al actualizar el número de socio',
+        type: 'error',
+      })
+      throw err
+    } finally {
+      setMemberNumberUpdatingId(null)
+    }
+  }
+
   const clearFeedback = () => {
     setFeedback(null)
   }
@@ -86,10 +106,12 @@ export function useAdminUsers() {
     error,
     roleUpdatingId,
     membershipUpdatingId,
+    memberNumberUpdatingId,
     feedback,
     retry: fetchUsers,
     changeRole,
     changeMembership,
+    changeMemberNumber,
     clearFeedback,
   }
 }

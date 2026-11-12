@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useAuth } from '@/features/auth/context/useAuth'
 import type { User } from '@/features/auth/types/auth.types'
 import { useAdminUsers } from '../hooks/useAdminUsers'
@@ -10,12 +11,15 @@ export default function AdminMembersPage() {
     isLoading,
     error,
     membershipUpdatingId,
+    memberNumberUpdatingId,
     feedback,
     retry,
     changeMembership,
+    changeMemberNumber,
     clearFeedback,
   } = useAdminUsers()
   const { user, refreshUser, logout } = useAuth()
+  const [draftNumbers, setDraftNumbers] = useState<Record<number, string>>({})
 
   const updateMembership = async (target: User, active: boolean) => {
     clearFeedback()
@@ -25,6 +29,31 @@ export default function AdminMembersPage() {
 
     try {
       const updated = await changeMembership(target.id, active)
+
+      if (updated.id === user?.id) {
+        try {
+          await refreshUser()
+        } catch {
+          logout()
+        }
+      }
+    } catch {
+      return
+    }
+  }
+
+  const saveMemberNumber = async (target: User) => {
+    const requested = (draftNumbers[target.id] ?? target.memberNumber ?? '').trim()
+    if (!requested) return
+    clearFeedback()
+
+    try {
+      const updated = await changeMemberNumber(target.id, requested)
+      setDraftNumbers((current) => {
+        const next = { ...current }
+        delete next[target.id]
+        return next
+      })
 
       if (updated.id === user?.id) {
         try {
@@ -49,7 +78,8 @@ export default function AdminMembersPage() {
         <h1>Socios</h1>
         <p>
           Gestiona quién forma parte del club. El estado de socio no caduca y solo cambia
-          cuando un administrador lo activa o lo desactiva.
+          cuando un administrador lo activa o lo desactiva. El número se puede personalizar
+          y los administradores también tienen carnet de socio.
         </p>
       </header>
 
@@ -99,21 +129,56 @@ export default function AdminMembersPage() {
             <tbody>
               {members.map((member) => {
                 const updating = membershipUpdatingId === member.id
+                const updatingNumber = memberNumberUpdatingId === member.id
+                const numberValue = draftNumbers[member.id] ?? member.memberNumber ?? ''
+                const hasNumberChange = numberValue.trim().toUpperCase() !== (member.memberNumber ?? '')
+                const isAdmin = member.role === 'ADMIN'
 
                 return (
                   <tr key={member.id}>
                     <td className="user-table__username" data-label="Socio">
                       {member.username}
                     </td>
-                    <td data-label="N.º socio">{member.memberNumber ?? '—'}</td>
+                    <td data-label="N.º socio">
+                      <div className="admin-members__number-editor">
+                        <input
+                          type="text"
+                          aria-label={`Número de socio de ${member.username}`}
+                          value={numberValue}
+                          maxLength={32}
+                          placeholder="GR-0001"
+                          autoCapitalize="characters"
+                          spellCheck={false}
+                          disabled={updatingNumber}
+                          onChange={(event) =>
+                            setDraftNumbers((current) => ({
+                              ...current,
+                              [member.id]: event.target.value.toUpperCase(),
+                            }))
+                          }
+                        />
+                        <button
+                          className="btn btn--ghost btn--sm"
+                          type="button"
+                          disabled={!hasNumberChange || !numberValue.trim() || updatingNumber}
+                          onClick={() => void saveMemberNumber(member)}
+                        >
+                          {updatingNumber ? 'Guardando...' : 'Guardar número'}
+                        </button>
+                      </div>
+                    </td>
                     <td data-label="Email">{member.email}</td>
                     <td data-label="Teléfono">{member.phone ?? '—'}</td>
-                    <td data-label="Estado">{member.memberActive ? 'Socio' : 'No socio'}</td>
+                    <td data-label="Estado">
+                      {member.memberActive ? 'Socio' : 'No socio'}
+                      {isAdmin && <span className="admin-members__admin-label"> · Admin</span>}
+                    </td>
                     <td className="user-table__actions" data-label="Acciones">
                       <button
                         className="btn btn--ghost btn--sm"
                         type="button"
-                        disabled={updating}
+                        disabled={updating || isAdmin}
+                        title={isAdmin ? 'Los administradores mantienen su carnet de socio' : undefined}
                         onClick={() => updateMembership(member, !member.memberActive)}
                       >
                         {updating
