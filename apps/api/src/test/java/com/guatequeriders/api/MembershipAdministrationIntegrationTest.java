@@ -137,7 +137,7 @@ class MembershipAdministrationIntegrationTest {
                                 "username", username,
                                 "email", username + "@example.com",
                                 "phone", phone,
-                                "password", "test12345",
+                                "password", "testpassword123",
                                 "privacyAccepted", true
                         ))))
                 .andExpect(status().isCreated())
@@ -149,7 +149,7 @@ class MembershipAdministrationIntegrationTest {
         assertThat(person.getMemberNumber()).isNull();
 
         mockMvc.perform(get("/api/membership/me/card")
-                        .header("Authorization", bearer(login(username, "test12345"))))
+                        .header("Authorization", bearer(login(username, "testpassword123"))))
                 .andExpect(status().isForbidden());
 
         mockMvc.perform(patch("/api/admin/users/{id}/membership", person.getId())
