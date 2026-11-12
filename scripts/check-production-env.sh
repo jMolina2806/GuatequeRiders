@@ -66,8 +66,20 @@ if [[ "${STRIPE_ENABLED:-false}" != "false" ]]; then
   fail "STRIPE_ENABLED debe permanecer false para este lanzamiento"
 fi
 
-if [[ "${MERCH_NEW_CAMPAIGNS_ENABLED:-false}" != "false" ]]; then
-  fail "MERCH_NEW_CAMPAIGNS_ENABLED debe permanecer false para este lanzamiento"
+if [[ "${STRIPE_ENABLED:-false}" == "true" ]]; then
+  if [[ "${STRIPE_MODE:-test}" != "live" ]]; then
+    fail "STRIPE_MODE debe ser live para cobrar en producción"
+  fi
+  for name in STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET MERCH_SELLER; do
+    require_value "$name"
+    require_not_placeholder "$name"
+  done
+  if [[ "${STRIPE_SECRET_KEY:-}" != sk_live_* ]]; then
+    fail "STRIPE_SECRET_KEY debe ser una clave live de Stripe"
+  fi
+  if [[ "${STRIPE_WEBHOOK_SECRET:-}" != whsec_* ]]; then
+    fail "STRIPE_WEBHOOK_SECRET debe ser un secreto webhook de Stripe"
+  fi
 fi
 
 if [[ "${MAIL_ENABLED:-false}" == "true" ]]; then
@@ -87,4 +99,5 @@ echo "Preflight de producción correcto."
 echo "Dominio: $APP_DOMAIN"
 echo "Responsable legal configurado."
 echo "Stripe: desactivado."
-echo "Nuevas campañas Merch: desactivadas."
+echo "Creación de campañas preparada: ${MERCH_NEW_CAMPAIGNS_ENABLED:-true}."
+echo "Stripe activo: ${STRIPE_ENABLED:-false}."

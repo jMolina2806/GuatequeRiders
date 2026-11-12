@@ -21,7 +21,7 @@ No publicar hasta completar estos puntos:
 1. Definir quién actúa como responsable de la plataforma y del tratamiento de datos antes de abrir el registro público.
 2. Configurar `LEGAL_RESPONSIBLE`, `LEGAL_CONTACT_EMAIL` y `LEGAL_CONTACT_ADDRESS` con datos reales antes de compilar el frontend de producción.
 3. Crear un email de contacto de la comunidad cuando exista dominio.
-4. Mantener Stripe y la creación de nuevas campañas de Merch desactivados en producción.
+4. Lanzar el Merch sin campañas abiertas y Stripe desactivado; el botón de apertura permanece bloqueado hasta tener cobros reales y revisión legal completa.
 5. Si la campaña de Merch ya finalizada fue una venta real, documentar quién actuó como responsable de esa operación y configurar `MERCH_SELLER`.
 6. Comprar/configurar el dominio.
 7. Contratar un servidor o plataforma compatible con Docker.
@@ -115,18 +115,22 @@ docker compose --env-file .env.production -f docker-compose.prod.yml up -d api
 
 ## Merch y Stripe
 
-Para este lanzamiento no hay venta activa de Merch.
+Para este lanzamiento no hay venta activa de Merch, pero el panel de administración incluye todas las acciones para futuras campañas: abrir, cerrar, marcar pedido al proveedor y consultar pedidos.
 
-Mantén en producción:
+El despliegue puede dejar la función de administración preparada sin activar ventas:
 
-```
+```dotenv
+MERCH_NEW_CAMPAIGNS_ENABLED=true
 STRIPE_ENABLED=false
-MERCH_NEW_CAMPAIGNS_ENABLED=false
 ```
 
-No configures claves LIVE ni webhook de Stripe mientras no exista una nueva campaña aprobada y revisada legalmente.
+Con estos valores **no se puede abrir ninguna campaña** en producción. La sección Merch será un catálogo público sin compra.
 
-Los pedidos de la campaña finalizada pueden seguir disponibles para consulta, seguimiento e incidencias.
+Cuando se decida iniciar una nueva campaña, antes de abrirla hay que completar la revisión legal, confirmar responsable vendedor, proveedor, precios y entrega, y configurar Stripe con `STRIPE_ENABLED=true`, `STRIPE_MODE=live`, claves LIVE y webhook válido. El backend comprueba que Stripe esté activo y en modo real y, de lo contrario, bloquea el botón y la API de apertura.
+
+Con la pasarela ya configurada, un administrador puede abrir la campaña directamente desde **Admin → Gestionar campañas**, confirmando legalidad y precios. Una campaña cerrada vuelve a mostrar el catálogo informativo; ninguna se abre automáticamente.
+
+Los pedidos históricos seguirán disponibles para consulta, seguimiento e incidencias.
 
 ## Backups
 
@@ -168,7 +172,7 @@ Flujo recomendado:
    - registro como miembro pendiente, aprobación manual de socio por pertenencia a WhatsApp y acceso al carnet,
    - rutas, eventos y circuitos,
    - perfil, pedidos históricos y preferencias,
-   - Merch visible como catálogo informativo incluso sin campañas registradas, sin carrito ni posibilidad de comprar,
+   - Merch como catálogo sin ventas al iniciar; apertura solo por admin cuando Stripe LIVE y requisitos legales estén preparados,
    - comprobar que no existe compra ni apertura de nueva campaña,
    - Aviso legal, Privacidad y Cookies sin textos [PENDIENTE],
    - logout y eliminación de la sesión local.
