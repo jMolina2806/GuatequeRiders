@@ -75,7 +75,7 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
-        if (user.getRole() == Role.ADMIN && newRole == Role.USER) {
+        if (user.getRole() == Role.ADMIN && newRole != Role.ADMIN) {
             long adminCount = userRepository.countByRole(Role.ADMIN);
             if (adminCount <= 1) {
                 throw new ConflictException("Cannot remove the last admin");
@@ -83,6 +83,14 @@ public class AdminService {
             if (routeOrganizerRepository.existsByUserId(userId)) {
                 throw new ConflictException("Cannot change role: user is organizer of one or more routes");
             }
+        }
+
+        if (newRole == Role.COLLABORATOR && user.isFounder()) {
+            throw new ConflictException("Founder accounts cannot be collaborator accounts");
+        }
+        if (newRole == Role.COLLABORATOR && user.isMembershipActive()) {
+            user.setMembershipActive(false);
+            user.setMembershipVersion(user.getMembershipVersion() + 1);
         }
 
         if (newRole == Role.ADMIN && (!user.isMembershipActive() || user.getMemberNumber() == null)) {
@@ -102,6 +110,9 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
+        if (active && user.getRole() == Role.COLLABORATOR) {
+            throw new ConflictException("Collaborator accounts cannot be members");
+        }
         if (!active && user.getRole() == Role.ADMIN) {
             throw new ConflictException("Administrators must remain active members");
         }
@@ -123,6 +134,9 @@ public class AdminService {
     public UserResponse updateFounder(Long userId, boolean founder) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+        if (founder && user.getRole() == Role.COLLABORATOR) {
+            throw new ConflictException("Collaborator accounts cannot be founders");
+        }
         user.setFounder(founder);
         return UserResponse.from(user);
     }
