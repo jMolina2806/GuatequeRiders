@@ -1,3 +1,5 @@
+import type { UserRole } from '@/features/auth/types/auth.types'
+
 export type AdminStats = {
   totalUsers: number
   totalRoutes: number
@@ -9,5 +11,5 @@ export type AdminStats = {
 }
 
 export type UpdateRoleRequest = {
-  role: 'USER' | 'ADMIN'
+  role: UserRole
 }
