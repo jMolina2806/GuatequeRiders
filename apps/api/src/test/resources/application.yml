@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    default: test
+
+jwt:
+  expiration-ms: 86400000

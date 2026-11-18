@@ -1,0 +1,125 @@
+.user-table__wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: none;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+}
+
+.user-table th,
+.user-table td {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
+}
+
+.user-table th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  background: var(--color-surface-strong);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.user-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.user-table tbody tr:hover {
+  background: rgba(0, 240, 255, 0.03);
+}
+
+.user-table__username {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.user-table__actions {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .user-table__wrapper {
+    overflow: visible;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .user-table {
+    min-width: 0;
+    display: block;
+    border-spacing: 0;
+  }
+
+  .user-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .user-table tbody {
+    display: block;
+  }
+
+  .user-table tr {
+    display: block;
+    margin-bottom: 12px;
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .user-table th,
+  .user-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .user-table tbody tr:last-child td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .user-table td:last-child {
+    border-bottom: none;
+  }
+
+  .user-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-muted);
+  }
+}
+
+
+.user-table__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}

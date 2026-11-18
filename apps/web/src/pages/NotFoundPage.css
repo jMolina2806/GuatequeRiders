@@ -1,0 +1,31 @@
+.not-found-page {
+  display: grid;
+  min-height: 55vh;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  border: 1px dashed var(--color-border-light);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.not-found-page__code {
+  color: var(--color-secondary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.not-found-page h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(30px, 6vw, 52px);
+  letter-spacing: -1.5px;
+}
+
+.not-found-page p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 14px;
+}

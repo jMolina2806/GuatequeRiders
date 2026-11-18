@@ -1,0 +1,148 @@
+.my-routes {
+  margin-bottom: 32px;
+}
+
+.my-routes__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.my-routes__title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.my-routes__link {
+  color: var(--color-primary);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.my-routes__link:hover {
+  text-shadow: var(--shadow-neon-cyan);
+}
+
+.my-routes__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.my-routes__card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.my-routes__card:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.05);
+}
+
+.my-routes__card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.my-routes__card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-routes__card-meta {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.my-routes__status {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.my-routes__status--open {
+  background: rgba(0, 255, 136, 0.12);
+  color: var(--color-success);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.my-routes__status--completed {
+  background: rgba(0, 255, 136, 0.08);
+  color: var(--color-success);
+  border: 1px solid rgba(0, 255, 136, 0.15);
+}
+
+.my-routes__status--cancelled {
+  background: rgba(255, 51, 85, 0.12);
+  color: var(--color-danger);
+  border: 1px solid rgba(255, 51, 85, 0.3);
+}
+
+.my-routes__status--draft {
+  background: rgba(160, 160, 176, 0.1);
+  color: var(--color-text-secondary);
+  border: 1px solid rgba(160, 160, 176, 0.25);
+}
+
+.my-routes__status--in-progress {
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--color-info);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.my-routes__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 24px;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.my-routes__empty-link {
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-neon);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  box-shadow: var(--shadow-neon-cyan);
+  transition: all 0.2s ease;
+}
+
+.my-routes__empty-link:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}

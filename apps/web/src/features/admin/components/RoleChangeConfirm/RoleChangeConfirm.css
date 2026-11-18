@@ -1,0 +1,30 @@
+.role-change-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.role-change-confirm__text {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text);
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-change-confirm__hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.role-change-confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+

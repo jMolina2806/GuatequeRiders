@@ -1,0 +1,112 @@
+.circuit-details {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.circuit-details__image {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.circuit-details__header {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.circuit-details__status {
+  align-self: flex-start;
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.circuit-details__status--draft {
+  border: 1px solid rgba(160, 160, 176, 0.25);
+  color: var(--color-text-secondary);
+  background: rgba(160, 160, 176, 0.1);
+}
+
+.circuit-details__status--published {
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  color: var(--color-success);
+  background: rgba(0, 255, 136, 0.1);
+}
+
+.circuit-details__status--completed {
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  color: #b79aff;
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.circuit-details__status--cancelled {
+  border: 1px solid rgba(255, 51, 85, 0.3);
+  color: var(--color-danger);
+  background: rgba(255, 51, 85, 0.12);
+}
+
+.circuit-details__circuit-name {
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.circuit-details__description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.circuit-details__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+}
+
+.circuit-details__item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.circuit-details__label {
+  color: var(--color-muted);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.circuit-details__value {
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.circuit-details__links,
+.circuit-details__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.circuit-details__links .btn,
+.circuit-details__actions .btn {
+  flex: 1 1 150px;
+}

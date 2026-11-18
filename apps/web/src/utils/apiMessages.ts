@@ -1,0 +1,83 @@
+const MESSAGES: Record<string, string> = {
+  'Access denied': 'Acceso denegado',
+  'Unauthorized': 'No autorizado',
+  'Invalid request body': 'Solicitud no válida',
+  'Internal server error': 'Error interno del servidor',
+  'Validation failed': 'Datos no válidos',
+  'Phone number is required': 'El teléfono es obligatorio',
+  'Phone number must be valid': 'Introduce un número de teléfono válido',
+  'Email must be valid': 'Introduce un email válido',
+  'Image file must not exceed 5 MB': 'La imagen no puede superar los 5 MB',
+  'Image MIME type does not match its content': 'El tipo MIME no coincide con el contenido de la imagen',
+  'Image file is required': 'Debes seleccionar una imagen',
+  'Invalid username or password': 'Usuario o contraseña incorrectos',
+  'Invalid credentials': 'Credenciales inválidas',
+  'Merch store is currently closed': 'La tienda Merch está temporalmente cerrada',
+  'New Merch campaigns are disabled': 'La creación de campañas Merch está desactivada en el servidor',
+  'Real Stripe payments must be configured before opening a Merch campaign': 'Para abrir una campaña hay que configurar antes Stripe en modo real',
+  'There is already an open Merch campaign': 'Ya existe una campaña Merch abierta',
+  'Only paid orders can advance in fulfillment': 'Solo los pedidos pagados pueden avanzar de estado',
+  'Late payments are not part of the frozen supplier order': 'Este pago llegó después del cierre y no forma parte del pedido al proveedor',
+  'The campaign must be marked as ordered before fulfillment can advance': 'Primero debes marcar la campaña como pedido al proveedor',
+  'This campaign has no supplier order': 'La campaña no tiene un pedido al proveedor',
+  'This order is not included in the supplier order': 'Este pedido no está incluido en el pedido al proveedor',
+  'This order is already delivered': 'Este pedido ya está entregado',
+  'Pending orders cannot advance in fulfillment': 'Los pedidos pendientes no pueden avanzar de estado',
+  'Cancelled orders cannot advance in fulfillment': 'Los pedidos cancelados no pueden avanzar de estado',
+
+  'Route is full': 'La ruta está completa',
+  'Route is not open for registration': 'La ruta está cerrada para inscripción',
+  'Already registered to this route': 'Ya estás apuntado a esta ruta',
+  'At least one organizer is required before publishing':
+    'Se necesita al menos un organizador para publicar',
+  'Cannot publish a route with a past date': 'No se puede publicar una ruta con fecha pasada',
+  'Meeting and departure times are required before publishing':
+    'Faltan la hora de quedada y de salida para publicar',
+  'Meeting and departure times are required': 'La hora de quedada y de salida son obligatorias',
+  'Departure time must be after meeting time': 'La hora de salida debe ser posterior a la de quedada',
+  'Only ADMIN users can be route organizers': 'Solo los administradores pueden ser organizadores de rutas',
+  'Only DRAFT routes can be published': 'Solo se pueden publicar rutas en borrador',
+
+  'Event is full': 'El evento está completo',
+  'Event is not open for registration': 'El evento está cerrado para inscripción',
+  'Already registered to this event': 'Ya estás apuntado a este evento',
+
+  'Cannot remove the last admin': 'No puedes quitar el último administrador',
+  'Administrators must remain active members': 'Los administradores mantienen su carnet de socio',
+  'Member number already in use': 'Ese número de socio ya está asignado',
+  'Invalid member number format': 'El número de socio solo puede contener cifras, por ejemplo GR-0001',
+  'Manual member numbers are reserved for founders': 'Solo se puede elegir un número manualmente para los fundadores',
+  'Cannot change role: user is organizer of one or more routes':
+    'No se puede cambiar el rol: el usuario es organizador de una o más rutas',
+}
+
+export function translateApiMessage(message: string): string {
+  if (MESSAGES[message]) return MESSAGES[message]
+
+  if (message.startsWith('Registration not found for route')) {
+    return 'No estás apuntado a esta ruta'
+  }
+  if (message.startsWith('Registration not found for event')) {
+    return 'No estás apuntado a este evento'
+  }
+  if (message.startsWith('Username already exists')) {
+    return 'El nombre de usuario ya está en uso'
+  }
+  if (message.startsWith('Email already registered')) {
+    return 'El email ya está registrado'
+  }
+  if (message.startsWith('Phone already registered')) {
+    return 'El teléfono ya está registrado'
+  }
+  if (message.startsWith('Route not found')) {
+    return 'Ruta no encontrada'
+  }
+  if (message.startsWith('Event not found')) {
+    return 'Evento no encontrado'
+  }
+  if (message.startsWith('User not found')) {
+    return 'Usuario no encontrado'
+  }
+
+  return message
+}

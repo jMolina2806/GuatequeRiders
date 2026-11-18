@@ -1,0 +1,29 @@
+.require-member__state {
+  max-width: 720px;
+  margin: 64px auto;
+  padding: 32px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.require-member__state h1 {
+  margin-top: 0;
+}
+
+.require-member__spinner {
+  width: 34px;
+  height: 34px;
+  margin: 0 auto 16px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: member-spin 0.8s linear infinite;
+}
+
+@keyframes member-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

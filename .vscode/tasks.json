@@ -1,0 +1,98 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Frontend",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/web"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Demo Stripe",
+      "type": "shell",
+      "command": "bash scripts/run-stripe-demo.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Frontend",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/web"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Database",
+      "type": "shell",
+      "command": "docker compose up -d postgres && until docker compose exec -T postgres pg_isready -U postgres -d guatequeriders >/dev/null 2>&1; do sleep 1; done",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Mailpit",
+      "type": "shell",
+      "command": "docker compose up -d mailpit",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Backend",
+      "type": "shell",
+      "command": "set -a; [ ! -f ../../.env ] || source ../../.env; set +a; ./mvnw spring-boot:run",
+      "dependsOn": [
+        "Start Database",
+        "Start Mailpit"
+      ],
+      "dependsOrder": "sequence",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/api",
+        "env": {
+          "SPRING_PROFILES_ACTIVE": "dev",
+          "MAIL_ENABLED": "true",
+          "MAIL_HOST": "localhost",
+          "MAIL_PORT": "1025",
+          "MAIL_SMTP_AUTH": "false",
+          "MAIL_STARTTLS": "false",
+          "MAIL_FROM": "Guateque Riders <no-reply@guatequeriders.local>"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Backend",
+      "type": "shell",
+      "command": "./mvnw test",
+      "options": {
+        "cwd": "${workspaceFolder}/apps/api"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Test API Health",
+      "type": "shell",
+      "command": "curl http://localhost:8080/api/health",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test API Routes",
+      "type": "shell",
+      "command": "curl http://localhost:8080/api/routes",
+      "problemMatcher": []
+    }
+  ]
+}

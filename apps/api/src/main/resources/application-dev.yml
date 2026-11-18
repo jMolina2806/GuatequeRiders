@@ -1,0 +1,14 @@
+app:
+  environment: ${APP_ENV:development}
+  seed:
+    enabled: ${DATA_SEED_ENABLED:true}
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:false}
+
+spring:
+  datasource:
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+jwt:
+  secret: ${JWT_SECRET:GuatequeRidersDevSecretKeyForJwtSigning2026ChangeMe}
