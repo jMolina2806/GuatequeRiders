@@ -7,6 +7,8 @@ import './MainLayout.css'
 const PAGE_TITLES: Record<string, string> = {
   '/': 'Inicio',
   '/routes': 'Rutas',
+  '/news': 'Noticias',
+  '/admin/news': 'Noticias · Administración',
   '/events': 'Eventos',
   '/circuits': 'Circuitos',
   '/collaborators': 'Colaboradores',
@@ -32,7 +34,7 @@ function PageTitle() {
 
   useEffect(() => {
     const normalizedPath = pathname.replace(/\/+$/, '') || '/'
-    const pageTitle = PAGE_TITLES[normalizedPath]
+    const pageTitle = normalizedPath.startsWith('/news/') ? 'Noticia' : PAGE_TITLES[normalizedPath]
       ?? (normalizedPath.startsWith('/checkout/pending')
         ? 'Pago pendiente'
         : normalizedPath.startsWith('/admin/orders/preparation-sheet/')
