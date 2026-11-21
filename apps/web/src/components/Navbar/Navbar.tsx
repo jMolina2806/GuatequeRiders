@@ -96,6 +96,9 @@ export default function Navbar() {
           <NavLink to="/routes" onClick={closeMenu}>
             Rutas
           </NavLink>
+          <NavLink to="/news" onClick={closeMenu}>
+            Noticias
+          </NavLink>
           <NavLink to="/events" onClick={closeMenu}>
             Eventos
           </NavLink>

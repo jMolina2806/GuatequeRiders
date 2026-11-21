@@ -1,5 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import MainLayout from '@/layouts/MainLayout'
+import NewsPage, { NewsDetailPage } from '@/features/news/NewsPage'
+import AdminNewsPage from '@/features/news/AdminNewsPage'
 import HomePage from '@/pages/HomePage'
 import RoutesPage from '@/features/routes/pages/RoutesPage'
 import EventsPage from '@/features/events/pages/EventsPage'
@@ -35,6 +37,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'routes', element: <RoutesPage /> },
+      { path: 'news', element: <NewsPage /> },
+      { path: 'news/:id', element: <NewsDetailPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
       { path: 'events', element: <EventsPage /> },
