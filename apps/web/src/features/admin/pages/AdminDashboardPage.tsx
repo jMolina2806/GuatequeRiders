@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import StatsGrid from '../components/StatsGrid'
 import QuickActions from '../components/QuickActions'
 import { useAdminStats } from '../hooks/useAdminStats'
@@ -11,6 +12,7 @@ export default function AdminDashboardPage() {
       <header className="admin-dashboard__header">
         <h1>Panel de administración</h1>
         <p>Estado general de la plataforma Guateque Riders.</p>
+        <Link to="/admin/news" className="btn btn--primary">Gestionar noticias</Link>
       </header>
 
       {error && (
