@@ -18,6 +18,8 @@ import * as routesService from '@/features/routes/services/routes.service'
 import { merchProducts } from '@/data/clubData'
 import { useMerch } from '@/features/merch/context/useMerch'
 import './HomePage.css'
+import { getNews, type NewsItem } from '@/features/news/news.service'
+import { NewsCards } from '@/features/news/NewsPage'
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   EASY: 'Fácil',
@@ -48,6 +50,8 @@ export default function HomePage() {
   const { isOpen: merchIsOpen } = useMerch()
   const { isAdmin, isMember } = useAuth()
   const [routes, setRoutes] = useState<Route[]>([])
+  const [news, setNews] = useState<NewsItem[]>([])
+  useEffect(() => { getNews().then(setNews).catch(() => {}) }, [])
   const [events, setEvents] = useState<Event[]>([])
   const [contentLoading, setContentLoading] = useState(true)
   const [contentError, setContentError] = useState<string | null>(null)
@@ -174,6 +178,11 @@ export default function HomePage() {
         ))}
       </section>
 
+      <section className="home-section" id="news-preview">
+        <div className="home-section__heading"><div><span className="home-eyebrow">Actualidad</span><h2>Últimas noticias</h2><p>Comunidad, colaboradores y novedades.</p></div>
+          <Link to="/news" className="text-link">Ver todas ↗</Link></div>
+        {news.length ? <NewsCards items={news.slice(0, 3)} /> : <div className="home-state">Próximamente publicaremos novedades.</div>}
+      </section>
       <section className="home-metrics" aria-label="Actividad del club">
         <div>
           <strong>{String(publishedRouteCount).padStart(2, '0')}</strong>
