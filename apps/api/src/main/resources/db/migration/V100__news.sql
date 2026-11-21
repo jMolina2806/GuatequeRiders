@@ -1,0 +1,14 @@
+CREATE TABLE news (
+ id BIGSERIAL PRIMARY KEY,
+ title VARCHAR(180) NOT NULL,
+ summary VARCHAR(500) NOT NULL,
+ body TEXT NOT NULL,
+ category VARCHAR(40) NOT NULL,
+ media_json TEXT NOT NULL DEFAULT '[]',
+ published BOOLEAN NOT NULL DEFAULT FALSE,
+ featured BOOLEAN NOT NULL DEFAULT FALSE,
+ publish_at TIMESTAMPTZ,
+ created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+ updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX idx_news_publication ON news (published, publish_at DESC);
